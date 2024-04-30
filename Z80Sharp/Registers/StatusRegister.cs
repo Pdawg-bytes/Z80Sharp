@@ -1,8 +1,8 @@
-namespace Z80Sharp
+namespace Z80Sharp.Registers
 {
     /*
      * Reference: https://area51.dev/asm/z80/about/flags/
-    */
+     */
     public enum StatusRegisterFlag : byte
     {
         CarryFlag = 1 << 0,

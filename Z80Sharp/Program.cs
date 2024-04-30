@@ -1,4 +1,5 @@
 ﻿using System;
+using Z80Sharp.Registers;
 
 namespace Z80Sharp
 {
