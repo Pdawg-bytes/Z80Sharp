@@ -17,21 +17,29 @@ namespace Z80Sharp.Helpers
         /// </summary>
         /// <param name="value">The <see cref="short"/> to extract the data from.</param>
         /// <returns>The upper 8 bytes of the <see cref="short"/>.</returns>
-        public static byte GetUpperByte(this short value) => (byte)(value >> 8);
+        public static byte GetUpperByte(this ushort value) => (byte)((value >> 8) & 0xFF);
 
         /// <summary>
         /// Retrieves the low byte of a <see cref="short"/> value.
         /// </summary>
         /// <param name="value">The <see cref="short"/> to extract the data from.</param>
         /// <returns>The lower 8 bytes of the <see cref="short"/>.</returns>
-        public static byte GetLowerByte(this short value) => (byte)(value & 0xFF);
+        public static byte GetLowerByte(this ushort value) => (byte)(value & 0xFF);
 
         /// <summary>
         /// Sets the high byte of a <see cref="short"/> value.
         /// </summary>
-        /// <param name="value">The full register pair</param>
-        /// <param name="input">The value to set the</param>
-        /// <returns>A <see cref="short"/> with its upper bytes swapped.</returns>
-        public static short SetUpperByte(this short value, byte input) => (short)(ushort)((value & 0x00FF) | (input << 8));
+        /// <param name="value">The full register pair.</param>
+        /// <param name="input">The value to set the upper byte to.</param>
+        /// <returns>A <see cref="short"/> with its upper byte swapped.</returns>
+        public static ushort SetUpperByte(this ushort value, byte input) => (ushort)((value & 0xFF00) | input);
+
+        /// <summary>
+        /// Sets the high byte of a <see cref="short"/> value.
+        /// </summary>
+        /// <param name="value">The full register pair.</param>
+        /// <param name="input">The value to set the lower byte to.</param>
+        /// <returns>A <see cref="short"/> with its lower byte swapped.</returns>
+        public static ushort SetLowerByte(this ushort value, byte input) => (ushort)((value & 0x00FF) | (input << 8));
     }
 }

@@ -13,24 +13,59 @@ namespace Z80Sharp.Interfaces
     public interface IRegisterSet
     {
         /// <summary>
+        /// The Index X register
+        /// </summary>
+        public ushort IX { get; set; }
+
+        /// <summary>
+        /// The Index Y register
+        /// </summary>
+        public ushort IY { get; set; }
+
+        /// <summary>
+        /// The stack pointer register.
+        /// </summary>
+        public ushort SP { get; set; }
+
+        /// <summary>
+        /// The program counter register.
+        /// </summary>
+        public ushort PC { get; set; }
+
+        /// <summary>
         /// 16-bit wide address register composed of 8-bit registers B and C.
         /// </summary>
-        public short BC { get; set; }
+        public ushort BC { get; set; }
 
         /// <summary>
         /// 16-bit wide address register composed of 8-bit registers D and E.
         /// </summary>
-        public short DE { get; set; }
+        public ushort DE { get; set; }
 
         /// <summary>
         /// 16-bit wide address register composed of 8-bit registers H and L.
         /// </summary>
-        public short HL { get; set; }
+        public ushort HL { get; set; }
 
         /// <summary>
-        /// The status register of the Z80; 6 flags defined in <see cref="StatusRegisterFlag"/>
+        /// The interrupt vector register.
         /// </summary>
-        public byte StatusRegister { get; set; }
+        public byte I { get; set; }
+
+        /// <summary>
+        /// The memory refresh register.
+        /// </summary>
+        public byte R { get; set; }
+
+        /// <summary>
+        /// Interrupt Flip-Flop 1 register.
+        /// </summary>
+        public bool IFF1 { get; set; }
+
+        /// <summary>
+        /// Interrupt Flip-Flop 2 register.
+        /// </summary>
+        public bool IFF2 { get; set; }
 
         /// <summary>
         /// The A register. (8-bits wide)
@@ -58,7 +93,7 @@ namespace Z80Sharp.Interfaces
         public byte E { get; set; }
 
         /// <summary>
-        /// The F register. (8-bits wide)
+        /// The status register of the Z80; 6 flags defined in <see cref="StatusRegisterFlag"/>
         /// </summary>
         public byte F { get; set; }
 
