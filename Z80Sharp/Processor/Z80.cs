@@ -11,7 +11,9 @@ namespace Z80Sharp.Processor
     public class Z80
     {
         private MainMemory _memory;
-        private ProcessorRegisters _registers;
+        public ProcessorRegisters Registers;
+
+        public bool Halted { get; set; }
 
         public Z80(ushort memSize) 
         {
@@ -20,18 +22,7 @@ namespace Z80Sharp.Processor
 
         public void Run()
         {
-            Reset();
-            while (true)
-            {
-                byte opcode = _memory.Read(_registers.PC);
-                _registers.PC++;
 
-                switch (opcode)
-                {
-                    default:
-                        return;
-                }
-            }
         }
 
         public void Stop()
@@ -46,10 +37,17 @@ namespace Z80Sharp.Processor
                 _memory.Write(i, 0x00);
             }
 
-            _registers.IFF1 = false;
-            _registers.IFF2 = false;
-            _registers.PC = 0;
-            _registers.A = 0xFF;
+            Registers.IFF1 = false;
+            Registers.IFF2 = false;
+            Registers.PC = 0;
+            Registers.A = 0xFF;
+        }
+
+        public void Execute()
+        {
+            // TODO: Interrupt support
+
+            if (Halted) return;
         }
     }
 }

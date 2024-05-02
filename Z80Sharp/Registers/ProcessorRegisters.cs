@@ -1,3 +1,4 @@
+using Z80Sharp.Enums;
 using Z80Sharp.Helpers;
 using Z80Sharp.Interfaces;
 
@@ -61,6 +62,21 @@ namespace Z80Sharp.Registers
         { 
             get => _f; 
             set => _f = value; 
+        }
+
+        public void SetFlag(StatusRegisterFlag flag)
+        {
+            _f |= (byte)flag;
+        }
+
+        public void ClearFlag(StatusRegisterFlag flag)
+        {
+            _f &= (byte)~flag;
+        }
+
+        public bool IsFlagSet(StatusRegisterFlag flag)
+        {
+            return (_f & (byte)flag) == (byte)flag;
         }
         #endregion
 
