@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Z80Sharp.Enums;
 using Z80Sharp.Memory;
 using Z80Sharp.Registers;
 
@@ -11,18 +12,23 @@ namespace Z80Sharp.Processor
     public class Z80
     {
         private MainMemory _memory;
+        private ProcessorMode _processorMode;
         public ProcessorRegisters Registers;
 
         public bool Halted { get; set; }
 
-        public Z80(ushort memSize) 
+        public Z80(ushort memSize, ProcessorMode processorMode) 
         {
             _memory = new MainMemory(memSize);
+            _processorMode = processorMode;
         }
 
         public void Run()
         {
-
+            for (ushort i = 0; i < ushort.MaxValue; i++)
+            {
+                Registers.PC++;
+            }
         }
 
         public void Stop()
@@ -43,7 +49,7 @@ namespace Z80Sharp.Processor
             Registers.A = 0xFF;
         }
 
-        public void Execute()
+        public void ExecuteStep()
         {
             // TODO: Interrupt support
 
