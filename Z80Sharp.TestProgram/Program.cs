@@ -1,5 +1,4 @@
 ﻿using Z80Sharp.Logging;
-using Z80Sharp.Registers;
 using Z80Sharp.Processor;
 using Z80Sharp.Enums;
 using Z80Sharp.Constants;
@@ -11,33 +10,26 @@ namespace Z80Sharp
     {
         private static bool quitRequested = false;
         private static IZ80Logger logger = new Logger(useColors: true);
-        private static IProcessor z80 = new DebugZ80(65535, logger);
+        private static IProcessor z80 = new DebugZ80(1, logger);
 
         public static void Main(string[] args)
         {
             logger.LogGenerated += Logger_LogGenerated;
 
-            logger.Log(LogSeverity.Info, $"Status register: {z80.Registers.F}");
-            z80.Registers.SetFlag(StatusRegisterFlag.AddSubFlag);
-            logger.Log(LogSeverity.Info, "AddSub flag set");
-            z80.Registers.SetFlag(StatusRegisterFlag.CarryFlag);
-            logger.Log(LogSeverity.Info, "Carry flag set");
-            logger.Log(LogSeverity.Debug, $"Is AddSub flag set? {z80.Registers.IsFlagSet(StatusRegisterFlag.AddSubFlag)}");
-            logger.Log(LogSeverity.Info, $"Status register: {z80.Registers.F}");
-            z80.Registers.ClearFlag(StatusRegisterFlag.AddSubFlag);
-            logger.Log(LogSeverity.Info, "AddSub flag cleared");
-            logger.Log(LogSeverity.Debug, $"Is AddSub flag set? {z80.Registers.IsFlagSet(StatusRegisterFlag.AddSubFlag)}");
-            logger.Log(LogSeverity.Debug, $"Status register: {z80.Registers.F}");
+            logger.Log(LogSeverity.Debug, "Debug");
+            logger.Log(LogSeverity.Info, "Information");
+            logger.Log(LogSeverity.Memory, "Memory");
+            logger.Log(LogSeverity.Interrupt, "Interrupt");
+            logger.Log(LogSeverity.Decode, "Processor decode");
+            logger.Log(LogSeverity.Execution, "Processor execute");
+            logger.Log(LogSeverity.Warning, "Warning");
+            logger.Log(LogSeverity.Fatal, "Fatal");
 
             z80.Reset();
             Thread processorThread = new(()=> z80.Run());
             processorThread.Start();
-            
-            Task.Run(() => ReadConsoleInput());
 
-            while (!quitRequested)
-            {
-            }
+            ReadConsoleInput();
         }
 
         private static void Logger_LogGenerated(object? sender, Events.LogGeneratedEventArgs e)
@@ -45,13 +37,14 @@ namespace Z80Sharp
             Console.WriteLine(e.LogData);
         }
 
+        private static ConsoleKeyInfo _key;
         private static void ReadConsoleInput()
         {
             Console.WriteLine($"{Colors.ORANGE}Welcome to the Z80Sharp interactive console! Press 'q' to quit...{Colors.ANSI_RESET}");
             while (!quitRequested)
             {
-                ConsoleKeyInfo key = Console.ReadKey();
-                switch (key.KeyChar)
+                _key = Console.ReadKey();
+                switch (_key.KeyChar)
                 {
                     case 'q':
                         quitRequested = true;

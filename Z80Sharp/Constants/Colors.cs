@@ -18,6 +18,11 @@ namespace Z80Sharp.Constants
         public const string WHITE = "\u001b[38;2;255;255;255m";
 
         /// <summary>
+        /// The ANSI escape sequence for dark gray.
+        /// </summary>
+        public const string DARK_GRAY = "\u001b[38;2;150;150;150m";
+
+        /// <summary>
         /// The ANSI escape sequence for light gray.
         /// </summary>
         public const string LIGHT_GRAY = "\u001b[38;2;211;211;211m";
@@ -68,12 +73,27 @@ namespace Z80Sharp.Constants
         public const string ORANGE = "\u001b[38;2;255;128;0m";
 
         /// <summary>
+        /// The ANSI escape sequence for light orange.
+        /// </summary>
+        public const string LIGHT_ORANGE = "\u001b[38;2;255;200;100m";
+
+        /// <summary>
         /// The ANSI escape sequence for brown.
         /// </summary>
         public const string BROWN = "\u001b[38;2;255;162;69m";
 
         /// <summary>
-        /// The ANSI escape sequence for brown.
+        /// The ANSI escape sequence for purple.
+        /// </summary>
+        public const string PURPLE = "\u001b[38;2;148;0;211m";
+
+        /// <summary>
+        /// The ANSI escape sequence for light purple.
+        /// </summary>
+        public const string LIGHT_PURPLE = "\u001b[38;2;238;130;238m";
+
+        /// <summary>
+        /// The ANSI escape sequence for pink.
         /// </summary>
         public const string PINK = "\u001b[38;2;209;6;145m";
 

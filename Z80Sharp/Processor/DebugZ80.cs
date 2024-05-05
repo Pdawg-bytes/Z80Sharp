@@ -29,7 +29,7 @@ namespace Z80Sharp.Processor
 
         public void Run()
         {
-            for (ushort i = 0; i < ushort.MaxValue; i++)
+            for (ushort i = 0; i < _memory.Length; i++)
             {
                 Fetch();
             }

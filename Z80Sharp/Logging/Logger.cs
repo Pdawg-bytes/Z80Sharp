@@ -23,6 +23,10 @@ namespace Z80Sharp.Logging
             [LogSeverity.Debug] = ("DBG", Colors.PINK, Colors.LIGHT_PINK),
             [LogSeverity.Info] = ("INF", Colors.CYAN, Colors.LIGHT_BLUE),
             [LogSeverity.Memory] = ("MEM", Colors.GREEN, Colors.LIGHT_GREEN),
+            [LogSeverity.Interrupt] = ("INT", Colors.PURPLE, Colors.LIGHT_PURPLE),
+            [LogSeverity.Decode] = ("DEC", Colors.ORANGE, Colors.LIGHT_ORANGE),
+            [LogSeverity.Execution] = ("EXE", Colors.ORANGE, Colors.LIGHT_ORANGE),
+            [LogSeverity.Warning] = ("WRN", Colors.YELLOW, Colors.LIGHT_YELLOW),
             [LogSeverity.Fatal] = ("FTL", Colors.RED, Colors.LIGHT_RED),
         };
 
@@ -44,7 +48,7 @@ namespace Z80Sharp.Logging
                 _logMessageBuilder.Append(Colors.ANSI_RESET);
                 _logMessageBuilder.Append(ColorString(Colors.WHITE, "["));
 
-                _logMessageBuilder.Append(ColorString(Colors.LIGHT_GRAY, $"{DateTime.Now.ToString("d")} {DateTime.Now.ToString("HH:mm:ss.ffff")} "));
+                _logMessageBuilder.Append(ColorString(Colors.DARK_GRAY, $"{DateTime.Now.ToString("d")} {DateTime.Now.ToString("HH:mm:ss.ffff")} "));
                 _logMessageBuilder.Append(ColorString(severityData.HeaderColor, severityData.Header));
                 _logMessageBuilder.Append(ColorString(Colors.WHITE, "]"));
 
