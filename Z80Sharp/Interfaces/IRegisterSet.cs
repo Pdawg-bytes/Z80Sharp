@@ -106,5 +106,24 @@ namespace Z80Sharp.Interfaces
         /// The L register. (8-bits wide)
         /// </summary>
         public byte L { get; set; }
+
+        /// <summary>
+        /// Sets a flag in the status register (F).
+        /// </summary>
+        /// <param name="flag">The flag that will be set to 1.</param>
+        public void SetFlag(StatusRegisterFlag flag);
+
+        /// <summary>
+        /// Clears a flag in the status register (F).
+        /// </summary>
+        /// <param name="flag">The flag that will be set to 0.</param>
+        public void ClearFlag(StatusRegisterFlag flag);
+
+        /// <summary>
+        /// Checks if a flag is set in the status register (F).
+        /// </summary>
+        /// <param name="flag">The flag to check</param>
+        /// <returns>Whether or not the flag is set.</returns>
+        public bool IsFlagSet(StatusRegisterFlag flag);
     }
 }
