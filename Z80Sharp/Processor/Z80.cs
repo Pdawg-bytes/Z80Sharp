@@ -13,54 +13,13 @@ namespace Z80Sharp.Processor
     /// <summary>
     /// The default implementation of the Z80. Less verbose, more performant.
     /// </summary>
-    public class Z80 : IProcessor
+    public class Z80(ushort memSize, IZ80Logger logger) : Z80Base(memSize, logger)
     {
-        private MainMemory _memory;
-        private readonly IZ80Logger _logger;
-
-        public IRegisterSet Registers { get; set; } = new ProcessorRegisters();
-
-        public bool Halted { get; set; }
-
-        public Z80(ushort memSize, IZ80Logger logger) 
+        public override byte Fetch()
         {
-            _logger = logger;
-            _memory = new MainMemory(memSize);
-        }
-
-        public void Run()
-        {
-            for (ushort i = 0; i < ushort.MaxValue; i++)
-            {
-
-            }
-        }
-
-        public void Stop()
-        {
-
-        }
-
-        public void Reset()
-        {
-            for (ushort i = 0; i < _memory.Length; i++) 
-            {
-                _memory.Write(i, 0x00);
-            }
-
-            Registers.IFF1 = false;
-            Registers.IFF2 = false;
-            Registers.PC = 0;
-            Registers.A = 0xFF;
-            Registers.SP = 0xFFFF;
-            Registers.F = 0xFF;
-        }
-
-        public void ExecuteStep()
-        {
-            // TODO: Interrupt support
-
-            if (Halted) return;
+            byte val = _memory.Read(Registers.PC);
+            Registers.PC++;
+            return val;
         }
     }
 }
