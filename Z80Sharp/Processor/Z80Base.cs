@@ -29,13 +29,19 @@ namespace Z80Sharp.Processor
             _logger = logger;
         }
 
-        public virtual void Run()
+        public void Run()
         {
+            bool isDebug = IsDebug();
             while (Registers.PC < _memory.Length)
             {
                 byte currentInstruction = Fetch();
                 switch (currentInstruction)
                 {
+                    // NOP
+                    case 0x00:
+                        if (isDebug) LogInstructionDecode("0x00: NOP"); break;
+
+                    // Special instructions
                     case 0xDD:
                         ParseIXInstruction();
                         break;
@@ -48,9 +54,19 @@ namespace Z80Sharp.Processor
                     case 0xCB:
                         ParseBitInstruction();
                         break;
-                    case 0x00:
-                        if (IsDebug()) LogInstructionDecode("NOP (0x00)");
+
+                    // ld dd, nn
+                    case 0x01:
+                    case 0x11:
+                    case 0x21:
+                        // how tf can i make this work without doing some nasty array of bytes???
                         break;
+                    case 0x31:
+                        {
+                            ushort word = FetchImmediateWord();
+                            if (isDebug) LogInstructionExec($"0x31: LD SP, 0x{word:X4}");
+                            Registers.SP = word; break;
+                        }
                 }
             }
         }
@@ -74,9 +90,9 @@ namespace Z80Sharp.Processor
             Registers.SP = 0xFFFF;
             Registers.F = 0xFF;
 
-            _memory.Write(0, 0xDD);
-            _memory.Write(1, 0xCB);
-            _memory.Write(2, 0x03);
+            _memory.Write(0, 0x01);
+            _memory.Write(1, 0xFF);
+            _memory.Write(2, 0xEF);
             _memory.Write(3, 0xCE);
             _memory.Write(4, 0x00);
 
@@ -84,14 +100,21 @@ namespace Z80Sharp.Processor
         }
 
         /// <summary>
-        /// Reads current byte at the <see cref="IRegisterSet.PC"/>.
+        /// Logs a the decode operation of a given instruction.
         /// </summary>
-        /// <returns>The value at the address.</returns>
-        public abstract byte Fetch();
-
+        /// <param name="instruction">The data of the instruction.</param>
         protected void LogInstructionDecode(string instruction)
         {
             _logger.Log(LogSeverity.Decode, instruction);
+        }
+
+        /// <summary>
+        /// Logs a the execution operation of a given instruction.
+        /// </summary>
+        /// <param name="instruction">The data of the instruction.</param>
+        protected void LogInstructionExec(string instruction)
+        {
+            _logger.Log(LogSeverity.Execution, instruction);
         }
 
         #region Instructions
@@ -102,7 +125,7 @@ namespace Z80Sharp.Processor
         /// <param name="addressingMode">The addressing mode that the bit instruction is handling.</param>
         public virtual void ParseBitInstruction(AddressingMode addressingMode = AddressingMode.Regular)
         {
-            if (IsDebug()) LogInstructionDecode("Bit (0xCB)");
+            if (IsDebug()) LogInstructionDecode("0xCB: Bit");
 
             sbyte displacement = 0;
             if (addressingMode != AddressingMode.Regular) displacement = (sbyte)Fetch();
@@ -115,7 +138,7 @@ namespace Z80Sharp.Processor
         /// </summary>
         public virtual void ParseIXInstruction()
         {
-            if (IsDebug()) LogInstructionDecode("Index X (0xDD)");
+            if (IsDebug()) LogInstructionDecode("0xDD: Index X");
 
             byte instruction = Fetch();
             switch (instruction)
@@ -131,7 +154,7 @@ namespace Z80Sharp.Processor
         /// </summary>
         public virtual void ParseIYInstruction()
         {
-            if (IsDebug()) LogInstructionDecode("Index Y (0xFD)");
+            if (IsDebug()) LogInstructionDecode("0xFD: Index Y");
 
             byte instruction = Fetch();
             switch (instruction)
@@ -145,13 +168,30 @@ namespace Z80Sharp.Processor
         /// </summary>
         public virtual void ParseMiscInstruction()
         {
-            if (IsDebug()) LogInstructionDecode("Misc (0xED)");
+            if (IsDebug()) LogInstructionDecode("0xED: Misc");
 
             byte instruction = Fetch();
             switch (instruction)
             {
 
             }
+        }
+        #endregion
+
+        #region Fetch Operations
+        /// <summary>
+        /// Reads current byte at the <see cref="IRegisterSet.PC"/>.
+        /// </summary>
+        /// <returns>The value at the address.</returns>
+        public abstract byte Fetch();
+
+        /// <summary>
+        /// Fetches the word at the <see cref="IRegisterSet.PC", and the value at the next address ahead./>
+        /// </summary>
+        /// <returns>The word (<see cref="ushort")./></returns>
+        protected ushort FetchImmediateWord()
+        {
+            return (ushort)(Fetch() | (Fetch() << 8));
         }
         #endregion
     }

@@ -16,11 +16,7 @@ namespace Z80Sharp.Processor
     {
         public override bool IsDebug() { return true; }
 
-        /// <summary>
-        /// Reads current byte at the <see cref="IRegisterSet.PC"/>.
-        /// </summary>
-        /// <returns>The value at the address.</returns>
-        /// <remarks>Overriden to log memory reads.</remarks>
+        /// <inheritdoc/>
         public override byte Fetch()
         {
             byte ret = _memory.Read(Registers.PC);
