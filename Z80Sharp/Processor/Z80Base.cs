@@ -12,7 +12,7 @@ using Z80Sharp.Registers;
 
 namespace Z80Sharp.Processor
 {
-    public abstract class Z80Base : IProcessor
+    public abstract partial class Z80Base : IProcessor
     {
         protected MainMemory _memory;
         protected readonly IZ80Logger _logger;
@@ -35,6 +35,7 @@ namespace Z80Sharp.Processor
             while (Registers.PC < _memory.Length)
             {
                 byte currentInstruction = Fetch();
+                byte operatingRegister = (byte)((currentInstruction >> 3) & 0x07);
                 switch (currentInstruction)
                 {
                     // NOP
@@ -96,9 +97,10 @@ namespace Z80Sharp.Processor
             _memory.Write(3, 0xCE);
             _memory.Write(4, 0x00);
 
-            _logger.Log(Enums.LogSeverity.Info, "Processor reset");
+            _logger.Log(LogSeverity.Info, "Processor reset");
         }
 
+        #region Logging
         /// <summary>
         /// Logs a the decode operation of a given instruction.
         /// </summary>
@@ -116,6 +118,8 @@ namespace Z80Sharp.Processor
         {
             _logger.Log(LogSeverity.Execution, instruction);
         }
+        #endregion
+
 
         #region Instructions
         /// <summary>
@@ -140,8 +144,8 @@ namespace Z80Sharp.Processor
         {
             if (IsDebug()) LogInstructionDecode("0xDD: Index X");
 
-            byte instruction = Fetch();
-            switch (instruction)
+            byte currentInstruction = Fetch();
+            switch (currentInstruction)
             {
                 case 0xCB:
                     ParseBitInstruction(AddressingMode.IndexX);
@@ -156,10 +160,12 @@ namespace Z80Sharp.Processor
         {
             if (IsDebug()) LogInstructionDecode("0xFD: Index Y");
 
-            byte instruction = Fetch();
-            switch (instruction)
+            byte currentInstruction = Fetch();
+            switch (currentInstruction)
             {
-
+                case 0xCB:
+                    ParseBitInstruction(AddressingMode.IndexY);
+                    break;
             }
         }
 
@@ -170,13 +176,14 @@ namespace Z80Sharp.Processor
         {
             if (IsDebug()) LogInstructionDecode("0xED: Misc");
 
-            byte instruction = Fetch();
-            switch (instruction)
+            byte currentInstruction = Fetch();
+            switch (currentInstruction)
             {
 
             }
         }
         #endregion
+
 
         #region Fetch Operations
         /// <summary>

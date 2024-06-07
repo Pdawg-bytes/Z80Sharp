@@ -15,6 +15,7 @@ namespace Z80Sharp.Processor
     /// </summary>
     public class Z80(ushort memSize, IZ80Logger logger) : Z80Base(memSize, logger)
     {
+        /// <inheritdoc/>
         public override byte Fetch()
         {
             byte val = _memory.Read(Registers.PC);
