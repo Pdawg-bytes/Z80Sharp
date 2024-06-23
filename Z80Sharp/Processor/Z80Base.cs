@@ -58,10 +58,23 @@ namespace Z80Sharp.Processor
 
                     // ld dd, nn
                     case 0x01:
+                        {
+                            ushort word = FetchImmediateWord();
+                            if (isDebug) LogInstructionExec($"0x31: LD BC, 0x{word:X4}");
+                            Registers.BC = word; break;
+                        }
                     case 0x11:
+                        {
+                            ushort word = FetchImmediateWord();
+                            if (isDebug) LogInstructionExec($"0x31: LD DE, 0x{word:X4}");
+                            Registers.DE = word; break;
+                        }
                     case 0x21:
-                        // how tf can i make this work without doing some nasty array of bytes???
-                        break;
+                        {
+                            ushort word = FetchImmediateWord();
+                            if (isDebug) LogInstructionExec($"0x31: LD HL, 0x{word:X4}");
+                            Registers.HL = word; break;
+                        }
                     case 0x31:
                         {
                             ushort word = FetchImmediateWord();
