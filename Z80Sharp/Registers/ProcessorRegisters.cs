@@ -7,128 +7,176 @@ namespace Z80Sharp.Registers
     /// <summary>
     /// Main implementation of <see cref="IRegisterSet"/>
     /// </summary>
-    public struct ProcessorRegisters : IRegisterSet
+    public partial struct ProcessorRegisters
     {
-        #region Utility registers
-        public ushort SP { get; set; }
-        public ushort PC { get; set; }
+        public ProcessorRegisters()
+        {
+            RegisterSet = new byte[26];
+        }
 
-        public byte I { get; set; }
-        public byte R { get; set; }
+        public byte[] RegisterSet;
 
-        public bool IFF1 { get; set; }
-        public bool IFF2 { get; set; }
+        /// <summary>
+        /// Interrupt control flag 1
+        /// </summary>
+        public bool IFF1;
+        /// <summary>
+        /// Interrupt control flag 2
+        /// </summary>
+        public bool IFF2;
+
+
+        #region Main register indexers
+        /// <summary>
+        /// The B register indexer
+        /// </summary>
+        public const byte B = 0;
+
+        /// <summary>
+        /// The C register indexer
+        /// </summary>
+        public const byte C = 1;
+
+        /// <summary>
+        /// The D register indexer
+        /// </summary>
+        public const byte D = 2;
+
+        /// <summary>
+        /// The E register indexer
+        /// </summary>
+        public const byte E = 3;
+
+        /// <summary>
+        /// The H register indexer
+        /// </summary>
+        public const byte H = 4;
+
+        /// <summary>
+        /// The L register indexer
+        /// </summary>
+        public const byte L = 5;
+
+        /// <summary>
+        /// The flags register indexer
+        /// </summary>
+        public const byte F = 6;
+
+        /// <summary>
+        /// The accumulator register indexer
+        /// </summary>
+        public const byte A = 7;
         #endregion
 
 
-        #region General-purpose 16-bit pairs
-        public ushort BC { get; set; }
-        public ushort DE { get; set; }
-        public ushort HL { get; set; }
+        #region Alternate register indexers
+        /// <summary>
+        /// The alternate B' register indexer
+        /// </summary>
+        public const byte B_ = 8;
+
+        /// <summary>
+        /// The alternate C' register indexer
+        /// </summary>
+        public const byte C_ = 9;
+
+        /// <summary>
+        /// The alternate D' register indexer
+        /// </summary>
+        public const byte D_ = 10;
+
+        /// <summary>
+        /// The alternate E' register indexer
+        /// </summary>
+        public const byte E_ = 11;
+
+        /// <summary>
+        /// The alternate H' register indexer
+        /// </summary>
+        public const byte H_ = 12;
+
+        /// <summary>
+        /// The alternate L' register indexer
+        /// </summary>
+        public const byte L_ = 13;
+
+        /// <summary>
+        /// The alternate flags F' register indexer
+        /// </summary>
+        public const byte F_ = 14;
+
+        /// <summary>
+        /// The alternate accumulator A' register indexer
+        /// </summary>
+        public const byte A_ = 15;
         #endregion
 
 
-        #region Index registers
-        public ushort IX { get; set; }
-        public ushort IY { get; set; }
-
-        public byte IXH
-        {
-            get => IX.GetUpperByte();
-            set => IX.SetUpperByte(value);
-        }
-        public byte IXL
-        {
-            get => IX.GetLowerByte();
-            set => IX.SetLowerByte(value);
-        }
-
-        public byte IYH
-        {
-            get => IY.GetUpperByte();
-            set => IY.SetUpperByte(value);
-        }
-        public byte IYL
-        {
-            get => IY.GetLowerByte();
-            set => IY.SetLowerByte(value);
-        }
+        #region Hardware control indexers
+        /// <summary>
+        /// Interrupt vector base indexer.
+        /// </summary>
+        public const byte I = 16;
+        /// <summary>
+        /// Memory refresh base indexer.
+        /// </summary>
+        public const byte R = 17;
         #endregion
 
 
-        #region Flags register
-        private byte _f;
-        public byte F 
-        { 
-            get => _f; 
-            set => _f = value; 
-        }
-
-        public void SetFlag(StatusRegisterFlag flag)
-        {
-            _f |= (byte)flag;
-        }
-
-        public void ClearFlag(StatusRegisterFlag flag)
-        {
-            _f &= (byte)~flag;
-        }
-
-        public bool IsFlagSet(StatusRegisterFlag flag)
-        {
-            return (_f & (byte)flag) == (byte)flag;
-        }
+        #region Index register indexers
+        /// <summary>
+        /// The index X register indexer.
+        /// </summary>
+        /// <remarks>
+        /// This register is 16-bit only, therefore, it is 2 bytes wide.
+        /// </remarks>
+        public const byte IX = 18;
+        /// <summary>
+        /// The index Y register indexer.
+        /// </summary>
+        /// <remarks>
+        /// This register is 16-bit only, therefore, it is 2 bytes wide.
+        /// </remarks>
+        public const byte IY = 20;
         #endregion
 
 
-        #region Accumulator
-        private byte _a;
-        public byte A 
-        { 
-            get => _a; 
-            set => _a = value; 
-        }
+        #region Utility register indexers
+        /// <summary>
+        /// The stack pointer register indexer.
+        /// </summary>
+        /// <remarks>
+        /// This register is 16-bit only, therefore, it is 2 bytes wide.
+        /// </remarks>
+        public byte SPi = 22;
+        /// <summary>
+        /// The program counter register indexer.
+        /// </summary>
+        /// <remarks>
+        /// This register is 16-bit only, therefore, it is 2 bytes wide.
+        /// </remarks>
+        public const byte PCi = 24;
         #endregion
 
 
-        #region General-purpose 8-bit registers
-        public byte B 
-        { 
-            get => BC.GetUpperByte();
-            set => BC.SetUpperByte(value);
-        }
-
-        public byte C 
+        #region Flags register operations
+        public void SetFlag(StatusRegisterFlag flag, bool prime = false)
         {
-            get => BC.GetLowerByte();
-            set => BC.SetLowerByte(value);
+            if (prime) RegisterSet[F_] |= (byte)flag;
+            RegisterSet[F] |= (byte)flag;
         }
 
-        public byte D 
+        public void ClearFlag(StatusRegisterFlag flag, bool prime = false)
         {
-            get => DE.GetUpperByte();
-            set => DE.SetUpperByte(value);
+            if (prime) { RegisterSet[F_] &= (byte)~flag; }
+            RegisterSet[F] &= (byte)~flag;
         }
 
-        public byte E 
+        public bool IsFlagSet(StatusRegisterFlag flag, bool prime = false)
         {
-            get => DE.GetLowerByte();
-            set => DE.SetLowerByte(value);
-        }
-        #endregion
-
-
-        # region Composition of HL
-        public byte H 
-        { 
-            get => HL.GetUpperByte(); 
-            set => HL.SetLowerByte(value); 
-        }
-
-        public byte L 
-        { 
-            get => HL.GetLowerByte(); 
-            set => HL.SetLowerByte(value); 
+            if (prime) { return (RegisterSet[F_] & (byte)flag) == (byte)flag; }
+            return (RegisterSet[F] & (byte)flag) == (byte)flag;
         }
         #endregion
     }

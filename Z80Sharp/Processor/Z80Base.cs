@@ -206,7 +206,7 @@ namespace Z80Sharp.Processor
         public abstract byte Fetch();
 
         /// <summary>
-        /// Fetches the word at the <see cref="IRegisterSet.PC", and the value at the next address ahead./>
+        /// Fetches the value at the <see cref="IRegisterSet.PC", and the value at the next address ahead to create a word./>
         /// </summary>
         /// <returns>The word (<see cref="ushort")./></returns>
         protected ushort FetchImmediateWord()
