@@ -1,6 +1,8 @@
-﻿namespace Z80Sharp.Registers
+﻿using Z80Sharp.Interfaces;
+
+namespace Z80Sharp.Registers
 {
-    public partial struct ProcessorRegisters
+    public partial struct ProcessorRegisters : IRegisterSet
     {
         #region Register pairs
         /// <summary>
@@ -51,26 +53,7 @@
                 RegisterSet[F] = (byte)(value & 0xFF);
             }
         }
-
-        public ushort SP
-        {
-            get => (ushort)(RegisterSet[SPi + 1] + (RegisterSet[SPi] << 8));
-            set
-            {
-                RegisterSet[SPi] = (byte)(value >> 8);
-                RegisterSet[SPi + 1] = (byte)(value & 0xFF);
-            }
-        }
-        public ushort PC
-        {
-            get => (ushort)(RegisterSet[PCi + 1] + (RegisterSet[PCi] << 8));
-            set
-            {
-                RegisterSet
-            }
-        }
         #endregion
-
 
         #region Alternate register pairs
         /// <summary>
@@ -119,6 +102,49 @@
             {
                 RegisterSet[A_] = (byte)(value >> 8);
                 RegisterSet[F_] = (byte)(value & 0xFF);
+            }
+        }
+        #endregion
+
+
+        #region Utility register pairs
+        public ushort SP
+        {
+            get => (ushort)(RegisterSet[SPi] << 8 | RegisterSet[SPi + 1]);
+            set
+            {
+                RegisterSet[SPi] = (byte)(value >> 8);
+                RegisterSet[SPi + 1] = (byte)(value & 0xFF);
+            }
+        }
+        public ushort PC
+        {
+            get => (ushort)(RegisterSet[PCi] << 8 | RegisterSet[PCi + 1]);
+            set
+            {
+                RegisterSet[PCi] = (byte)(value >> 8);
+                RegisterSet[PCi + 1] = (byte)(value & 0xFF);
+            }
+        }
+        #endregion
+
+        #region Index register pairs
+        public ushort IX
+        {
+            get => (ushort)(RegisterSet[IXi] << 8 | RegisterSet[IXi + 1]);
+            set
+            {
+                RegisterSet[IXi] = (byte)(value >> 8);
+                RegisterSet[IXi + 1] = (byte)(value & 0xFF);
+            }
+        }
+        public ushort IY
+        {
+            get => (ushort)(RegisterSet[IYi] << 8 | RegisterSet[IYi + 1]);
+            set
+            {
+                RegisterSet[IYi] = (byte)(value >> 8);
+                RegisterSet[IYi + 1] = (byte)(value & 0xFF);
             }
         }
         #endregion

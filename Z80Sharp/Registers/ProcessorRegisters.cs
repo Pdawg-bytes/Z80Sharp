@@ -4,27 +4,19 @@ using Z80Sharp.Interfaces;
 
 namespace Z80Sharp.Registers
 {
-    /// <summary>
-    /// Main implementation of <see cref="IRegisterSet"/>
-    /// </summary>
-    public partial struct ProcessorRegisters
+    public partial struct ProcessorRegisters : IRegisterSet
     {
         public ProcessorRegisters()
         {
             RegisterSet = new byte[26];
         }
 
-        public byte[] RegisterSet;
+        public byte[] RegisterSet { get; init; }
 
-        /// <summary>
-        /// Interrupt control flag 1
-        /// </summary>
-        public bool IFF1;
-        /// <summary>
-        /// Interrupt control flag 2
-        /// </summary>
-        public bool IFF2;
+        public bool IFF1 { get; set; }
+        public bool IFF2 { get; set; }
 
+        public InterruptMode InterruptMode { get; set; }
 
         #region Main register indexers
         /// <summary>
@@ -131,14 +123,14 @@ namespace Z80Sharp.Registers
         /// <remarks>
         /// This register is 16-bit only, therefore, it is 2 bytes wide.
         /// </remarks>
-        public const byte IX = 18;
+        public const byte IXi = 18;
         /// <summary>
         /// The index Y register indexer.
         /// </summary>
         /// <remarks>
         /// This register is 16-bit only, therefore, it is 2 bytes wide.
         /// </remarks>
-        public const byte IY = 20;
+        public const byte IYi = 20;
         #endregion
 
 

@@ -9,6 +9,7 @@ using Z80Sharp.Interfaces;
 using Z80Sharp.Logging;
 using Z80Sharp.Memory;
 using Z80Sharp.Registers;
+using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
@@ -56,33 +57,34 @@ namespace Z80Sharp.Processor
                         ParseBitInstruction();
                         break;
 
-                    // ld dd, nn
+                    // LD dd, nnnn
                     case 0x01:
-                        {
-                            ushort word = FetchImmediateWord();
-                            if (isDebug) LogInstructionExec($"0x31: LD BC, 0x{word:X4}");
-                            Registers.BC = word; break;
-                        }
                     case 0x11:
-                        {
-                            ushort word = FetchImmediateWord();
-                            if (isDebug) LogInstructionExec($"0x31: LD DE, 0x{word:X4}");
-                            Registers.DE = word; break;
-                        }
                     case 0x21:
                         {
-                            ushort word = FetchImmediateWord();
-                            if (isDebug) LogInstructionExec($"0x31: LD HL, 0x{word:X4}");
-                            Registers.HL = word; break;
+                            Registers.RegisterSet[operatingRegister + 1] = Fetch();
+                            Registers.RegisterSet[operatingRegister] = Fetch();
+
+                            if (isDebug) LogInstructionExec($"0x{currentInstruction:X2}: LD DD, 0x{Registers.RegisterSet[operatingRegister]:X2}{Registers.RegisterSet[operatingRegister + 1]:X2}");
+                            break;
                         }
+                    // LD SP, nnnn
                     case 0x31:
                         {
                             ushort word = FetchImmediateWord();
+                            Registers.SP = word;
                             if (isDebug) LogInstructionExec($"0x31: LD SP, 0x{word:X4}");
-                            Registers.SP = word; break;
+                            break;
                         }
+
+                    // LD r, C
+                    case 0x41:
+                    case 0x51:
+                    case 0x61:
+                        break;
                 }
             }
+            Console.WriteLine(Registers.BC);
         }
 
         public virtual void Stop()
@@ -99,10 +101,11 @@ namespace Z80Sharp.Processor
 
             Registers.IFF1 = false;
             Registers.IFF2 = false;
+            Registers.InterruptMode = InterruptMode.IM0;
             Registers.PC = 0;
-            Registers.A = 0xFF;
+            Registers.RegisterSet[A] = 0xFF;
             Registers.SP = 0xFFFF;
-            Registers.F = 0xFF;
+            Registers.RegisterSet[F] = 0xFF;
 
             _memory.Write(0, 0x01);
             _memory.Write(1, 0xFF);
@@ -112,6 +115,7 @@ namespace Z80Sharp.Processor
 
             _logger.Log(LogSeverity.Info, "Processor reset");
         }
+
 
         #region Logging
         /// <summary>

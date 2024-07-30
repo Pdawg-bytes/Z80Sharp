@@ -8,122 +8,80 @@ using Z80Sharp.Enums;
 namespace Z80Sharp.Interfaces
 {
     /// <summary>
-    /// Defines the set of main data registers in the Zilog Z80.
+    /// Defines the Z80 register set.
     /// </summary>
     public interface IRegisterSet
     {
         /// <summary>
-        /// The Index X register
+        /// The raw set of registers. Represented by a <see cref="byte"/>[26].
         /// </summary>
-        public ushort IX { get; set; }
-
-        /// <summary>
-        /// The Index Y register
-        /// </summary>
-        public ushort IY { get; set; }
-
-        /// <summary>
-        /// The stack pointer register.
-        /// </summary>
-        public ushort SP { get; set; }
-
-        /// <summary>
-        /// The program counter register.
-        /// </summary>
-        public ushort PC { get; set; }
-
-        /// <summary>
-        /// 16-bit wide address register composed of 8-bit registers B and C.
-        /// </summary>
-        public ushort BC { get; set; }
-
-        /// <summary>
-        /// 16-bit wide address register composed of 8-bit registers D and E.
-        /// </summary>
-        public ushort DE { get; set; }
-
-        /// <summary>
-        /// 16-bit wide address register composed of 8-bit registers H and L.
-        /// </summary>
-        public ushort HL { get; set; }
-
-        /// <summary>
-        /// The interrupt vector register.
-        /// </summary>
-        public byte I { get; set; }
-
-        /// <summary>
-        /// The memory refresh register.
-        /// </summary>
-        public byte R { get; set; }
+        public byte[] RegisterSet { get; init; }
 
         /// <summary>
         /// Interrupt Flip-Flop 1 register.
         /// </summary>
         public bool IFF1 { get; set; }
-
         /// <summary>
         /// Interrupt Flip-Flop 2 register.
         /// </summary>
         public bool IFF2 { get; set; }
 
         /// <summary>
-        /// The A register. (8-bits wide)
+        /// The current interrupt mode of the processor.
         /// </summary>
-        public byte A { get; set; }
+        public InterruptMode InterruptMode { get; set; }
 
         /// <summary>
-        /// The B register. (8-bits wide)
+        /// 16-bit wide register composed of 8-bit registers B (high byte) and C (low byte).
         /// </summary>
-        public byte B { get; set; }
+        public ushort BC { get; set; }
+        /// <summary>
+        /// 16-bit wide register composed of 8-bit registers D (high byte) and E (low byte).
+        /// </summary>
+        public ushort DE { get; set; }
+        /// <summary>
+        /// 16-bit wide register composed of 8-bit registers H (high byte) and L (low byte).
+        /// </summary>
+        public ushort HL { get; set; }
+        /// <summary>
+        /// 16-bit wide register composed of 8-bit registers A (high byte) and F (low byte).
+        /// </summary>
+        public ushort AF { get; set; }
+
 
         /// <summary>
-        /// The C register. (8-bits wide)
+        /// Alternate 16-bit wide register composed of 8-bit registers B (high byte) and C (low byte).
         /// </summary>
-        public byte C { get; set; }
+        public ushort BC_ { get; set; }
+        /// <summary>
+        /// Alternate 16-bit wide register composed of 8-bit registers D (high byte) and E (low byte).
+        /// </summary>
+        public ushort DE_ { get; set; }
+        /// <summary>
+        /// Alternate 16-bit wide register composed of 8-bit registers H (high byte) and L (low byte).
+        /// </summary>
+        public ushort HL_ { get; set; }
+        /// <summary>
+        /// Alternate 16-bit wide register composed of 8-bit registers A (high byte) and F (low byte).
+        /// </summary>
+        public ushort AF_ { get; set; }
 
         /// <summary>
-        /// The D register. (8-bits wide)
+        /// The Stack Pointer register.
         /// </summary>
-        public byte D { get; set; }
+        public ushort SP { get; set; }
+        /// <summary>
+        /// The Program Counter register.
+        /// </summary>
+        public ushort PC { get; set; }
 
         /// <summary>
-        /// The E register. (8-bits wide)
+        /// The Index X register.
         /// </summary>
-        public byte E { get; set; }
-
+        public ushort IX { get; set; }
         /// <summary>
-        /// The status register of the Z80; 6 flags defined in <see cref="StatusRegisterFlag"/>
+        /// The Index Y register.
         /// </summary>
-        public byte F { get; set; }
-
-        /// <summary>
-        /// The H register. (8-bits wide)
-        /// </summary>
-        public byte H { get; set; }
-
-        /// <summary>
-        /// The L register. (8-bits wide)
-        /// </summary>
-        public byte L { get; set; }
-
-        /// <summary>
-        /// Sets a flag in the status register (F).
-        /// </summary>
-        /// <param name="flag">The flag that will be set to 1.</param>
-        public void SetFlag(StatusRegisterFlag flag);
-
-        /// <summary>
-        /// Clears a flag in the status register (F).
-        /// </summary>
-        /// <param name="flag">The flag that will be set to 0.</param>
-        public void ClearFlag(StatusRegisterFlag flag);
-
-        /// <summary>
-        /// Checks if a flag is set in the status register (F).
-        /// </summary>
-        /// <param name="flag">The flag to check</param>
-        /// <returns>Whether or not the flag is set.</returns>
-        public bool IsFlagSet(StatusRegisterFlag flag);
+        public ushort IY { get; set; }
     }
 }
