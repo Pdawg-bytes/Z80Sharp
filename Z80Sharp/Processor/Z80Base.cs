@@ -22,7 +22,23 @@ namespace Z80Sharp.Processor
 
         public IRegisterSet Registers { get; set; } = new ProcessorRegisters();
 
-        public bool Halted { get; set; }
+        private bool _halted;
+        public bool Halted 
+        {
+            get => _halted;
+            set
+            {
+                _halted = value;
+                if(value)
+                {
+                    _logger.Log(LogSeverity.Info, "Processor halted");
+                }
+                else
+                {
+                    _logger.Log(LogSeverity.Info, "Processor unhalted");
+                }
+            }
+        }
 
         public Z80Base(ushort memSize, IZ80Logger logger)
         {
@@ -94,18 +110,29 @@ namespace Z80Sharp.Processor
 
         public virtual void Reset()
         {
+            Halted = false;
+
+            // temp
             for (ushort i = 0; i < _memory.Length; i++)
             {
                 _memory.Write(i, 0x00);
             }
 
+            Registers.RegisterSet[A] = 0xFF;
+            Registers.RegisterSet[F] = 0xFF;
+            Registers.RegisterSet[A_] = 0xFF;
+            Registers.RegisterSet[F_] = 0xFF;
+
+            Registers.RegisterSet[I] = 0x00;
+
+            Registers.PC = 0;
+            Registers.SP = 0xFFFF;
+
+            Registers.InterruptMode = InterruptMode.IM0;
+
             Registers.IFF1 = false;
             Registers.IFF2 = false;
-            Registers.InterruptMode = InterruptMode.IM0;
-            Registers.PC = 0;
-            Registers.RegisterSet[A] = 0xFF;
-            Registers.SP = 0xFFFF;
-            Registers.RegisterSet[F] = 0xFF;
+
 
             _memory.Write(0, 0x01);
             _memory.Write(1, 0xFF);

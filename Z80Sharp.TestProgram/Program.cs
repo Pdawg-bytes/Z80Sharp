@@ -19,15 +19,6 @@ namespace Z80Sharp
         {
             logger.LogGenerated += Logger_LogGenerated;
 
-            logger.Log(LogSeverity.Debug, "Debug");
-            logger.Log(LogSeverity.Info, "Information");
-            logger.Log(LogSeverity.Memory, "Memory");
-            logger.Log(LogSeverity.Interrupt, "Interrupt");
-            logger.Log(LogSeverity.Decode, "Processor decode");
-            logger.Log(LogSeverity.Execution, "Processor execute");
-            logger.Log(LogSeverity.Warning, "Warning");
-            logger.Log(LogSeverity.Fatal, "Fatal");
-
             z80.Reset();
             Thread processorThread = new(() => z80.Run());
             processorThread.Start();
