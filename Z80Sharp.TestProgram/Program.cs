@@ -13,7 +13,7 @@ namespace Z80Sharp
     {
         private static bool quitRequested = false;
         private static IZ80Logger logger = new Logger(useColors: true);
-        private static IProcessor z80 = new DebugZ80(5, logger);
+        private static IProcessor z80 = new Z80(5, logger, true);
 
         public static void Main(string[] args)
         {

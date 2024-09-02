@@ -9,7 +9,7 @@ namespace Z80Sharp.Enums
     /// <summary>
     /// Represents the interrupt modes available on the Z80 microprocessor.
     /// </summary>
-    public enum InterruptMode : int
+    public enum InterruptMode : byte
     {
         /// <summary>
         /// Interrupt Mode 0 (IM 0): In this mode, the Z80 expects the interrupting device to provide an instruction on the data bus when an interrupt occurs.
