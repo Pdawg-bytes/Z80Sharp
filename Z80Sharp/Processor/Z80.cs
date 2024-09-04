@@ -6,7 +6,7 @@ using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public class Z80 : IProcessor
+    public partial class Z80 : IProcessor
     {
         protected MainMemory _memory;
         protected readonly IZ80Logger _logger;
@@ -35,6 +35,8 @@ namespace Z80Sharp.Processor
 
         public Z80(ushort memSize, IZ80Logger logger, bool isDebug)
         {
+            InitializeInstructionHandlers();
+
             _memory = new MainMemory(memSize);
             _logger = logger;
             IsDebug = isDebug;
@@ -45,50 +47,20 @@ namespace Z80Sharp.Processor
             while (Registers.PC < _memory.Length)
             {
                 byte currentInstruction = Fetch();
-                byte operatingRegister = (byte)((currentInstruction >> 3) & 0x07);
+
                 switch (currentInstruction)
                 {
-                    // NOP
-                    case 0x00:
-                        break;
-
-                    // Special instructions
                     case 0xDD:
-                        ParseIXInstruction();
-                        break;
+                        DDInstructionTable[currentInstruction](); break;
                     case 0xFD:
-                        ParseIYInstruction();
-                        break;
+                        FDInstructionTable[currentInstruction](); break;
                     case 0xED:
-                        ParseMiscInstruction();
-                        break;
+                        EDInstructionTable[currentInstruction](); break;
                     case 0xCB:
-                        ParseBitInstruction();
-                        break;
+                        CBInstructionTable[currentInstruction](); break;
 
-                    // LD dd, nnnn
-                    case 0x01:
-                    case 0x11:
-                    case 0x21:
-                        {
-                            Registers.RegisterSet[operatingRegister + 1] = Fetch();
-                            Registers.RegisterSet[operatingRegister] = Fetch();
-
-                            break;
-                        }
-                    // LD SP, nnnn
-                    case 0x31:
-                        {
-                            ushort word = FetchImmediateWord();
-                            Registers.SP = word;
-                            break;
-                        }
-
-                    // LD r, C
-                    case 0x41:
-                    case 0x51:
-                    case 0x61:
-                        break;
+                    default:
+                        instructionTable[currentInstruction](); break;
                 }
             }
         }
@@ -127,64 +99,29 @@ namespace Z80Sharp.Processor
             _memory.Write(0, 0x01);
             _memory.Write(1, 0xFF);
             _memory.Write(2, 0xEF);
-            _memory.Write(3, 0xCE);
+            _memory.Write(3, 0x00);
             _memory.Write(4, 0x00);
 
             _logger.Log(LogSeverity.Info, "Processor reset");
         }
 
-        #region Instructions
+        #region Logging
         /// <summary>
-        /// Parses instructions with the 0xCB prefix.
+        /// Logs a the decode operation of a given instruction.
         /// </summary>
-        /// <remarks>Also used as loopback for xDD\xCB; xFD\xCB.</remarks>
-        /// <param name="addressingMode">The addressing mode that the bit instruction is handling.</param>
-        public void ParseBitInstruction(AddressingMode addressingMode = AddressingMode.Regular)
+        /// <param name="instruction">The data of the instruction.</param>
+        protected void LogInstructionDecode(string instruction)
         {
-            sbyte displacement = 0;
-            if (addressingMode != AddressingMode.Regular) displacement = (sbyte)Fetch();
-
-            byte instruction = Fetch();
+            _logger.Log(LogSeverity.Decode, instruction);
         }
 
         /// <summary>
-        /// Parses instructions with the 0xDD prefix, relating to the Index X register.
+        /// Logs a the execution operation of a given instruction.
         /// </summary>
-        public void ParseIXInstruction()
+        /// <param name="instruction">The data of the instruction.</param>
+        protected void LogInstructionExec(string instruction)
         {
-            byte currentInstruction = Fetch();
-            switch (currentInstruction)
-            {
-                case 0xCB:
-                    ParseBitInstruction(AddressingMode.IndexX);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Parses instructions with the 0xFD prefix, relating to the Index Y Register.
-        /// </summary>
-        public void ParseIYInstruction()
-        {
-            byte currentInstruction = Fetch();
-            switch (currentInstruction)
-            {
-                case 0xCB:
-                    ParseBitInstruction(AddressingMode.IndexY);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Parses instructions with the 0xED prefix, all miscellaneous instructions.
-        /// </summary>
-        public void ParseMiscInstruction()
-        {
-            byte currentInstruction = Fetch();
-            switch (currentInstruction)
-            {
-
-            }
+            _logger.Log(LogSeverity.Execution, instruction);
         }
         #endregion
 
