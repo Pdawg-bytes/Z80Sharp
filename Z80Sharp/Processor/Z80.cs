@@ -95,11 +95,11 @@ namespace Z80Sharp.Processor
             Registers.IFF1 = false;
             Registers.IFF2 = false;
 
-
-            _memory.Write(0, 0x01);
-            _memory.Write(1, 0xFF);
-            _memory.Write(2, 0xEF);
-            _memory.Write(3, 0x00);
+            // temp
+            _memory.Write(0, 0x21);
+            _memory.Write(1, 0x03);
+            _memory.Write(2, 0x00);
+            _memory.Write(3, 0x46);
             _memory.Write(4, 0x00);
 
             _logger.Log(LogSeverity.Info, "Processor reset");
@@ -128,7 +128,7 @@ namespace Z80Sharp.Processor
 
         #region Fetch Operations
         /// <summary>
-        /// Reads current byte at the <see cref="IRegisterSet.PC"/>.
+        /// Reads current byte at the <see cref="IRegisterSet.PC"/> then increments PC.
         /// </summary>
         /// <returns>The value at the address.</returns>
         private byte Fetch()

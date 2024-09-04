@@ -46,6 +46,17 @@ namespace Z80Sharp.Processor
             instructionTable[0x11] = LD_DE_NN;
             instructionTable[0x21] = LD_HL_NN;
             instructionTable[0x31] = LD_SP_NN;
+
+            instructionTable[0x06] = LD_B_N;
+            instructionTable[0x16] = LD_D_N;
+            instructionTable[0x26] = LD_H_N;
+            instructionTable[0x0E] = LD_C_N;
+            instructionTable[0x1E] = LD_E_N;
+            instructionTable[0x2E] = LD_L_N;
+            instructionTable[0x3E] = LD_A_N;
+
+            instructionTable[0x36] = LD_HLMEM_N;
+            instructionTable[0x46] = LD_B_HLMEM;
         }
     }
 }
