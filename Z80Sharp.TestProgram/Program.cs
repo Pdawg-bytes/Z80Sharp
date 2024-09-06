@@ -13,7 +13,7 @@ namespace Z80Sharp
     {
         private static bool quitRequested = false;
         private static IZ80Logger logger = new Logger(useColors: true);
-        private static IProcessor z80 = new Z80(5, logger, true);
+        private static Z80 z80 = new Z80(5, logger, true);
 
         public static void Main(string[] args)
         {
@@ -58,7 +58,7 @@ namespace Z80Sharp
             }
         }
 
-        public static void PrintProcessorState(IRegisterSet registers)
+        public static void PrintProcessorState(ProcessorRegisters registers)
         {
             Console.WriteLine($"\n{Colors.LIGHT_BLUE}General-purpose registers{Colors.ANSI_RESET}");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}B:{Colors.ANSI_RESET} 0x{registers.RegisterSet[B].ToString("X").PadLeft(2, '0')}    {Colors.LIGHT_YELLOW}C:{Colors.ANSI_RESET} 0x{registers.RegisterSet[C].ToString("X").PadLeft(2, '0')}");

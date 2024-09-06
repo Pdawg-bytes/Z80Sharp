@@ -2,7 +2,7 @@
 
 namespace Z80Sharp.Registers
 {
-    public partial struct ProcessorRegisters : IRegisterSet
+    public partial struct ProcessorRegisters /*: IRegisterSet*/
     {
         #region Register pairs
         /// <summary>

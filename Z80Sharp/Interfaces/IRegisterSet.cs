@@ -20,6 +20,13 @@ namespace Z80Sharp.Interfaces
         public string RegisterName(byte operatingRegister, bool highBits = false);
 
         /// <summary>
+        /// Gets the corresponding 16-bit pair value given the High indexer.
+        /// </summary>
+        /// <param name="indexer">The High indexer of the pair. E.G: GetR16FromHighIndexer(H) returns HL.</param>
+        /// <returns>The value of the register pair.</returns>
+        public ushort GetR16FromHighIndexer(byte indexer);
+
+        /// <summary>
         /// The raw set of registers. Represented by a <see cref="byte"/>[26].
         /// </summary>
         public byte[] RegisterSet { get; init; }

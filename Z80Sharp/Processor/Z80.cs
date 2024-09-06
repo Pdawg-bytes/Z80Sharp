@@ -6,7 +6,7 @@ using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80 : IProcessor
+    public partial class Z80 /*: IProcessor*/
     {
         private MainMemory _memory;
         private readonly IZ80Logger _logger;
@@ -15,7 +15,7 @@ namespace Z80Sharp.Processor
 
         private byte _currentInstruction;
 
-        public IRegisterSet Registers { get; set; } = new ProcessorRegisters();
+        public ProcessorRegisters Registers = new ProcessorRegisters();
 
         private bool _halted;
         public bool Halted 
@@ -65,6 +65,10 @@ namespace Z80Sharp.Processor
                         instructionTable[_currentInstruction](); break;
                 }
             }
+            for (ushort i = 0; i < _memory.Length; i++)
+            {
+                Console.WriteLine("0x"+_memory.Read(i).ToString("X2"));
+            }
         }
 
         public void Stop()
@@ -101,7 +105,7 @@ namespace Z80Sharp.Processor
             _memory.Write(0, 0x21);
             _memory.Write(1, 0x03);
             _memory.Write(2, 0x00);
-            _memory.Write(3, 0x46);
+            _memory.Write(3, 0x77);
             _memory.Write(4, 0x00);
 
             _logger.Log(LogSeverity.Info, "Processor reset");

@@ -1,10 +1,11 @@
+using System.Runtime.CompilerServices;
 using Z80Sharp.Enums;
 using Z80Sharp.Helpers;
 using Z80Sharp.Interfaces;
 
 namespace Z80Sharp.Registers
 {
-    public partial struct ProcessorRegisters : IRegisterSet
+    public partial struct ProcessorRegisters /*: IRegisterSet */
     {
         public ProcessorRegisters()
         {
@@ -42,12 +43,16 @@ namespace Z80Sharp.Registers
             return highBits ? "UNKNOWN 16BIT REGISTER/PAIR" : "UNKNOWN REGISTER";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ushort GetR16FromHighIndexer(byte indexer) => (ushort)(RegisterSet[indexer] << 8 | RegisterSet[indexer + 1]);
+
         public byte[] RegisterSet { get; init; }
 
         public bool IFF1 { get; set; }
         public bool IFF2 { get; set; }
 
         public InterruptMode InterruptMode { get; set; }
+
 
         #region Main register indexers
         /// <summary>

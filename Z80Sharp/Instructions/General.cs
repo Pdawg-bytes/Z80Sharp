@@ -41,12 +41,25 @@ namespace Z80Sharp.Processor
         }
 
 
+        private void LD_RRMEM_A(byte operatingRegister)
+        {
+            _memory.Write(Registers.GetR16FromHighIndexer(operatingRegister), Registers.RegisterSet[A]);
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD ({Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X2}), A:0xx{Registers.RegisterSet[A]:X2}");
+        }
+        private void LD_NNMEM_A()
+        {
+            ushort word = FetchImmediateWord();
+            _memory.Write(word, Registers.RegisterSet[A]);
+            LogInstructionExec($"0x32: LD (NN:0x{word:X2}), A:0x{Registers.RegisterSet[A]:X2}");
+        }
+
         private void LD_HLMEM_N()
         {
             byte n = Fetch();
             _memory.Write(Registers.HL, n);
             LogInstructionExec($"0x36: LD (HL:0x{Registers.HL:X4}), 0x{n:X2}");
         }
+        
         private void LD_B_HLMEM()
         {
             byte val = _memory.Read(Registers.HL);
