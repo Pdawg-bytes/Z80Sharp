@@ -8,10 +8,12 @@ namespace Z80Sharp.Processor
 {
     public partial class Z80 : IProcessor
     {
-        protected MainMemory _memory;
-        protected readonly IZ80Logger _logger;
+        private MainMemory _memory;
+        private readonly IZ80Logger _logger;
 
         public bool IsDebug { get; init; }
+
+        private byte _currentInstruction;
 
         public IRegisterSet Registers { get; set; } = new ProcessorRegisters();
 
@@ -46,21 +48,21 @@ namespace Z80Sharp.Processor
         {
             while (Registers.PC < _memory.Length)
             {
-                byte currentInstruction = Fetch();
+                _currentInstruction = Fetch();
 
-                switch (currentInstruction)
+                switch (_currentInstruction)
                 {
                     case 0xDD:
-                        DDInstructionTable[currentInstruction](); break;
+                        DDInstructionTable[_currentInstruction](); break;
                     case 0xFD:
-                        FDInstructionTable[currentInstruction](); break;
+                        FDInstructionTable[_currentInstruction](); break;
                     case 0xED:
-                        EDInstructionTable[currentInstruction](); break;
+                        EDInstructionTable[_currentInstruction](); break;
                     case 0xCB:
-                        CBInstructionTable[currentInstruction](); break;
+                        CBInstructionTable[_currentInstruction](); break;
 
                     default:
-                        instructionTable[currentInstruction](); break;
+                        instructionTable[_currentInstruction](); break;
                 }
             }
         }

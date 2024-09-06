@@ -47,7 +47,7 @@ namespace Z80Sharp
                         Console.Write($"\n{Colors.CYAN}{Colors.ANSI_BOLD}==========Help=========={Colors.ANSI_RESET}\n{Colors.WHITE}{Colors.ANSI_ITALIC}Commands:{Colors.ANSI_RESET}\n{Colors.LIGHT_YELLOW}> h{Colors.ANSI_RESET} - prints this help text.\n{Colors.LIGHT_YELLOW}> d{Colors.ANSI_RESET} - dumps the processor state.\n{Colors.LIGHT_YELLOW}> q{Colors.ANSI_RESET} - quits the emulator and console.");
                         break;
                     case 'd':
-                        Console.Write($"\n{Colors.ANSI_BOLD}{Colors.GREEN}=====Processor state===={Colors.ANSI_RESET}");
+                        Console.Write($"\n{Colors.ANSI_BOLD}{Colors.GREEN}=====Processor state====={Colors.ANSI_RESET}");
                         PrintProcessorState(z80.Registers);
                         break;
                     default:

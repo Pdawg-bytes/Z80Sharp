@@ -13,6 +13,13 @@ namespace Z80Sharp.Interfaces
     public interface IRegisterSet
     {
         /// <summary>
+        /// Gives the name of a register given its indexer.
+        /// </summary>
+        /// <param name="operatingRegister">The register indexer</param>
+        /// <param name="highBits">Whether or not a 16-bit register is being referenced</param>
+        public string RegisterName(byte operatingRegister, bool highBits = false);
+
+        /// <summary>
         /// The raw set of registers. Represented by a <see cref="byte"/>[26].
         /// </summary>
         public byte[] RegisterSet { get; init; }
@@ -50,19 +57,19 @@ namespace Z80Sharp.Interfaces
 
 
         /// <summary>
-        /// Alternate 16-bit wide register composed of 8-bit registers B (high byte) and C (low byte).
+        /// Alternate 16-bit wide register composed of 8-bit registers B' (high byte) and C' (low byte).
         /// </summary>
         public ushort BC_ { get; set; }
         /// <summary>
-        /// Alternate 16-bit wide register composed of 8-bit registers D (high byte) and E (low byte).
+        /// Alternate 16-bit wide register composed of 8-bit registers D' (high byte) and E' (low byte).
         /// </summary>
         public ushort DE_ { get; set; }
         /// <summary>
-        /// Alternate 16-bit wide register composed of 8-bit registers H (high byte) and L (low byte).
+        /// Alternate 16-bit wide register composed of 8-bit registers H' (high byte) and L' (low byte).
         /// </summary>
         public ushort HL_ { get; set; }
         /// <summary>
-        /// Alternate 16-bit wide register composed of 8-bit registers A (high byte) and F (low byte).
+        /// Alternate 16-bit wide register composed of 8-bit registers A' (high byte) and F' (low byte).
         /// </summary>
         public ushort AF_ { get; set; }
 

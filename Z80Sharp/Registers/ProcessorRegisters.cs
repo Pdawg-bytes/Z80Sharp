@@ -11,6 +11,37 @@ namespace Z80Sharp.Registers
             RegisterSet = new byte[26];
         }
 
+        private static readonly Dictionary<byte, string> _highBitRegisterPairs = new()
+        {
+            { A, "AF" }, { F, "AF" }, { A_, "AF'" }, { F_, "AF'" },
+            { B, "BC" }, { C, "BC" }, { B_, "BC'" }, { C_, "BC'" },
+            { D, "DE" }, { E, "DE" }, { D_, "DE'" }, { E_, "DE'" },
+            { H, "HL" }, { L, "HL" }, { H_, "HL'" }, { L_, "HL'" },
+            { IXi, "IX" }, { IYi, "IY" }, { SPi, "SP" }, { PCi, "PC" }
+        };
+
+        private static readonly Dictionary<byte, string> _lowBitRegisters = new()
+        {
+            { A, "A" }, { F, "F" }, { A_, "A'" }, { F_, "F'" },
+            { B, "B" }, { C, "C" }, { B_, "B'" }, { C_, "C'" },
+            { D, "D" }, { E, "E" }, { D_, "D'" }, { E_, "E'" },
+            { H, "H" }, { L, "L" }, { H_, "H'" }, { L_, "L'" },
+            { I, "I" }, { R, "R" }
+        };
+
+        public string RegisterName(byte operatingRegister, bool highBits = false)
+        {
+            if (highBits && _highBitRegisterPairs.TryGetValue(operatingRegister, out var registerName))
+            {
+                return registerName;
+            }
+            if (!highBits && _lowBitRegisters.TryGetValue(operatingRegister, out registerName))
+            {
+                return registerName;
+            }
+            return highBits ? "UNKNOWN 16BIT REGISTER/PAIR" : "UNKNOWN REGISTER";
+        }
+
         public byte[] RegisterSet { get; init; }
 
         public bool IFF1 { get; set; }
@@ -141,7 +172,7 @@ namespace Z80Sharp.Registers
         /// <remarks>
         /// This register is 16-bit only, therefore, it is 2 bytes wide.
         /// </remarks>
-        public byte SPi = 22;
+        public const byte SPi = 22;
         /// <summary>
         /// The program counter register indexer.
         /// </summary>
