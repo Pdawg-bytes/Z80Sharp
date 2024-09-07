@@ -24,6 +24,13 @@ namespace Z80Sharp.Processor
             LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(operatingRegister, true)}, 0x{Registers.RegisterSet[operatingRegister]:X2}{Registers.RegisterSet[operatingRegister + 1]:X2}");
             // wait states
         }
+        private void LD_RR_NNMEM(byte operatingRegister)
+        {
+            ushort addr = FetchImmediateWord();
+            Registers.RegisterSet[operatingRegister + 1] = _memory.Read(addr++);
+            Registers.RegisterSet[operatingRegister] = _memory.Read(addr);
+            LogInstructionExec($"0x{_currentInstruction}: LD {Registers.RegisterName(operatingRegister, true)}, (NN:0x{addr:X4}");
+        }
         private void LD_SP_NN()
         {
             ushort word = FetchImmediateWord();
@@ -32,25 +39,48 @@ namespace Z80Sharp.Processor
             // wait states
         }
 
+        private void LD_NNMEM_RR(byte operatingRegister)
+        {
+            ushort addr = FetchImmediateWord();
+            _memory.Write(addr++, Registers.RegisterSet[operatingRegister + 1]);
+            _memory.Write(addr, Registers.RegisterSet[operatingRegister]);
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD (0x{--addr:X4}), {Registers.RegisterName(operatingRegister, true)}");
+        }
+
 
         private void LD_R_N(byte operatingRegister)
         {
-            byte n = Fetch();
-            Registers.RegisterSet[operatingRegister] = n;
+            Registers.RegisterSet[operatingRegister] = Fetch();
             LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(operatingRegister)}, 0x{Registers.RegisterSet[operatingRegister]:X2}");
         }
-
-
-        private void LD_RRMEM_A(byte operatingRegister)
+        private void LD_R_R(byte dest, byte source)
         {
-            _memory.Write(Registers.GetR16FromHighIndexer(operatingRegister), Registers.RegisterSet[A]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD ({Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X2}), A:0xx{Registers.RegisterSet[A]:X2}");
+            Registers.RegisterSet[dest] = Registers.RegisterSet[source];
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(dest)}, {Registers.RegisterName(source)}:0x{Registers.RegisterSet[source]:X2}");
         }
-        private void LD_NNMEM_A()
+
+        private void LD_RRMEM_R(byte dest, byte source)
+        {
+            _memory.Write(Registers.GetR16FromHighIndexer(dest), Registers.RegisterSet[source]);
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD ({Registers.RegisterName(dest, true)}:0x{Registers.GetR16FromHighIndexer(dest):X2}), {Registers.RegisterName(source)}:0x{Registers.RegisterSet[source]:X2}");
+        }
+        private void LD_R_RRMEM(byte dest, byte source)
+        {
+            byte val = _memory.Read(Registers.GetR16FromHighIndexer(source));
+            Registers.RegisterSet[dest] = val;
+            LogInstructionExec($"0x{_currentInstruction}: LD {Registers.RegisterName(dest)}, ({Registers.RegisterName(source, true)}:0x{Registers.HL:X4}):0x{val:X2}");
+        }
+        private void LD_NNMEM_R(byte operatingRegister)
         {
             ushort word = FetchImmediateWord();
-            _memory.Write(word, Registers.RegisterSet[A]);
-            LogInstructionExec($"0x32: LD (NN:0x{word:X2}), A:0x{Registers.RegisterSet[A]:X2}");
+            _memory.Write(word, Registers.RegisterSet[operatingRegister]);
+            LogInstructionExec($"0x32: LD (NN:0x{word:X2}), {Registers.RegisterName(operatingRegister)}:0x{Registers.RegisterSet[operatingRegister]:X2}");
+        }
+        private void LD_R_NNMEM(byte operatingRegister)
+        {
+            ushort addr = FetchImmediateWord();
+            Registers.RegisterSet[operatingRegister] = _memory.Read(addr);
+            LogInstructionExec($"0x{_currentInstruction}: LD {Registers.RegisterName(operatingRegister)}, (NN:0x{addr:X4})");
         }
 
         private void LD_HLMEM_N()
@@ -58,13 +88,6 @@ namespace Z80Sharp.Processor
             byte n = Fetch();
             _memory.Write(Registers.HL, n);
             LogInstructionExec($"0x36: LD (HL:0x{Registers.HL:X4}), 0x{n:X2}");
-        }
-        
-        private void LD_B_HLMEM()
-        {
-            byte val = _memory.Read(Registers.HL);
-            Registers.RegisterSet[B] = val;
-            LogInstructionExec($"0x46: LD B, (HL:0x{Registers.HL:X4}):0x{val:X2}");
         }
     }
 }

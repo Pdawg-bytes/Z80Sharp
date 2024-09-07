@@ -108,6 +108,12 @@ namespace Z80Sharp.Processor
             _memory.Write(3, 0x77);
             _memory.Write(4, 0x00);
 
+            /*_memory.Write(0, 0x3E);
+            _memory.Write(1, 0xFF);
+            _memory.Write(2, 0x47);
+            _memory.Write(3, 0x00);
+            _memory.Write(4, 0x00);*/
+
             _logger.Log(LogSeverity.Info, "Processor reset");
         }
 
