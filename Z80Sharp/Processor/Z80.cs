@@ -62,7 +62,8 @@ namespace Z80Sharp.Processor
                         CBInstructionTable[_currentInstruction](); break;
 
                     default:
-                        instructionTable[_currentInstruction](); break;
+                        //instructionTable[_currentInstruction](); break;
+                        ExecuteMainInstruction(); break;
                 }
             }
             for (ushort i = 0; i < _memory.Length; i++)
