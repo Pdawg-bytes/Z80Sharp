@@ -53,16 +53,15 @@ namespace Z80Sharp.Processor
                 switch (_currentInstruction)
                 {
                     case 0xDD:
-                        DDInstructionTable[_currentInstruction](); break;
+                        ExecuteIndexXInstruction(); break;
                     case 0xFD:
-                        FDInstructionTable[_currentInstruction](); break;
+                        ExecuteIndexYInstruction(); break;
                     case 0xED:
-                        EDInstructionTable[_currentInstruction](); break;
+                        ExecuteMiscInstruction(); break;
                     case 0xCB:
-                        CBInstructionTable[_currentInstruction](); break;
+                        ExecuteBitInstruction(); break;
 
                     default:
-                        //instructionTable[_currentInstruction](); break;
                         ExecuteMainInstruction(); break;
                 }
             }
@@ -141,14 +140,25 @@ namespace Z80Sharp.Processor
 
         #region Fetch Operations
         /// <summary>
-        /// Reads current byte at the <see cref="IRegisterSet.PC"/> then increments PC.
+        /// Reads current byte at the <see cref="ProcessorRegisters.PC"/> then increments PC.
         /// </summary>
         /// <returns>The value at the address.</returns>
         private byte Fetch()
         {
             byte val = _memory.Read(Registers.PC);
-            _logger.Log(Enums.LogSeverity.Memory, $"READ at 0x{Registers.PC.ToString("X")} -> 0x{val.ToString("X")}");
+            _logger.Log(LogSeverity.Memory, $"READ at 0x{Registers.PC.ToString("X")} -> 0x{val.ToString("X")}");
             Registers.PC++;
+            return val;
+        }
+
+        /// <summary>
+        /// Reads the last byte fetched at --<see cref="ProcessorRegisters.PC"/>.
+        /// </summary>
+        /// <returns>The byte before the current PC.</returns>
+        private byte FetchLast()
+        {
+            byte val = _memory.Read(--Registers.PC);
+            _logger.Log(LogSeverity.Memory, $"READ at 0x{(--Registers.PC).ToString("X")} -> 0x{val:X2}");
             return val;
         }
 
