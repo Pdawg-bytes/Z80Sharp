@@ -37,8 +37,6 @@ namespace Z80Sharp.Processor
 
         public Z80(ushort memSize, IZ80Logger logger, bool isDebug)
         {
-            InitializeInstructionHandlers();
-
             _memory = new MainMemory(memSize);
             _logger = logger;
             IsDebug = isDebug;
@@ -166,10 +164,7 @@ namespace Z80Sharp.Processor
         /// Fetches the value at the <see cref="IRegisterSet.PC", and the value at the next address ahead to create a word./>
         /// </summary>
         /// <returns>The word (<see cref="ushort")./></returns>
-        private ushort FetchImmediateWord()
-        {
-            return (ushort)(Fetch() | (Fetch() << 8));
-        }
+        private ushort FetchImmediateWord() => (ushort)(Fetch() | (Fetch() << 8));
         #endregion
     }
 }

@@ -52,6 +52,12 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[operatingRegister] = Fetch();
             LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(operatingRegister)}, 0x{Registers.RegisterSet[operatingRegister]:X2}");
         }
+        private void LD_RR_RR(byte dest, byte source)
+        {
+            Registers.RegisterSet[dest + 1] = Registers.RegisterSet[source + 1];
+            Registers.RegisterSet[dest] = Registers.RegisterSet[source];
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(dest, true)}:{Registers.GetR16FromHighIndexer(dest)}, {Registers.RegisterName(source, true)}:{Registers.GetR16FromHighIndexer(source)}");
+        }
 
         // Load from memory to register or register to memory
         private void LD_R_RRMEM(byte dest, byte source)

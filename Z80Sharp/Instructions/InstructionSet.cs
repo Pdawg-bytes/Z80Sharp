@@ -25,6 +25,9 @@ namespace Z80Sharp.Processor
                 case 0x21: LD_RR_NN(H); break;  // LD HL, NN
                 case 0x31: LD_SP_NN(); break;   // LD SP, NN
 
+                // LD instructions: Load values between 16-bit register pairs
+                case 0xF9: LD_RR_RR(SPi, H); break; // LD SP, HL
+
                 // LD instructions: Load immediate 8-bit values into registers
                 case 0x06: LD_R_N(B); break;    // LD B, N
                 case 0x0E: LD_R_N(C); break;    // LD C, N
@@ -120,7 +123,9 @@ namespace Z80Sharp.Processor
                 case 0x75: LD_RRMEM_R(H, L); break;  // LD (HL), L
                 case 0x77: LD_RRMEM_R(H, A); break;  // LD (HL), A
 
-                case 0xC3: JP_NN(); break; // JP NN
+                // JP and JR instructions: Jump to absolute or relative address
+                case 0x10: DJNZ_D(); break; // DJNZ D
+                case 0xC3: JP_NN(); break;  // JP NN
                 case 0xE9: JP_RR(H); break; // JP (HL)
                 case 0xC2: JP_NN_C(0b000); break; // JP NZ, NN
                 case 0xCA: JP_NN_C(0b001); break; // JP Z, NN
@@ -137,13 +142,57 @@ namespace Z80Sharp.Processor
                 case 0x30: JR_CC_D(0b010); break; // JR NC, D
                 case 0x38: JR_CC_D(0b011); break; // JR C, D
 
+                // RET instructions: return 
+                case 0xC9: RET(); break; // RET
+                case 0xC0: RET_CC(0b000); break; // RET NZ
+                case 0xC8: RET_CC(0b001); break; // RET Z
+                case 0xD0: RET_CC(0b010); break; // RET NC
+                case 0xD8: RET_CC(0b011); break; // RET C
+                case 0xE0: RET_CC(0b100); break; // RET PO
+                case 0xE8: RET_CC(0b101); break; // RET PE
+                case 0xF0: RET_CC(0b110); break; // RET P
+                case 0xF8: RET_CC(0b111); break; // RET M
+
+                // POP instructions: pop value at SP into RR and inc. SP
+                case 0xC1: POP_RR(B); break; // POP BC
+                case 0xD1: POP_RR(D); break; // POP DE
+                case 0xE1: POP_RR(H); break; // POP HL
+                case 0xF1: POP_AF(); break;  // POP AF
+
+                // PUSH instructions: push value in RR on to stack and dec. SP
+                case 0xC5: PUSH_RR(B); break; // PUSH BC
+                case 0xD5: PUSH_RR(D); break; // PUSH DE
+                case 0xE5: PUSH_RR(H); break; // PUSH HL
+                case 0xF5: PUSH_AF(); break;  // PUSH AF
+
+                // RST instructions: restart to 0xXX
+                case 0xC7: RST_HH(0x00); break; // RST 00h
+                case 0xD7: RST_HH(0x10); break; // RST 10h
+                case 0xE7: RST_HH(0x20); break; // RST 20h
+                case 0xF7: RST_HH(0x30); break; // RST 30h
+                case 0xCF: RST_HH(0x08); break; // RST 08h
+                case 0xDF: RST_HH(0x18); break; // RST 18h
+                case 0xEF: RST_HH(0x28); break; // RST 28h
+                case 0xFF: RST_HH(0x38); break; // RST 38h
+
+                // CALL instructions: push current PC to stack and jump to immediate
+                case 0xCD: CALL_NN(); break; // CALL NN
+                case 0xC4: CALL_CC_NN(0b000); break; // CALL NZ, NN
+                case 0xCC: CALL_CC_NN(0b001); break; // CALL Z, NN
+                case 0xD4: CALL_CC_NN(0b010); break; // CALL NC, NN
+                case 0xDC: CALL_CC_NN(0b011); break; // CALL C, NN
+                case 0xE4: CALL_CC_NN(0b100); break; // CALL PO, NN
+                case 0xEC: CALL_CC_NN(0b101); break; // CALL PE, NN
+                case 0xF4: CALL_CC_NN(0b110); break; // CALL P, NN
+                case 0xFC: CALL_CC_NN(0b111); break; // CALL M, NN
+
                 case 0xF3: DI(); break; // Disable Interrupts
                 case 0xFB: EI(); break; // Enable Interrupts
 
                 default:
                     _logger.Log(Enums.LogSeverity.Fatal, $"Unrecognized MAIN opcode: 0x{_currentInstruction:X2}");
                     Halted = true;
-                    throw new InvalidOperationException($"Unrecognized MAIN opcode: 0x{_currentInstruction:X2}");
+                    break;
             }
         }
 
