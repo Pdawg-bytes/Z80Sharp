@@ -55,6 +55,7 @@ namespace Z80Sharp.Registers
         /// <param name="condition">The condition being used in the jump operation.</param>
         /// <remarks>https://www.zilog.com/docs/z80/um0080.pdf page 277 details the names and values of each condition.</remarks>
         /// <returns>The name of the <paramref name="condition"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string JumpConditionName(byte condition) => condition switch
         {
             0b000 => "NZ",
@@ -71,7 +72,8 @@ namespace Z80Sharp.Registers
         /// Checks if any of a flag is set for use in a jump condition.
         /// </summary>
         /// <param name="condition">The flag condition.</param>
-        /// <returns>True if the flag condition mathes the expected value; false if otherwise.</returns>
+        /// <returns>True if the flag condition matches the expected value; false if otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool EvaluateJumpFlagCondition(byte condition)
         {
             switch (condition & 0xFE) // Mask out LSB to handle paired conditions.
@@ -87,7 +89,7 @@ namespace Z80Sharp.Registers
                 case 0x06:
                     return IsFlagSet(StatusRegisterFlag.SignFlag) == ((condition & 1) == 1);
                 default:
-                    return false; // Invalid condition
+                    return false;
             }
         }
 
@@ -242,21 +244,18 @@ namespace Z80Sharp.Registers
 
 
         #region Flags register operations
-        public void SetFlag(StatusRegisterFlag flag, bool prime = false)
+        public void SetFlag(StatusRegisterFlag flag)
         {
-            if (prime) RegisterSet[F_] |= (byte)flag;
             RegisterSet[F] |= (byte)flag;
         }
 
-        public void ClearFlag(StatusRegisterFlag flag, bool prime = false)
+        public void ClearFlag(StatusRegisterFlag flag)
         {
-            if (prime) { RegisterSet[F_] &= (byte)~flag; }
             RegisterSet[F] &= (byte)~flag;
         }
 
-        public bool IsFlagSet(StatusRegisterFlag flag, bool prime = false)
+        public bool IsFlagSet(StatusRegisterFlag flag)
         {
-            if (prime) { return (RegisterSet[F_] & (byte)flag) == (byte)flag; }
             return (RegisterSet[F] & (byte)flag) == (byte)flag;
         }
         #endregion

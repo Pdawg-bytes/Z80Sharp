@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Z80Sharp.Enums;
+using Z80Sharp.Helpers;
 using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
@@ -14,8 +15,8 @@ namespace Z80Sharp.Processor
         private void JP_NN()
         {
             ushort jumpTo = FetchImmediateWord();
-            Registers.RegisterSet[PCi] = (byte)(jumpTo >> 8);
-            Registers.RegisterSet[PCi + 1] = (byte)jumpTo;
+            Registers.RegisterSet[PCi] = jumpTo.GetUpperByte();
+            Registers.RegisterSet[PCi + 1] = jumpTo.GetLowerByte();
             LogInstructionExec($"0xC3: JP 0x{jumpTo:X4}");
         }
         private void JP_RR(byte operatingRegister)

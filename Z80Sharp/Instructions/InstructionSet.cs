@@ -15,9 +15,7 @@ namespace Z80Sharp.Processor
             _logger.Log(Enums.LogSeverity.Decode, $"MAIN decoded: 0x{_currentInstruction:X2}");
             switch (_currentInstruction)
             {
-
                 case 0x00: NOP(); break;
-                // case 0x76: HALT(); break; // Uncomment if HALT is defined
 
                 // LD instructions: Load immediate 16-bit values into register pairs
                 case 0x01: LD_RR_NN(B); break;  // LD BC, NN
@@ -123,6 +121,7 @@ namespace Z80Sharp.Processor
                 case 0x75: LD_RRMEM_R(H, L); break;  // LD (HL), L
                 case 0x77: LD_RRMEM_R(H, A); break;  // LD (HL), A
 
+
                 // JP and JR instructions: Jump to absolute or relative address
                 case 0x10: DJNZ_D(); break; // DJNZ D
                 case 0xC3: JP_NN(); break;  // JP NN
@@ -153,18 +152,6 @@ namespace Z80Sharp.Processor
                 case 0xF0: RET_CC(0b110); break; // RET P
                 case 0xF8: RET_CC(0b111); break; // RET M
 
-                // POP instructions: pop value at SP into RR and inc. SP
-                case 0xC1: POP_RR(B); break; // POP BC
-                case 0xD1: POP_RR(D); break; // POP DE
-                case 0xE1: POP_RR(H); break; // POP HL
-                case 0xF1: POP_AF(); break;  // POP AF
-
-                // PUSH instructions: push value in RR on to stack and dec. SP
-                case 0xC5: PUSH_RR(B); break; // PUSH BC
-                case 0xD5: PUSH_RR(D); break; // PUSH DE
-                case 0xE5: PUSH_RR(H); break; // PUSH HL
-                case 0xF5: PUSH_AF(); break;  // PUSH AF
-
                 // RST instructions: restart to 0xXX
                 case 0xC7: RST_HH(0x00); break; // RST 00h
                 case 0xD7: RST_HH(0x10); break; // RST 10h
@@ -185,6 +172,48 @@ namespace Z80Sharp.Processor
                 case 0xEC: CALL_CC_NN(0b101); break; // CALL PE, NN
                 case 0xF4: CALL_CC_NN(0b110); break; // CALL P, NN
                 case 0xFC: CALL_CC_NN(0b111); break; // CALL M, NN
+
+
+                // POP instructions: pop value at SP into RR and inc. SP
+                case 0xC1: POP_RR(B); break; // POP BC
+                case 0xD1: POP_RR(D); break; // POP DE
+                case 0xE1: POP_RR(H); break; // POP HL
+                case 0xF1: POP_AF(); break;  // POP AF
+
+                // PUSH instructions: push value in RR on to stack and dec. SP
+                case 0xC5: PUSH_RR(B); break; // PUSH BC
+                case 0xD5: PUSH_RR(D); break; // PUSH DE
+                case 0xE5: PUSH_RR(H); break; // PUSH HL
+                case 0xF5: PUSH_AF(); break;  // PUSH AF
+
+
+                // INC instructions: increments RR/R by 1.
+                case 0x03: INC_RR(B); break;   // INC BC
+                case 0x13: INC_RR(D); break;   // INC DE
+                case 0x23: INC_RR(H); break;   // INC HL
+                case 0x33: INC_RR(SPi); break; // INC SP
+                case 0x34: INC_HLMEM(); break; // INC (HL)
+                case 0x04: INC_R(B); break;    // INC B
+                case 0x0C: INC_R(C); break;    // INC C
+                case 0x14: INC_R(D); break;    // INC D
+                case 0x1C: INC_R(E); break;    // INC E
+                case 0x24: INC_R(H); break;    // INC H
+                case 0x2C: INC_R(L); break;    // INC L
+                case 0x3C: INC_R(A); break;    // INC A
+
+                // DEC instructions: decrements RR/R by 1.
+                case 0x0B: DEC_RR(B); break;   // DEC BC
+                case 0x1B: DEC_RR(D); break;   // DEC DE
+                case 0x2B: DEC_RR(H); break;   // DEC HL
+                case 0x3B: DEC_RR(SPi); break; // DEC SP
+                case 0x35: DEC_HLMEM(); break; // DEC (HL)
+                case 0x05: DEC_R(B); break;    // DEC B
+                case 0x0D: DEC_R(C); break;    // DEC C
+                case 0x15: DEC_R(D); break;    // DEC D
+                case 0x1D: DEC_R(E); break;    // DEC E
+                case 0x25: DEC_R(H); break;    // DEC H
+                case 0x2D: DEC_R(L); break;    // DEC L
+                case 0x3D: DEC_R(A); break;    // DEC A
 
                 case 0xF3: DI(); break; // Disable Interrupts
                 case 0xFB: EI(); break; // Enable Interrupts

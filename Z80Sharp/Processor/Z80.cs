@@ -1,4 +1,5 @@
-﻿using Z80Sharp.Enums;
+﻿using System.Runtime.CompilerServices;
+using Z80Sharp.Enums;
 using Z80Sharp.Interfaces;
 using Z80Sharp.Memory;
 using Z80Sharp.Registers;
@@ -117,19 +118,21 @@ namespace Z80Sharp.Processor
 
         #region Logging
         /// <summary>
-        /// Logs a the decode operation of a given instruction.
+        /// Logs the decode operation of a given instruction.
         /// </summary>
         /// <param name="instruction">The data of the instruction.</param>
-        protected void LogInstructionDecode(string instruction)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void LogInstructionDecode(string instruction)
         {
             _logger.Log(LogSeverity.Decode, instruction);
         }
 
         /// <summary>
-        /// Logs a the execution operation of a given instruction.
+        /// Logs the execution operation of a given instruction.
         /// </summary>
         /// <param name="instruction">The data of the instruction.</param>
-        protected void LogInstructionExec(string instruction)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void LogInstructionExec(string instruction)
         {
             _logger.Log(LogSeverity.Execution, instruction);
         }
