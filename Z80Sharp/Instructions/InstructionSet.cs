@@ -215,6 +215,9 @@ namespace Z80Sharp.Processor
                 case 0x2D: DEC_R(L); break;    // DEC L
                 case 0x3D: DEC_R(A); break;    // DEC A
 
+                case 0x08: EX_AF_AF_(); break; // EX AF, AF'
+                case 0xEB: EX_DE_HL(); break;  // EX DE, HL
+
                 case 0xF3: DI(); break; // Disable Interrupts
                 case 0xFB: EI(); break; // Enable Interrupts
 

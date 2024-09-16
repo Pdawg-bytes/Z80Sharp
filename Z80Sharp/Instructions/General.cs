@@ -14,6 +14,18 @@ namespace Z80Sharp.Processor
             LogInstructionExec("0x00: NOP");
         }
 
+        private void EX_AF_AF_()
+        {
+            Registers.R8Exchange(A_, A);
+            Registers.R8Exchange(F_, F);
+            LogInstructionExec("0x08: EX AF, AF'");
+        }
+        private void EX_DE_HL()
+        {
+            Registers.R8Exchange(D, H);
+            Registers.R8Exchange(E, L);
+            LogInstructionExec("0x08: EX DE, HL");
+        }
 
         private void DI()
         {
