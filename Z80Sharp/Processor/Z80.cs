@@ -45,7 +45,7 @@ namespace Z80Sharp.Processor
 
         public void Run()
         {
-            while (Registers.PC < _memory.Length)
+            while (Registers.PC < 0x9)
             {
                 _currentInstruction = Fetch();
 
@@ -101,11 +101,16 @@ namespace Z80Sharp.Processor
             Registers.IFF2 = false;
 
             // temp
-            _memory.Write(0, 0x21);
-            _memory.Write(1, 0x03);
-            _memory.Write(2, 0x00);
-            _memory.Write(3, 0x77);
-            _memory.Write(4, 0x00);
+            _memory.Write(0x0000, 0x21);
+            _memory.Write(0x0001, 0x34);
+            _memory.Write(0x0002, 0x12);
+            _memory.Write(0x0003, 0x31);
+            _memory.Write(0x0004, 0xA);
+            _memory.Write(0x0005, 0x00);
+            _memory.Write(0x0006, 0xE3);
+            _memory.Write(0x0007, 0x00);
+            _memory.Write(0xA, 0xFF);
+            _memory.Write(0xB, 0xEE);
 
             /*_memory.Write(0, 0x3E);
             _memory.Write(1, 0xFF);

@@ -101,12 +101,24 @@ namespace Z80Sharp.Registers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort GetR16FromHighIndexer(byte indexer) => (ushort)(RegisterSet[indexer] << 8 | RegisterSet[indexer + 1]);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void R8Exchange(byte reg1, byte reg2)
         {
             byte reg1_old = RegisterSet[reg1];
             RegisterSet[reg1] = reg2;
             RegisterSet[reg2] = reg1_old;
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void R16Exchange(byte regPair1, byte regPair2)
+        {
+            ushort regPair1_old = GetR16FromHighIndexer(regPair1);
+            ushort regPair2_old = GetR16FromHighIndexer(regPair2);
+            RegisterSet[regPair1] = regPair2_old.GetUpperByte();
+            RegisterSet[regPair1 + 1] = regPair2_old.GetLowerByte();
+            RegisterSet[regPair2] = regPair1_old.GetUpperByte();
+            RegisterSet[regPair2 + 1] = regPair1_old.GetLowerByte();
+        }
+
 
         public byte[] RegisterSet { get; init; }
 

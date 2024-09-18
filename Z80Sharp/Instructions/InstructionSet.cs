@@ -12,7 +12,7 @@ namespace Z80Sharp.Processor
     {
         private void ExecuteMainInstruction()
         {
-            _logger.Log(Enums.LogSeverity.Decode, $"MAIN decoded: 0x{_currentInstruction:X2}");
+            //_logger.Log(Enums.LogSeverity.Decode, $"MAIN decoded: 0x{_currentInstruction:X2}");
             switch (_currentInstruction)
             {
                 case 0x00: NOP(); break;
@@ -215,8 +215,10 @@ namespace Z80Sharp.Processor
                 case 0x2D: DEC_R(L); break;    // DEC L
                 case 0x3D: DEC_R(A); break;    // DEC A
 
-                case 0x08: EX_AF_AF_(); break; // EX AF, AF'
-                case 0xEB: EX_DE_HL(); break;  // EX DE, HL
+                case 0x08: EX_AF_AF_(); break;   // EX AF, AF'
+                case 0xE3: EX_SPMEM_HL(); break; // EX (SP), HL
+                case 0xEB: EX_DE_HL(); break;    // EX DE, HL
+                case 0xD9: EXX(); break;         // EXX
 
                 case 0xF3: DI(); break; // Disable Interrupts
                 case 0xFB: EI(); break; // Enable Interrupts
