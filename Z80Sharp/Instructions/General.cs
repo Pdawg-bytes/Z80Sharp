@@ -33,7 +33,8 @@ namespace Z80Sharp.Processor
 
         private void CCF()
         {
-            Registers.SetFlag(StatusRegisterFlag.N);
+            Registers.ClearFlag(StatusRegisterFlag.N);
+            // H is cleared to allow it to be 0. SetFlagBits uses |= which won't overwrite any 1s.
             Registers.ClearFlag(StatusRegisterFlag.H);
             Registers.SetFlagBits((byte)((Registers.RegisterSet[F] << 4) & 0b00010000));
             Registers.InvertFlag(StatusRegisterFlag.C);
