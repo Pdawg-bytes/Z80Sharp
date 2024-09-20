@@ -81,13 +81,13 @@ namespace Z80Sharp.Registers
                 // ((condition & 1) == 1) checks if the flag should be cleared or set using the LSB of condition.
                 // https://www.zilog.com/docs/z80/um0080.pdf page 277 details the condition values used below.
                 case 0x00:
-                    return IsFlagSet(StatusRegisterFlag.ZeroFlag) == ((condition & 1) == 1);
+                    return IsFlagSet(StatusRegisterFlag.Z) == ((condition & 1) == 1);
                 case 0x02:
-                    return IsFlagSet(StatusRegisterFlag.CarryFlag) == ((condition & 1) == 1);
+                    return IsFlagSet(StatusRegisterFlag.C) == ((condition & 1) == 1);
                 case 0x04:
-                    return IsFlagSet(StatusRegisterFlag.ParityOverflowFlag) == ((condition & 1) == 1);
+                    return IsFlagSet(StatusRegisterFlag.PV) == ((condition & 1) == 1);
                 case 0x06:
-                    return IsFlagSet(StatusRegisterFlag.SignFlag) == ((condition & 1) == 1);
+                    return IsFlagSet(StatusRegisterFlag.S) == ((condition & 1) == 1);
                 default:
                     return false;
             }
@@ -276,6 +276,16 @@ namespace Z80Sharp.Registers
         public bool IsFlagSet(StatusRegisterFlag flag)
         {
             return (RegisterSet[F] & (byte)flag) == (byte)flag;
+        }
+
+        public void SetFlagBits(byte flagMask)
+        {
+            RegisterSet[F] |= flagMask;
+        }
+
+        public void InvertFlag(StatusRegisterFlag flag)
+        {
+            RegisterSet[F] ^= (byte)flag;
         }
         #endregion
     }

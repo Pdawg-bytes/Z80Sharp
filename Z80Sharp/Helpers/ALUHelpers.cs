@@ -22,29 +22,29 @@ namespace Z80Sharp.Processor
 
             // Sign flag
             if ((sum & 0x80) != 0)
-                Registers.SetFlag(StatusRegisterFlag.SignFlag);
+                Registers.SetFlag(StatusRegisterFlag.S);
             else
-                Registers.ClearFlag(StatusRegisterFlag.SignFlag);
+                Registers.ClearFlag(StatusRegisterFlag.S);
 
             // Zero flag
             if (sum == 0)
-                Registers.SetFlag(StatusRegisterFlag.ZeroFlag);
+                Registers.SetFlag(StatusRegisterFlag.Z);
             else
-                Registers.ClearFlag(StatusRegisterFlag.ZeroFlag);
+                Registers.ClearFlag(StatusRegisterFlag.Z);
 
             // Half Carry flag (carry from bit 3 to bit 4)
             if ((increment & 0xF) == 0xF)
-                Registers.SetFlag(StatusRegisterFlag.HalfCarryFlag);
+                Registers.SetFlag(StatusRegisterFlag.H);
             else
-                Registers.ClearFlag(StatusRegisterFlag.HalfCarryFlag);
+                Registers.ClearFlag(StatusRegisterFlag.H);
 
             // Overflow flag (P/V) (signed overflow)
             if (increment == 0x7F)
-                Registers.SetFlag(StatusRegisterFlag.ParityOverflowFlag);
+                Registers.SetFlag(StatusRegisterFlag.PV);
             else
-                Registers.ClearFlag(StatusRegisterFlag.ParityOverflowFlag);
+                Registers.ClearFlag(StatusRegisterFlag.PV);
 
-            Registers.ClearFlag(StatusRegisterFlag.AddSubFlag);
+            Registers.ClearFlag(StatusRegisterFlag.N);
             return sum;
         }
 
@@ -60,30 +60,30 @@ namespace Z80Sharp.Processor
 
             // Set or clear the Sign flag (S) (check 7th bit for sign)
             if ((diff & 0x80) != 0)
-                Registers.SetFlag(StatusRegisterFlag.SignFlag);
+                Registers.SetFlag(StatusRegisterFlag.S);
             else
-                Registers.ClearFlag(StatusRegisterFlag.SignFlag);
+                Registers.ClearFlag(StatusRegisterFlag.S);
 
             // Set or clear the Zero flag (Z)
             if (diff == 0)
-                Registers.SetFlag(StatusRegisterFlag.ZeroFlag);
+                Registers.SetFlag(StatusRegisterFlag.Z);
             else
-                Registers.ClearFlag(StatusRegisterFlag.ZeroFlag);
+                Registers.ClearFlag(StatusRegisterFlag.Z);
 
             // Set or clear the Half Carry flag (H) (borrow from bit 4)
             if ((decrement & 0x0F) == 0)
-                Registers.SetFlag(StatusRegisterFlag.HalfCarryFlag);
+                Registers.SetFlag(StatusRegisterFlag.H);
             else
-                Registers.ClearFlag(StatusRegisterFlag.HalfCarryFlag);
+                Registers.ClearFlag(StatusRegisterFlag.H);
 
             // Set or clear the Overflow flag (P/V) (signed overflow on decreasing from -128 to 127)
             if (decrement == 0x80)
-                Registers.SetFlag(StatusRegisterFlag.ParityOverflowFlag);
+                Registers.SetFlag(StatusRegisterFlag.PV);
             else
-                Registers.ClearFlag(StatusRegisterFlag.ParityOverflowFlag);
+                Registers.ClearFlag(StatusRegisterFlag.PV);
 
             // Set the N flag (subtract flag)
-            Registers.SetFlag(StatusRegisterFlag.AddSubFlag);
+            Registers.SetFlag(StatusRegisterFlag.N);
             return diff;
         }
 

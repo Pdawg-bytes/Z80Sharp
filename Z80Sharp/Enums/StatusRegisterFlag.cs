@@ -8,34 +8,34 @@ namespace Z80Sharp.Enums
         /// <summary>
         /// (C): The Carry flag of the Z80.
         /// </summary>
-        CarryFlag = 1 << 0,
+        C = 1 << 0,
         /// <summary>
         /// (N): The Negative flag of the Z80.
         /// </summary>
-        AddSubFlag = 1 << 1,
+        N = 1 << 1,
         /// <summary>
         /// (P/V): The Parity/Overflow flag of the Z80.
         /// </summary>
-        ParityOverflowFlag = 1 << 2,
+        PV = 1 << 2,
         /// <summary>
         /// The third flag in the status register is unused.
         /// </summary>
-        UnusedBit3Flag = 1 << 3,
+        U3 = 1 << 3,
         /// <summary>
         /// (H): The Half Carry flag of the Z80.
         /// </summary>
-        HalfCarryFlag = 1 << 4,
+        H = 1 << 4,
         /// <summary>
         /// The fifth flag in the status register is unused.
         /// </summary>
-        UnusedBit5Flag = 1 << 5,
+        U5 = 1 << 5,
         /// <summary>
         /// (Z): The Zero flag of the Z80.
         /// </summary>
-        ZeroFlag = 1 << 6,
+        Z = 1 << 6,
         /// <summary>
         /// (S): The Sign flag of the Z80.
         /// </summary>
-        SignFlag = 1 << 7
+        S = 1 << 7
     }
 }

@@ -17,6 +17,16 @@ namespace Z80Sharp.Processor
             {
                 case 0x00: NOP(); break;
 
+                // Rotate/Shift instructions: Perform single-bit operations on the Accumulator and copy result to C flag.
+                case 0x07: RLCA(); break; // RLCA
+                case 0x17: RLA(); break;  // RLA
+                case 0x0F: RRCA(); break; // RRCA
+                case 0x1F: RRA(); break;  // RRA
+
+                case 0x2F: CPL(); break; // CPL
+                case 0x3F: CCF(); break; // CCF
+                case 0x37: SCF(); break; // SCF
+
                 // LD instructions: Load immediate 16-bit values into register pairs
                 case 0x01: LD_RR_NN(B); break;  // LD BC, NN
                 case 0x11: LD_RR_NN(D); break;  // LD DE, NN

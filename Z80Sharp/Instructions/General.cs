@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Z80Sharp.Enums;
 using Z80Sharp.Helpers;
 using static Z80Sharp.Registers.ProcessorRegisters;
 
@@ -12,7 +13,30 @@ namespace Z80Sharp.Processor
     {
         private void NOP()
         {
-            //LogInstructionExec("0x00: NOP");
+            LogInstructionExec("0x00: NOP");
+        }
+
+        private void CPL()
+        {
+            Registers.RegisterSet[A] ^= 0b11111111;
+            Registers.SetFlagBits((byte)(StatusRegisterFlag.N | StatusRegisterFlag.H));
+            LogInstructionExec("0x2F: CPL");
+        }
+
+        private void CCF()
+        {
+            Registers.SetFlag(StatusRegisterFlag.N);
+            Registers.ClearFlag(StatusRegisterFlag.H);
+            Registers.SetFlagBits((byte)((Registers.RegisterSet[F] << 4) & 0b00010000));
+            Registers.InvertFlag(StatusRegisterFlag.C);
+            LogInstructionExec("0x3F: CCF");
+        }
+        private void SCF()
+        {
+            Registers.SetFlag(StatusRegisterFlag.C);
+            Registers.ClearFlag(StatusRegisterFlag.N);
+            Registers.ClearFlag(StatusRegisterFlag.H);
+            LogInstructionExec("0x37: SCF");
         }
 
         private void EX_AF_AF_()
