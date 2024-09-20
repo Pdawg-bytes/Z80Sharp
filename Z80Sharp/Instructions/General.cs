@@ -15,6 +15,14 @@ namespace Z80Sharp.Processor
         {
             LogInstructionExec("0x00: NOP");
         }
+        private void HALT()
+        {
+            if (!Halted)
+            {
+                Halted = true;
+                Registers.PC--;
+            }
+        }
 
         private void CPL()
         {

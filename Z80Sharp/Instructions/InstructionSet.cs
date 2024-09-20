@@ -15,7 +15,8 @@ namespace Z80Sharp.Processor
             //_logger.Log(Enums.LogSeverity.Decode, $"MAIN decoded: 0x{_currentInstruction:X2}");
             switch (_currentInstruction)
             {
-                case 0x00: NOP(); break;
+                case 0x00: NOP(); break;  // NOP
+                case 0x76: HALT(); break; // HALT
 
                 // Rotate/Shift instructions: Perform single-bit operations on the Accumulator and copy result to C flag.
                 case 0x07: RLCA(); break; // RLCA
