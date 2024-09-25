@@ -86,9 +86,9 @@ namespace Z80Sharp.Processor
             }
 
             Registers.RegisterSet[A] = 0xFF;
-            Registers.RegisterSet[F] = 0xFF;
+            Registers.RegisterSet[F] = 0b11111111;
             Registers.RegisterSet[A_] = 0xFF;
-            Registers.RegisterSet[F_] = 0xFF;
+            Registers.RegisterSet[F_] = 0b11111111;
 
             Registers.RegisterSet[I] = 0x00;
 
@@ -114,9 +114,7 @@ namespace Z80Sharp.Processor
 
             _memory.Write(0x0, 0x3E);
             _memory.Write(0x1, 0x37);
-            _memory.Write(0x2, 0x0F);
-            _memory.Write(0x3, 0x3F);
-            _memory.Write(0x4, 0x3F);
+            _memory.Write(0x2, 0x17);
 
             /*_memory.Write(0, 0x3E);
             _memory.Write(1, 0xFF);

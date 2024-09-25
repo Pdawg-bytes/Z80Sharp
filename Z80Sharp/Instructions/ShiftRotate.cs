@@ -14,6 +14,7 @@ namespace Z80Sharp.Processor
         {
             byte carry = (byte)(Registers.RegisterSet[A] >> 7);
             Registers.RegisterSet[A] <<= 1;
+            Registers.RegisterSet[A] |= (byte)(carry << 7);
             Registers.RegisterSet[F] &= (byte)~(StatusRegisterFlag.N | StatusRegisterFlag.H | StatusRegisterFlag.C);
             Registers.SetFlagBits(carry);
             LogInstructionExec("0x07: RLCA");
@@ -34,6 +35,7 @@ namespace Z80Sharp.Processor
         {
             byte carry = (byte)(Registers.RegisterSet[A] & 0b00000001);
             Registers.RegisterSet[A] >>= 1;
+            Registers.RegisterSet[A] |= (byte)(carry << 7);
             Registers.RegisterSet[F] &= (byte)~(StatusRegisterFlag.N | StatusRegisterFlag.H | StatusRegisterFlag.C);
             Registers.SetFlagBits(carry);
             LogInstructionExec("0x0F: RRCA");
@@ -43,7 +45,7 @@ namespace Z80Sharp.Processor
             byte carry = (byte)(Registers.RegisterSet[A] & 0b00000001);
             byte aTemp = Registers.RegisterSet[A];
             aTemp >>= 1;
-            aTemp |= (byte)(Registers.RegisterSet[F] & (byte)StatusRegisterFlag.C);
+            aTemp |= (byte)((Registers.RegisterSet[F] & (byte)StatusRegisterFlag.C) << 7);
             Registers.RegisterSet[A] = aTemp;
             Registers.RegisterSet[F] &= (byte)~(StatusRegisterFlag.N | StatusRegisterFlag.H | StatusRegisterFlag.C);
             Registers.SetFlagBits(carry);

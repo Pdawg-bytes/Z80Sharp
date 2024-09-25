@@ -65,7 +65,8 @@ namespace Z80Sharp.Registers
             0b100 => "PO",
             0b101 => "PE",
             0b110 => "P",
-            0b111 => "M"
+            0b111 => "M",
+            _ => "?"
         };
 
         /// <summary>
@@ -111,12 +112,8 @@ namespace Z80Sharp.Registers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void R16Exchange(byte regPair1, byte regPair2)
         {
-            ushort regPair1_old = GetR16FromHighIndexer(regPair1);
-            ushort regPair2_old = GetR16FromHighIndexer(regPair2);
-            RegisterSet[regPair1] = regPair2_old.GetUpperByte();
-            RegisterSet[regPair1 + 1] = regPair2_old.GetLowerByte();
-            RegisterSet[regPair2] = regPair1_old.GetUpperByte();
-            RegisterSet[regPair2 + 1] = regPair1_old.GetLowerByte();
+            (RegisterSet[regPair1], RegisterSet[regPair2]) = (RegisterSet[regPair2], RegisterSet[regPair1]);
+            (RegisterSet[regPair1 + 1], RegisterSet[regPair2 + 1]) = (RegisterSet[regPair2 + 1], RegisterSet[regPair1 + 1]);
         }
 
 
