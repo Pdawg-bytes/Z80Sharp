@@ -131,6 +131,22 @@ namespace Z80Sharp.Processor
             LogInstructionExec($"0x{_currentInstruction}: ADD HL, {Registers.RegisterName(operatingRegister, true)}");
         }
 
+        private void ADC_A_R(byte operatingRegister)
+        {
+            ADCAny(Registers.RegisterSet[operatingRegister]);
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADC {Registers.RegisterName(operatingRegister)}");
+        }
+        private void ADC_A_N()
+        {
+            ADCAny(Fetch());
+            LogInstructionExec($"0xCE: ADC N:0x{FetchLast():X2}");
+        }
+        private void ADC_A_RRMEM(byte operatingRegister)
+        {
+            ADCAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADC ({Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4})");
+        }
+
         private void SUB_R(byte operatingRegister)
         {
             SUBAny(Registers.RegisterSet[operatingRegister]);
@@ -145,6 +161,22 @@ namespace Z80Sharp.Processor
         {
             SUBAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
             LogInstructionExec($"0x{_currentInstruction:X2}: SUB ({Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4})");
+        }
+
+        private void SBC_A_R(byte operatingRegister)
+        {
+            SBCAny(Registers.RegisterSet[operatingRegister]);
+            LogInstructionExec($"0x{_currentInstruction:X2}: SBC {Registers.RegisterName(operatingRegister)}");
+        }
+        private void SBC_A_N()
+        {
+            SBCAny(Fetch());
+            LogInstructionExec($"0xDE: SBC N:0x{FetchLast():X2}");
+        }
+        private void SBC_A_RRMEM(byte operatingRegister)
+        {
+            SBCAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
+            LogInstructionExec($"0x{_currentInstruction:X2}: SBC ({Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4})");
         }
     }
 }

@@ -20,13 +20,15 @@ namespace Z80Sharp.Processor
 
                 case 0x2F: CPL(); break; // CPL
 
+
+
                 // Rotate/Shift instructions: Perform single-bit operations on the Accumulator and copy result to C flag.
                 case 0x07: RLCA(); break; // RLCA
                 case 0x17: RLA(); break;  // RLA
                 case 0x0F: RRCA(); break; // RRCA
                 case 0x1F: RRA(); break;  // RRA
 
-                // ADD instructions: ADD register and operand.
+                // AD (D/C) instructions: ADD register and operand (+ carry if ADC).
                 case 0x09: ADD_HL_RR(B); break;     // ADD HL, BC
                 case 0x19: ADD_HL_RR(D); break;     // ADD HL, DE
                 case 0x29: ADD_HL_RR(H); break;     // ADD HL, HL
@@ -42,7 +44,17 @@ namespace Z80Sharp.Processor
                 case 0x87: ADD_A_R(A); break;     // ADD A, A
                 case 0xC6: ADD_A_N(); break;      // ADD A, N
 
-                // SUB instructions: SUB operand from register.
+                case 0x88: ADC_A_R(B); break;     // ADC A, B
+                case 0x89: ADC_A_R(C); break;     // ADC A, C
+                case 0x8A: ADC_A_R(D); break;     // ADC A, D
+                case 0x8B: ADC_A_R(E); break;     // ADC A, E
+                case 0x8C: ADC_A_R(H); break;     // ADC A, H
+                case 0x8D: ADC_A_R(L); break;     // ADC A, L
+                case 0x8E: ADC_A_RRMEM(H); break; // ADC A, (HL)
+                case 0x8F: ADC_A_R(A); break;     // ADC A, A
+                case 0xCE: ADC_A_N(); break;      // ADC A, N
+
+                // SUB/SBC instructions: SUB operand from register (- carry if SBC).
                 case 0x90: SUB_R(B); break;     // SUB B
                 case 0x91: SUB_R(C); break;     // SUB C
                 case 0x92: SUB_R(D); break;     // SUB D
@@ -52,6 +64,16 @@ namespace Z80Sharp.Processor
                 case 0x96: SUB_RRMEM(H); break; // SUB (HL)
                 case 0x97: SUB_R(A); break;     // SUB A
                 case 0xD6: SUB_N(); break;      // SUB N
+
+                case 0x98: SBC_A_R(B); break;     // SBC A, B
+                case 0x99: SBC_A_R(C); break;     // SBC A, C
+                case 0x9A: SBC_A_R(D); break;     // SBC A, D
+                case 0x9B: SBC_A_R(E); break;     // SBC A, E
+                case 0x9C: SBC_A_R(H); break;     // SBC A, H
+                case 0x9D: SBC_A_R(L); break;     // SBC A, L
+                case 0x9E: SBC_A_RRMEM(H); break; // SBC A, (HL)
+                case 0x9F: SBC_A_R(A); break;     // SBC A, A
+                case 0xDE: SBC_A_N(); break;      // SBC A, N
 
                 // OR instructions: OR accumulator with operand.
                 case 0xB0: OR_R(B); break;     // OR B

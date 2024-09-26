@@ -36,7 +36,7 @@ namespace Z80Sharp.Processor
             Registers.ClearFlag(FlagType.N);
             // H is cleared to allow it to be 0. SetFlagBits uses |= which won't overwrite any 1s.
             Registers.ClearFlag(FlagType.H);
-            Registers.SetFlagBits((byte)((Registers.RegisterSet[F] << 4) & 0b00010000));
+            Registers.SetFlagBits((byte)((Registers.RegisterSet[F] << 4) & 0b00010000)); // Set H to C pre-inversion
             Registers.InvertFlag(FlagType.C);
             LogInstructionExec("0x3F: CCF");
         }
