@@ -18,13 +18,86 @@ namespace Z80Sharp.Processor
                 case 0x00: NOP(); break;  // NOP
                 case 0x76: HALT(); break; // HALT
 
+                case 0x2F: CPL(); break; // CPL
+
                 // Rotate/Shift instructions: Perform single-bit operations on the Accumulator and copy result to C flag.
                 case 0x07: RLCA(); break; // RLCA
                 case 0x17: RLA(); break;  // RLA
                 case 0x0F: RRCA(); break; // RRCA
                 case 0x1F: RRA(); break;  // RRA
 
-                case 0x2F: CPL(); break; // CPL
+                // ADD instructions: ADD register and operand.
+                case 0x09: ADD_HL_RR(B); break;     // ADD HL, BC
+                case 0x19: ADD_HL_RR(D); break;     // ADD HL, DE
+                case 0x29: ADD_HL_RR(H); break;     // ADD HL, HL
+                case 0x39: ADD_HL_RR(SPi); break;   // ADD HL, SP
+
+                case 0x80: ADD_A_R(B); break;     // ADD A, B
+                case 0x81: ADD_A_R(C); break;     // ADD A, C
+                case 0x82: ADD_A_R(D); break;     // ADD A, D
+                case 0x83: ADD_A_R(E); break;     // ADD A, E
+                case 0x84: ADD_A_R(H); break;     // ADD A, H
+                case 0x85: ADD_A_R(L); break;     // ADD A, L
+                case 0x86: ADD_A_RRMEM(H); break; // ADD A, (HL)
+                case 0x87: ADD_A_R(A); break;     // ADD A, A
+                case 0xC6: ADD_A_N(); break;      // ADD A, N
+
+                // SUB instructions: SUB operand from register.
+                case 0x90: SUB_R(B); break;     // SUB B
+                case 0x91: SUB_R(C); break;     // SUB C
+                case 0x92: SUB_R(D); break;     // SUB D
+                case 0x93: SUB_R(E); break;     // SUB E
+                case 0x94: SUB_R(H); break;     // SUB H
+                case 0x95: SUB_R(L); break;     // SUB L
+                case 0x96: SUB_RRMEM(H); break; // SUB (HL)
+                case 0x97: SUB_R(A); break;     // SUB A
+                case 0xD6: SUB_N(); break;      // SUB N
+
+                // OR instructions: OR accumulator with operand.
+                case 0xB0: OR_R(B); break;     // OR B
+                case 0xB1: OR_R(C); break;     // OR C
+                case 0xB2: OR_R(D); break;     // OR D
+                case 0xB3: OR_R(E); break;     // OR E
+                case 0xB4: OR_R(H); break;     // OR H
+                case 0xB5: OR_R(L); break;     // OR L
+                case 0xB6: OR_RRMEM(H); break; // OR (HL)
+                case 0xB7: OR_R(A); break;     // OR A
+                case 0xF6: OR_N(); break;      // OR N
+
+                // XOR instructions: XOR accumulator with operand.
+                case 0xA8: XOR_R(B); break;     // XOR B
+                case 0xA9: XOR_R(C); break;     // XOR C
+                case 0xAA: XOR_R(D); break;     // XOR D
+                case 0xAB: XOR_R(E); break;     // XOR E
+                case 0xAC: XOR_R(H); break;     // XOR H
+                case 0xAD: XOR_R(L); break;     // XOR L
+                case 0xAE: XOR_RRMEM(H); break; // XOR (HL)
+                case 0xAF: XOR_R(A); break;     // XOR A
+                case 0xEE: XOR_N(); break;      // XOR N
+
+                // AND instructions: AND accumulator with operand.
+                case 0xA0: AND_R(B); break;     // AND B
+                case 0xA1: AND_R(C); break;     // AND C
+                case 0xA2: AND_R(D); break;     // AND D
+                case 0xA3: AND_R(E); break;     // AND E
+                case 0xA4: AND_R(H); break;     // AND H
+                case 0xA5: AND_R(L); break;     // AND L
+                case 0xA6: AND_RRMEM(H); break; // AND (HL)
+                case 0xA7: AND_R(A); break;     // AND A
+                case 0xE6: AND_N(); break;      // AND N
+
+                // CP instructions: Compare accumulator with operand diff.
+                case 0xB8: CMP_R(B); break;     // CP B
+                case 0xB9: CMP_R(C); break;     // CP C
+                case 0xBA: CMP_R(D); break;     // CP D
+                case 0xBB: CMP_R(E); break;     // CP E
+                case 0xBC: CMP_R(H); break;     // CP H
+                case 0xBD: CMP_R(L); break;     // CP L
+                case 0xBE: CMP_RRMEM(H); break; // CP (HL)
+                case 0xBF: CMP_R(A); break;     // CP A
+                case 0xFE: CMP_N(); break;      // CP N
+
+                // Carry flag operations: Set or invert carry flag.
                 case 0x3F: CCF(); break; // CCF
                 case 0x37: SCF(); break; // SCF
 

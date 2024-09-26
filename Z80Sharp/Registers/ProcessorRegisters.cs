@@ -82,13 +82,13 @@ namespace Z80Sharp.Registers
                 // ((condition & 1) == 1) checks if the flag should be cleared or set using the LSB of condition.
                 // https://www.zilog.com/docs/z80/um0080.pdf page 277 details the condition values used below.
                 case 0x00:
-                    return IsFlagSet(StatusRegisterFlag.Z) == ((condition & 1) == 1);
+                    return IsFlagSet(FlagType.Z) == ((condition & 1) == 1);
                 case 0x02:
-                    return IsFlagSet(StatusRegisterFlag.C) == ((condition & 1) == 1);
+                    return IsFlagSet(FlagType.C) == ((condition & 1) == 1);
                 case 0x04:
-                    return IsFlagSet(StatusRegisterFlag.PV) == ((condition & 1) == 1);
+                    return IsFlagSet(FlagType.PV) == ((condition & 1) == 1);
                 case 0x06:
-                    return IsFlagSet(StatusRegisterFlag.S) == ((condition & 1) == 1);
+                    return IsFlagSet(FlagType.S) == ((condition & 1) == 1);
                 default:
                     return false;
             }
@@ -260,17 +260,17 @@ namespace Z80Sharp.Registers
 
 
         #region Flags register operations
-        public void SetFlag(StatusRegisterFlag flag)
+        public void SetFlag(FlagType flag)
         {
             RegisterSet[F] |= (byte)flag;
         }
 
-        public void ClearFlag(StatusRegisterFlag flag)
+        public void ClearFlag(FlagType flag)
         {
             RegisterSet[F] &= (byte)~flag;
         }
 
-        public bool IsFlagSet(StatusRegisterFlag flag)
+        public bool IsFlagSet(FlagType flag)
         {
             return (RegisterSet[F] & (byte)flag) == (byte)flag;
         }
@@ -280,9 +280,17 @@ namespace Z80Sharp.Registers
             RegisterSet[F] |= flagMask;
         }
 
-        public void InvertFlag(StatusRegisterFlag flag)
+        public void InvertFlag(FlagType flag)
         {
             RegisterSet[F] ^= (byte)flag;
+        }
+
+        public void SetFlagConditionally(FlagType flag, bool condition)
+        {
+            if (condition)
+                SetFlag(flag);
+            else
+                ClearFlag(flag);
         }
         #endregion
     }

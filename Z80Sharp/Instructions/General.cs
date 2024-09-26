@@ -27,24 +27,24 @@ namespace Z80Sharp.Processor
         private void CPL()
         {
             Registers.RegisterSet[A] ^= 0b11111111;
-            Registers.SetFlagBits((byte)(StatusRegisterFlag.N | StatusRegisterFlag.H));
+            Registers.SetFlagBits((byte)(FlagType.N | FlagType.H));
             LogInstructionExec("0x2F: CPL");
         }
 
         private void CCF()
         {
-            Registers.ClearFlag(StatusRegisterFlag.N);
+            Registers.ClearFlag(FlagType.N);
             // H is cleared to allow it to be 0. SetFlagBits uses |= which won't overwrite any 1s.
-            Registers.ClearFlag(StatusRegisterFlag.H);
+            Registers.ClearFlag(FlagType.H);
             Registers.SetFlagBits((byte)((Registers.RegisterSet[F] << 4) & 0b00010000));
-            Registers.InvertFlag(StatusRegisterFlag.C);
+            Registers.InvertFlag(FlagType.C);
             LogInstructionExec("0x3F: CCF");
         }
         private void SCF()
         {
-            Registers.SetFlag(StatusRegisterFlag.C);
-            Registers.ClearFlag(StatusRegisterFlag.N);
-            Registers.ClearFlag(StatusRegisterFlag.H);
+            Registers.SetFlag(FlagType.C);
+            Registers.ClearFlag(FlagType.N);
+            Registers.ClearFlag(FlagType.H);
             LogInstructionExec("0x37: SCF");
         }
 

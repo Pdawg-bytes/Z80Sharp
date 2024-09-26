@@ -3,7 +3,7 @@ namespace Z80Sharp.Enums
     /*
      * Reference: https://area51.dev/asm/z80/about/flags/
      */
-    public enum StatusRegisterFlag : byte
+    public enum FlagType : byte
     {
         /// <summary>
         /// (C): The Carry flag of the Z80.
