@@ -31,11 +31,9 @@ namespace Z80Sharp.Processor
                 Registers.SetFlag(FlagType.C);
             }
             else
-            {
                 Registers.ClearFlag(FlagType.C);
-            }
 
-            Registers.RegisterSet[A] += (byte)adjustment;
+            Registers.RegisterSet[A] += adjustment;
             regA = Registers.RegisterSet[A];
 
             Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) != 0);             // (S) (Set if negative)
