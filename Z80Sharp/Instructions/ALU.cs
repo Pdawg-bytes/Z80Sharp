@@ -11,41 +11,39 @@ namespace Z80Sharp.Processor
 {
     public partial class Z80
     {
-        // Reference: https://stackoverflow.com/questions/8119577/z80-daa-instruction
+        // Reference: http://www.z80.info/zip/z80-documented.pdf (Page 18)
         private void DAA()
         {
-            int t = 0;
             byte regA = Registers.RegisterSet[A];
+            byte adjustment = 0;
 
-            if (Registers.IsFlagSet(FlagType.H) || (regA & 0xF) > 9)
-                t++;
-
-            if (Registers.IsFlagSet(FlagType.C) || regA > 0x99)
+            // Carry over from first nibble
+            if ((regA & 0x0F) > 0x09 || Registers.IsFlagSet(FlagType.H))
             {
-                t += 2;
-                Registers.SetFlag(FlagType.C);
+                adjustment += 0x06;
+                Registers.SetFlagConditionally(FlagType.H, ((regA & 0x0F) + 0x06) > 0x0F); // If our adjustment carries over into top 4 bits
             }
 
-            if (Registers.IsFlagSet(FlagType.N))
+            // Full carry
+            if ((regA & 0xF0) > 0x90 || Registers.IsFlagSet(FlagType.C))
             {
-                Registers.SetFlagConditionally(FlagType.H, Registers.IsFlagSet(FlagType.H) && (regA & 0x0F) < 6);
+                adjustment += 0x60;
+                Registers.SetFlag(FlagType.C);
             }
             else
             {
-                Registers.SetFlagConditionally(FlagType.H, (regA & 0x0F) >= 0x0A);
+                Registers.ClearFlag(FlagType.C);
             }
 
-            Registers.RegisterSet[A] += (byte)(t == 1 ? (Registers.IsFlagSet(FlagType.N) ? 0xFA : 0x06) :
-                                               t == 2 ? (Registers.IsFlagSet(FlagType.N) ? 0xA0 : 0x60) :
-                                               t == 3 ? (Registers.IsFlagSet(FlagType.N) ? 0x9A : 0x66) : 0);
-
+            Registers.RegisterSet[A] += (byte)adjustment;
             regA = Registers.RegisterSet[A];
 
-            Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) != 0);   // (S) Sign flag
-            Registers.SetFlagConditionally(FlagType.Z, regA == 0);            // (Z) Zero flag
-            Registers.SetFlagConditionally(FlagType.PV, FlagHelpers.CheckParity(regA)); // (P/V) Parity flag
-            Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) != 0);   // (X) Undocumented flag
-            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) != 0);   // (Y) Undocumented flag
+            Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) != 0);             // (S) (Set if negative)
+            Registers.SetFlagConditionally(FlagType.Z, regA == 0);                      // (Z) (Set if result is zero)
+            Registers.SetFlagConditionally(FlagType.PV, FlagHelpers.CheckParity(regA)); // (PV) (Set if bit parity is even)
+            Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) != 0);             // (X) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) != 0);             // (Y) (Undocumented flag)
+
             LogInstructionExec("0x27: DAA");
         }
 

@@ -75,20 +75,19 @@ namespace Z80Sharp.Processor
 
         }
 
+        // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)
         public void Reset()
         {
             Halted = false;
 
-            // temp
-            for (ushort i = 0; i < _memory.Length; i++)
-            {
-                _memory.Write(i, 0x00);
-            }
-
             Registers.RegisterSet[A] = 0xFF;
             Registers.RegisterSet[F] = 0b01010101;
             Registers.RegisterSet[A_] = 0xFF;
-            Registers.RegisterSet[F_] = 0b11111111;
+            Registers.RegisterSet[F_] = 0xFF;
+
+            Registers.BC = Registers.BC_ = 0xFFFF;
+            Registers.DE = Registers.DE_ = 0xFFFF;
+            Registers.HL = Registers.HL_ = 0xFFFF;
 
             Registers.RegisterSet[I] = 0x00;
 
@@ -113,9 +112,8 @@ namespace Z80Sharp.Processor
             _memory.Write(0xB, 0xEE);*/
 
             _memory.Write(0x0, 0x3E);
-            _memory.Write(0x1, 0x08);
-            _memory.Write(0x2, 0xC6);
-            _memory.Write(0x3, 0xF2);
+            _memory.Write(0x1, 0xF7);
+            _memory.Write(0x2, 0x27);
 
             /*_memory.Write(0, 0x3E);
             _memory.Write(1, 0xFF);
