@@ -20,7 +20,7 @@ namespace Z80Sharp.Processor
 
                 case 0x2F: CPL(); break; // CPL
 
-
+                case 0x27: DAA(); break; // DAA
 
                 // Rotate/Shift instructions: Perform single-bit operations on the Accumulator and copy result to C flag.
                 case 0x07: RLCA(); break; // RLCA

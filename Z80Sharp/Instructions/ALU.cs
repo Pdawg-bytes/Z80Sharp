@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Z80Sharp.Enums;
 using Z80Sharp.Helpers;
 using static Z80Sharp.Registers.ProcessorRegisters;
 
@@ -10,6 +11,44 @@ namespace Z80Sharp.Processor
 {
     public partial class Z80
     {
+        // Reference: https://stackoverflow.com/questions/8119577/z80-daa-instruction
+        private void DAA()
+        {
+            int t = 0;
+            byte regA = Registers.RegisterSet[A];
+
+            if (Registers.IsFlagSet(FlagType.H) || (regA & 0xF) > 9)
+                t++;
+
+            if (Registers.IsFlagSet(FlagType.C) || regA > 0x99)
+            {
+                t += 2;
+                Registers.SetFlag(FlagType.C);
+            }
+
+            if (Registers.IsFlagSet(FlagType.N))
+            {
+                Registers.SetFlagConditionally(FlagType.H, Registers.IsFlagSet(FlagType.H) && (regA & 0x0F) < 6);
+            }
+            else
+            {
+                Registers.SetFlagConditionally(FlagType.H, (regA & 0x0F) >= 0x0A);
+            }
+
+            Registers.RegisterSet[A] += (byte)(t == 1 ? (Registers.IsFlagSet(FlagType.N) ? 0xFA : 0x06) :
+                                               t == 2 ? (Registers.IsFlagSet(FlagType.N) ? 0xA0 : 0x60) :
+                                               t == 3 ? (Registers.IsFlagSet(FlagType.N) ? 0x9A : 0x66) : 0);
+
+            regA = Registers.RegisterSet[A];
+
+            Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) != 0);   // (S) Sign flag
+            Registers.SetFlagConditionally(FlagType.Z, regA == 0);            // (Z) Zero flag
+            Registers.SetFlagConditionally(FlagType.PV, FlagHelpers.CheckParity(regA)); // (P/V) Parity flag
+            Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) != 0);   // (X) Undocumented flag
+            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) != 0);   // (Y) Undocumented flag
+            LogInstructionExec("0x27: DAA");
+        }
+
         private void INC_RR(byte operatingRegister)
         {
             ushort value = (ushort)(Registers.GetR16FromHighIndexer(operatingRegister) + 1);

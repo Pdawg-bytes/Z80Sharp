@@ -20,7 +20,7 @@ namespace Z80Sharp.Enums
         /// <summary>
         /// The third flag in the status register is unused.
         /// </summary>
-        U3 = 1 << 3,
+        X = 1 << 3,
         /// <summary>
         /// (H): The Half Carry flag of the Z80.
         /// </summary>
@@ -28,7 +28,7 @@ namespace Z80Sharp.Enums
         /// <summary>
         /// The fifth flag in the status register is unused.
         /// </summary>
-        U5 = 1 << 5,
+        Y = 1 << 5,
         /// <summary>
         /// (Z): The Zero flag of the Z80.
         /// </summary>

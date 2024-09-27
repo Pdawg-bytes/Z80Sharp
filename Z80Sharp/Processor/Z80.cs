@@ -86,7 +86,7 @@ namespace Z80Sharp.Processor
             }
 
             Registers.RegisterSet[A] = 0xFF;
-            Registers.RegisterSet[F] = 0b11111111;
+            Registers.RegisterSet[F] = 0b01010101;
             Registers.RegisterSet[A_] = 0xFF;
             Registers.RegisterSet[F_] = 0b11111111;
 
@@ -113,8 +113,9 @@ namespace Z80Sharp.Processor
             _memory.Write(0xB, 0xEE);*/
 
             _memory.Write(0x0, 0x3E);
-            _memory.Write(0x1, 0x37);
-            _memory.Write(0x2, 0x17);
+            _memory.Write(0x1, 0x08);
+            _memory.Write(0x2, 0xC6);
+            _memory.Write(0x3, 0xF2);
 
             /*_memory.Write(0, 0x3E);
             _memory.Write(1, 0xFF);
@@ -167,8 +168,8 @@ namespace Z80Sharp.Processor
         /// <returns>The byte before the current PC.</returns>
         private byte FetchLast()
         {
-            byte val = _memory.Read(--Registers.PC);
-            _logger.Log(LogSeverity.Memory, $"READ at 0x{(--Registers.PC).ToString("X")} -> 0x{val:X2}");
+            byte val = _memory.Read((ushort)(Registers.PC - 1));
+            _logger.Log(LogSeverity.Memory, $"LREAD at 0x{((ushort)(Registers.PC - 1)).ToString("X")} -> 0x{val:X2}");
             return val;
         }
 
