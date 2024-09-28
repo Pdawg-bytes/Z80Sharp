@@ -26,6 +26,13 @@ namespace Z80Sharp.Processor
             Registers.SP = sp;
             LogInstructionExec($"0xF1: POP AF");
         }
+        private void POP_PC_SILENT()
+        {
+            ushort sp = Registers.SP;
+            Registers.RegisterSet[PCi + 1] = _memory.Read(sp++);
+            Registers.RegisterSet[PCi] = _memory.Read(sp++);
+            Registers.SP = sp;
+        }
 
         private void PUSH_RR(byte operatingRegister)
         {
@@ -44,7 +51,7 @@ namespace Z80Sharp.Processor
             Registers.SP = sp;
             LogInstructionExec($"0xF5: PUSH AF");
         }
-        private void PUSH_PC()
+        private void PUSH_PC_SILENT()
         {
             ushort sp = Registers.SP;
             _memory.Write(--sp, Registers.RegisterSet[PCi]);

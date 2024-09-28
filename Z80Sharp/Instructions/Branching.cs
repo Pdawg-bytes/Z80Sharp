@@ -45,7 +45,7 @@ namespace Z80Sharp.Processor
         {
             ushort jumpTo = (ushort)(Registers.PC + (sbyte)Fetch());
             Registers.PC = jumpTo;
-            LogInstructionExec($"JR D:0x{FetchLast():X2}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: JR D:0x{FetchLast():X2}");
         }
         // Technically, if we were doing this off of ((_currentInstruction >> 3) & 0x07), we'd need to (& 0x3) the value
         // again to get the right flag condition. However, instead of computing it on the fly, we can use our jump table
@@ -107,6 +107,18 @@ namespace Z80Sharp.Processor
             {
                 LogInstructionExec($"0x{_currentInstruction:X2}: RET (no ret), {Registers.JumpConditionName(flagCondition)} not set to expected value.");
             }
+        }
+        private void RETN()
+        {
+            POP_PC_SILENT();
+            Registers.IFF1 = Registers.IFF2;
+            LogInstructionExec("0x45: RETN");
+        }
+        private void RETI()
+        {
+            POP_PC_SILENT();
+            // signal device triggering NMI that routine has completed
+            LogInstructionExec("0x4D: RETI");
         }
 
 

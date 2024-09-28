@@ -11,6 +11,97 @@ namespace Z80Sharp.Processor
 {
     public partial class Z80
     {
+        private void CPI()
+        {
+            byte hlMem = _memory.Read(Registers.HL);
+            sbyte diff = (sbyte)(Registers.RegisterSet[A] - hlMem);
+
+            Registers.HL++;
+            Registers.BC--;
+
+            Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
+            Registers.SetFlagConditionally(FlagType.Z, diff == 0);
+            Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) < (hlMem & 0x0F));
+            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
+            Registers.SetFlag(FlagType.N);
+
+            int undoc = Registers.RegisterSet[A] - hlMem - (Registers.RegisterSet[F] & (byte)FlagType.H);
+            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
+
+            LogInstructionExec("0xA1: CPI");
+        }
+        private void CPIR()
+        {
+            byte hlMem = _memory.Read(Registers.HL);
+            sbyte diff = (sbyte)(Registers.RegisterSet[A] - hlMem);
+
+            Registers.HL++;
+            Registers.BC--;
+
+            Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
+            Registers.SetFlagConditionally(FlagType.Z, diff == 0);
+            Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) < (hlMem & 0x0F));
+            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
+            Registers.SetFlag(FlagType.N);
+
+            int undoc = Registers.RegisterSet[A] - hlMem - (Registers.RegisterSet[F] & (byte)FlagType.H);
+            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
+
+            if (Registers.BC != 0 && diff != 0)
+            {
+                Registers.PC -= 2;
+            }
+
+            LogInstructionExec("0xB1: CPIR");
+        }
+        private void CPD()
+        {
+            byte hlMem = _memory.Read(Registers.HL);
+            sbyte diff = (sbyte)(Registers.RegisterSet[A] - hlMem);
+
+            Registers.HL--;
+            Registers.BC--;
+
+            Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
+            Registers.SetFlagConditionally(FlagType.Z, diff == 0);
+            Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) < (hlMem & 0x0F));
+            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
+            Registers.SetFlag(FlagType.N);
+
+            int undoc = Registers.RegisterSet[A] - hlMem - (Registers.RegisterSet[F] & (byte)FlagType.H);
+            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
+
+            LogInstructionExec("0xA9: CPI");
+        }
+        private void CPDR()
+        {
+            byte hlMem = _memory.Read(Registers.HL);
+            sbyte diff = (sbyte)(Registers.RegisterSet[A] - hlMem);
+
+            Registers.HL--;
+            Registers.BC--;
+
+            Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
+            Registers.SetFlagConditionally(FlagType.Z, diff == 0);
+            Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) < (hlMem & 0x0F));
+            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
+            Registers.SetFlag(FlagType.N);
+
+            int undoc = Registers.RegisterSet[A] - hlMem - (Registers.RegisterSet[F] & (byte)FlagType.H);
+            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
+
+            if (Registers.BC != 0 && diff != 0)
+            {
+                Registers.PC -= 2;
+            }
+
+            LogInstructionExec("0xB9: CPIR");
+        }
+
         // Reference: http://www.z80.info/zip/z80-documented.pdf (Page 18)
         private void DAA()
         {
@@ -36,13 +127,32 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[A] += adjustment;
             regA = Registers.RegisterSet[A];
 
-            Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) != 0);             // (S) (Set if negative)
-            Registers.SetFlagConditionally(FlagType.Z, regA == 0);                      // (Z) (Set if result is zero)
+            Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) != 0);             // (S)  (Set if negative)
+            Registers.SetFlagConditionally(FlagType.Z, regA == 0);                      // (Z)  (Set if result is zero)
             Registers.SetFlagConditionally(FlagType.PV, FlagHelpers.CheckParity(regA)); // (PV) (Set if bit parity is even)
-            Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) != 0);             // (X) (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) != 0);             // (Y) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
 
             LogInstructionExec("0x27: DAA");
+        }
+
+        private void NEG()
+        {
+            byte value = Registers.RegisterSet[A];
+            int result = 0 - value;
+            Registers.RegisterSet[A] = (byte)result;
+
+            Registers.SetFlagConditionally(FlagType.S, (result & 0x80) != 0);           // (S)  (Set if result is negative)
+            Registers.SetFlagConditionally(FlagType.Z, Registers.RegisterSet[A] == 0);  // (Z)  (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.H, (value & 0x0F) != 0);            // (H)  (Set if borrow from bit 4)
+            Registers.SetFlagConditionally(FlagType.PV, value == 0x80);                 // (PV) (Set if A == -128 (sbyte.Min)
+            Registers.SetFlagConditionally(FlagType.C, value != 0);                     // (C)  (Set if borrow occured)
+            Registers.SetFlag(FlagType.N);                                              // (N)  (Unconditionally set)
+
+            Registers.SetFlagConditionally(FlagType.X, (result & 0x20) > 0);            // (X)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (result & 0x08) > 0);            // (Y)  (Undocumented flag)
+
+            LogInstructionExec("0x44: NEG");
         }
 
         private void INC_RR(byte operatingRegister)
@@ -182,6 +292,12 @@ namespace Z80Sharp.Processor
             LogInstructionExec($"0x{_currentInstruction:X2}: ADC ({Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4})");
         }
 
+        private void ADC_HL_RR(byte operatingRegister)
+        {
+            ADCHL(Registers.GetR16FromHighIndexer(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADC HL, {Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4}");
+        }
+
         private void SUB_R(byte operatingRegister)
         {
             SUBAny(Registers.RegisterSet[operatingRegister]);
@@ -212,6 +328,12 @@ namespace Z80Sharp.Processor
         {
             SBCAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
             LogInstructionExec($"0x{_currentInstruction:X2}: SBC ({Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4})");
+        }
+
+        private void SBC_HL_RR(byte operatingRegister)
+        {
+            SBCHL(Registers.GetR16FromHighIndexer(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction:X2}: SBC HL, {Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4}");
         }
     }
 }

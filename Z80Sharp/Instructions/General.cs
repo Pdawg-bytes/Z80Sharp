@@ -17,6 +17,7 @@ namespace Z80Sharp.Processor
         }
         private void HALT()
         {
+            LogInstructionExec("0x76: HALT");
             if (!Halted)
             {
                 Halted = true;

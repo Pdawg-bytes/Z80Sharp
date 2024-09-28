@@ -70,10 +70,6 @@ namespace Z80Sharp.Processor
                         ExecuteMainInstruction(); break;
                 }
             }
-            for (ushort i = 0; i < _memory.Length; i++)
-            {
-                //Console.WriteLine("0x"+_memory.Read(i).ToString("X2"));
-            }
         }
 
         public void Stop()
@@ -87,7 +83,7 @@ namespace Z80Sharp.Processor
             Halted = false;
 
             Registers.RegisterSet[A] = 0xFF;
-            Registers.RegisterSet[F] = 0b01010101;
+            Registers.RegisterSet[F] = 0xFF;
             Registers.RegisterSet[A_] = 0xFF;
             Registers.RegisterSet[F_] = 0xFF;
 
@@ -97,7 +93,7 @@ namespace Z80Sharp.Processor
 
             Registers.RegisterSet[I] = 0x00;
 
-            Registers.PC = 0;
+            Registers.PC = 0x0000;
             Registers.SP = 0xFFFF;
 
             Registers.InterruptMode = InterruptMode.IM0;
@@ -117,9 +113,38 @@ namespace Z80Sharp.Processor
             _memory.Write(0xA, 0xFF);
             _memory.Write(0xB, 0xEE);*/
 
-            _memory.Write(0x0, 0x3E);
-            _memory.Write(0x1, 0xF7);
-            _memory.Write(0x2, 0x27);
+            // Writes "Hello, world!" on to port 0
+            _memory.Write(0x0000, 0x21);
+            _memory.Write(0x0001, 0x12);
+            _memory.Write(0x0002, 0x00);
+            _memory.Write(0x0003, 0x3E);
+            _memory.Write(0x0004, 0x0E);
+            _memory.Write(0x0005, 0xD3);
+            _memory.Write(0x0006, 0x00);
+            _memory.Write(0x0007, 0x7E);
+            _memory.Write(0x0008, 0xFE);
+            _memory.Write(0x0009, 0x00);
+            _memory.Write(0x000A, 0x28);
+            _memory.Write(0x000B, 0x05);
+            _memory.Write(0x000C, 0xD3);
+            _memory.Write(0x000D, 0x00);
+            _memory.Write(0x000E, 0x23); 
+            _memory.Write(0x000F, 0x18);
+            _memory.Write(0x0010, 0xF6);
+            _memory.Write(0x0011, 0x76);
+            _memory.Write(0x0012, 0x48); 
+            _memory.Write(0x0013, 0x65); 
+            _memory.Write(0x0014, 0x6C);
+            _memory.Write(0x0015, 0x6C);
+            _memory.Write(0x0016, 0x6F); 
+            _memory.Write(0x0017, 0x2C); 
+            _memory.Write(0x0018, 0x20); 
+            _memory.Write(0x0019, 0x77);
+            _memory.Write(0x001A, 0x6F); 
+            _memory.Write(0x001B, 0x72);
+            _memory.Write(0x001C, 0x6C);
+            _memory.Write(0x001D, 0x64); 
+            _memory.Write(0x001E, 0x21); 
 
             /*_memory.Write(0, 0x3E);
             _memory.Write(1, 0xFF);

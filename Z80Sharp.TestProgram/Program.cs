@@ -7,6 +7,7 @@ using Z80Sharp.Registers;
 using static Z80Sharp.Registers.ProcessorRegisters;
 using System.Diagnostics;
 using Z80Sharp.Memory;
+using System.Text;
 
 namespace Z80Sharp
 {
@@ -22,7 +23,7 @@ namespace Z80Sharp
 
             IDataBus dataBus = new DataBus();
 
-            z80 = new Z80(new MainMemory(0x6), dataBus, logger, true);
+            z80 = new Z80(new MainMemory(65535), dataBus, logger, true);
             z80.Reset();
             Thread processorThread = new(() => z80.Run());
             processorThread.Start();
@@ -89,16 +90,28 @@ namespace Z80Sharp
         {
             public bool MI { get; set; } = false;
             public bool NMI { get; set; } = false;
-            public byte Data { get; set; } = 0x00;
+            public byte Data { get; set; }
 
             public byte ReadPort(ushort port)
             {
                 return 0x00;
             }
-
+            int i = 0;
+            byte len = 0;
+            byte[] chars = new byte[20];
             public void WritePort(ushort port, byte data)
             {
-
+                if (port == 0x00)
+                {
+                    if (i == 0) len = data;
+                    if (i > 0) chars[i - 1] = data;
+                    if (len - 1 <= i)
+                    {
+                        string receivedString = System.Text.Encoding.ASCII.GetString(chars, 0, len);
+                        Console.WriteLine($"Received data on PORT 0x{port:X}: {receivedString}");
+                    }
+                    i++;
+                }
             }
         }
     }

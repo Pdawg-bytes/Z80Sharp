@@ -186,6 +186,32 @@ namespace Z80Sharp.Processor
             Registers.ClearFlag(FlagType.N);
             // N is unconditionally reset as per page 166 of https://www.zilog.com/docs/z80/um0080.pdf
         }
+        /// <summary>
+        /// Adds <paramref name="operand"/> and <see cref="FlagType.C"/> to HL and sets flags accordingly.
+        /// </summary>
+        /// <param name="operand">The value to add to HL.</param>
+        private void ADCHL(ushort operand)
+        {
+            ushort regHL = Registers.HL;
+            byte carry = (byte)(Registers.RegisterSet[F] & 0b00000001);
+            int sum = regHL + operand + carry;
+            Registers.HL = (ushort)sum;
+
+            Registers.SetFlagConditionally(FlagType.S, (sum & 0x8000) != 0);                                    // (S) (check 15th bit for sign)
+            Registers.SetFlagConditionally(FlagType.Z, sum == 0);                                               // (Z) (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.H, (regHL & 0x0FFF) + (operand & 0x0FFF) + carry > 0x0FFF); // (H) (Set if borrow occurs from bit 11)
+
+            Registers.SetFlagConditionally(FlagType.PV,
+                (((regHL ^ operand) & 0x8000) == 0) && // Check if regHL and operand have the same sign
+                (((regHL ^ sum) & 0x8000) != 0));      // Check if the sum has a different sign from regHL
+
+            Registers.SetFlagConditionally(FlagType.C, (sum & 0x10000) != 0); // (C) (Set if carry from bit 15)
+            Registers.ClearFlag(FlagType.N); // N is reset unconditionally for ADD operations
+
+            Registers.SetFlagConditionally(FlagType.X, (sum & 0x2000) != 0); // (X) Copy of bit 5
+            Registers.SetFlagConditionally(FlagType.Y, (sum & 0x0800) != 0); // (Y) Copy of bit 3
+        }
+
 
         /// <summary>
         /// Subtracts <paramref name="operand"/> from A and sets flags accordingly.
@@ -206,9 +232,9 @@ namespace Z80Sharp.Processor
                 && 
                 (((regA ^ diff) & 0x80) != 0));  // Check if diff. has a different sign from regA 
 
-            Registers.SetFlagConditionally(FlagType.C, regA < operand); // (C) (Set if no borrow from bit 8)
-            Registers.ClearFlag(FlagType.N);
-            // N is unconditionally reset as per page 160 of https://www.zilog.com/docs/z80/um0080.pdf
+            Registers.SetFlagConditionally(FlagType.C, regA < operand); // (C) (Set if borrow from bit 8)
+            Registers.SetFlag(FlagType.N);
+            // N is unconditionally set as per page 160 of https://www.zilog.com/docs/z80/um0080.pdf
         }
         /// <summary>
         /// Subtracts <paramref name="operand"/> and Carry flag from A and sets flags accordingly.
@@ -230,9 +256,35 @@ namespace Z80Sharp.Processor
                 && 
                 (((regA ^ diff) & 0x80) != 0));  // Check if diff. has a different sign from regA
 
-            Registers.SetFlagConditionally(FlagType.C, regA < (operand + carry)); // (C) (Set if no borrow from bit 8)
-            Registers.ClearFlag(FlagType.N);
-            // N is unconditionally reset as per page 160 of https://www.zilog.com/docs/z80/um0080.pdf
+            Registers.SetFlagConditionally(FlagType.C, regA < (operand + carry)); // (C) (Set if borrow from bit 8)
+            Registers.SetFlag(FlagType.N);
+            // N is unconditionally set as per page 160 of https://www.zilog.com/docs/z80/um0080.pdf
+        }
+        /// <summary>
+        /// Subtracts <paramref name="operand"/> and Carry flag from HL and sets flags accordingly.
+        /// </summary>
+        /// <param name="operand">The value to subtract from HL.</param>
+        private void SBCHL(ushort operand)
+        {
+            ushort regHL = Registers.HL;
+            byte carry = (byte)(Registers.RegisterSet[F] & 0b00000001);
+            int diff = Registers.HL - operand - carry;
+            Registers.HL = (ushort)diff;
+
+            Registers.SetFlagConditionally(FlagType.S, (diff & 0x8000) != 0);                          // (S) (check 15th bit for sign)
+            Registers.SetFlagConditionally(FlagType.Z, diff == 0);                                     // (Z) (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.H, (regHL & 0x0FFF) < (operand & 0x0FFF) + carry); // (H) (Set if borrow occurs from bit 11)
+
+            Registers.SetFlagConditionally(FlagType.PV, 
+                (((regHL ^ operand) & 0x8000) != 0) // 
+                && 
+                (((regHL ^ diff) & 0x8000) != 0));
+
+            Registers.SetFlagConditionally(FlagType.C, regHL < (operand + carry)); // (C) (Set if borrow from bit 15)
+            Registers.SetFlag(FlagType.N); // N is set unconditionally for SUB operations
+
+            Registers.SetFlagConditionally(FlagType.X, (diff & 0x2000) != 0); // (X) Copy of bit 5
+            Registers.SetFlagConditionally(FlagType.Y, (diff & 0x0800) != 0); // (Y) Copy of bit 3
         }
     }
 }
