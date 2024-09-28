@@ -86,5 +86,11 @@ namespace Z80Sharp.Processor
             Registers.IFF1 = Registers.IFF2 = true;
             LogInstructionExec("0xFB: EI");
         }
+
+        private void IM_M(InterruptMode mode)
+        {
+            Registers.InterruptMode = mode;
+            LogInstructionExec($"{Registers.InterruptModeName(mode)}");
+        }
     }
 }

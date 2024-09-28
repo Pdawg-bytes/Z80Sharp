@@ -113,11 +113,19 @@ namespace Z80Sharp.Processor
         private void RST_HH(byte pcStart)
         {
             ushort sp = Registers.SP;
-            _memory.Write(--sp, Registers.RegisterSet[PCi + 1]);
             _memory.Write(--sp, Registers.RegisterSet[PCi]);
+            _memory.Write(--sp, Registers.RegisterSet[PCi + 1]);
             Registers.SP = sp;
             Registers.PC = pcStart;
             LogInstructionExec($"0x{_currentInstruction:X2}: RST 0x{pcStart:X4}");
+        }
+        private void RST_HH_SILENT(byte pcStart)
+        {
+            ushort sp = Registers.SP;
+            _memory.Write(--sp, Registers.RegisterSet[PCi]);
+            _memory.Write(--sp, Registers.RegisterSet[PCi + 1]);
+            Registers.SP = sp;
+            Registers.PC = pcStart;
         }
 
 
@@ -125,8 +133,8 @@ namespace Z80Sharp.Processor
         {
             ushort jumpTo = FetchImmediateWord();
             ushort sp = Registers.SP;
-            _memory.Write(--sp, Registers.RegisterSet[PCi + 1]);
             _memory.Write(--sp, Registers.RegisterSet[PCi]);
+            _memory.Write(--sp, Registers.RegisterSet[PCi + 1]);
             Registers.SP = sp;
             Registers.PC = jumpTo;
             LogInstructionExec($"0x{_currentInstruction:X2}: CALL NN:0x{jumpTo:X4}");

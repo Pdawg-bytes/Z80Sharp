@@ -6,6 +6,7 @@ using Z80Sharp.Interfaces;
 using Z80Sharp.Registers;
 using static Z80Sharp.Registers.ProcessorRegisters;
 using System.Diagnostics;
+using Z80Sharp.Memory;
 
 namespace Z80Sharp
 {
@@ -13,12 +14,15 @@ namespace Z80Sharp
     {
         private static bool quitRequested = false;
         private static IZ80Logger logger = new Logger(useColors: true);
-        private static Z80 z80 = new Z80(0x6, logger, true);
+        private static Z80 z80;
 
         public static void Main(string[] args)
         {
             logger.LogGenerated += Logger_LogGenerated;
 
+            IDataBus dataBus = new DataBus();
+
+            z80 = new Z80(new MainMemory(0x6), dataBus, logger, true);
             z80.Reset();
             Thread processorThread = new(() => z80.Run());
             processorThread.Start();
@@ -80,6 +84,22 @@ namespace Z80Sharp
             Console.WriteLine($"\n{Colors.LIGHT_BLUE}Operating registers{Colors.ANSI_RESET}");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}PC:{Colors.ANSI_RESET} 0x{registers.PC.ToString("X").PadLeft(4, '0')}");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}SP:{Colors.ANSI_RESET} 0x{registers.SP.ToString("X").PadLeft(4, '0')}");
+        }
+        private class DataBus : IDataBus
+        {
+            public bool MI { get; set; } = false;
+            public bool NMI { get; set; } = false;
+            public byte Data { get; set; } = 0x00;
+
+            public byte ReadPort(ushort port)
+            {
+                return 0x00;
+            }
+
+            public void WritePort(ushort port, byte data)
+            {
+
+            }
         }
     }
 }

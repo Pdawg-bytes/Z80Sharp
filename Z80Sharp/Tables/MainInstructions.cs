@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Z80Sharp.Registers.ProcessorRegisters;
+﻿using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    // Z80 Instruction Tables
     public partial class Z80
     {
         private void ExecuteMainInstruction()
@@ -21,6 +15,10 @@ namespace Z80Sharp.Processor
                 case 0x2F: CPL(); break; // CPL
 
                 case 0x27: DAA(); break; // DAA
+
+                // I/O instructions: I/O on ports with Accumulator
+                case 0xD3: OUT_NPORT_A(); break; // OUT (N), A
+                case 0xDB: IN_A_NPORT(); break;  // IN A, (N)
 
                 // Rotate/Shift instructions: Perform single-bit operations on the Accumulator and copy result to C flag.
                 case 0x07: RLCA(); break; // RLCA
@@ -334,26 +332,6 @@ namespace Z80Sharp.Processor
                     Halted = true;
                     break;
             }
-        }
-
-        private void ExecuteMiscInstruction()
-        {
-            _logger.Log(Enums.LogSeverity.Decode, $"MISC decoded: 0x{_currentInstruction:X2}");
-        }
-
-        private void ExecuteBitInstruction()
-        {
-            _logger.Log(Enums.LogSeverity.Decode, $"BIT decoded: 0x{_currentInstruction:X2}");
-        }
-
-        private void ExecuteIndexXInstruction()
-        {
-            _logger.Log(Enums.LogSeverity.Decode, $"INXR decoded: 0x{_currentInstruction:X2}");
-        }
-
-        private void ExecuteIndexYInstruction()
-        {
-            _logger.Log(Enums.LogSeverity.Decode, $"INYR decoded: 0x{_currentInstruction:X2}");
         }
     }
 }

@@ -44,5 +44,12 @@ namespace Z80Sharp.Processor
             Registers.SP = sp;
             LogInstructionExec($"0xF5: PUSH AF");
         }
+        private void PUSH_PC()
+        {
+            ushort sp = Registers.SP;
+            _memory.Write(--sp, Registers.RegisterSet[PCi]);
+            _memory.Write(--sp, Registers.RegisterSet[PCi + 1]);
+            Registers.SP = sp;
+        }
     }
 }

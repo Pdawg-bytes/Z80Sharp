@@ -9,8 +9,9 @@ namespace Z80Sharp.Processor
 {
     public partial class Z80 /*: IProcessor*/
     {
-        private MainMemory _memory;
+        private readonly IMemory _memory;
         private readonly IZ80Logger _logger;
+        private readonly IDataBus _dataBus;
 
         public bool IsDebug { get; init; }
 
@@ -35,10 +36,12 @@ namespace Z80Sharp.Processor
                 }
             }
         }
+        private void UnhaltIfHalted() { if(_halted) Halted = false; }
 
-        public Z80(ushort memSize, IZ80Logger logger, bool isDebug)
+        public Z80(IMemory memory, IDataBus dataBus, IZ80Logger logger, bool isDebug)
         {
-            _memory = new MainMemory(memSize);
+            _memory = memory;
+            _dataBus = dataBus;
             _logger = logger;
             IsDebug = isDebug;
         }
@@ -47,6 +50,9 @@ namespace Z80Sharp.Processor
         {
             while (Registers.PC < _memory.Length)
             {
+                HandleInterrupts();
+                if (_halted) { break; }
+
                 _currentInstruction = Fetch();
 
                 switch (_currentInstruction)
@@ -143,6 +149,16 @@ namespace Z80Sharp.Processor
         private void LogInstructionExec(string instruction)
         {
             _logger.Log(LogSeverity.Execution, instruction);
+        }
+
+        /// <summary>
+        /// Logs an interrupt.
+        /// </summary>
+        /// <param name="interruptName">The type of interrupt that was triggered.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void LogInterrupt(string interruptName)
+        {
+            _logger.Log(LogSeverity.Interrupt, interruptName);
         }
         #endregion
 

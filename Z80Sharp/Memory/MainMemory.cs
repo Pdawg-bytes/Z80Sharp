@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Z80Sharp.Helpers;
+﻿using Z80Sharp.Helpers;
+using Z80Sharp.Interfaces;
 
 namespace Z80Sharp.Memory
 {
-    public class MainMemory
+    public class MainMemory : IMemory
     {
         private byte[] _memory { get; set; }
 

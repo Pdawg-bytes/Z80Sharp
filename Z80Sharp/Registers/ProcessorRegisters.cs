@@ -117,6 +117,15 @@ namespace Z80Sharp.Registers
         }
 
 
+        public string InterruptModeName(InterruptMode interruptMode) => interruptMode switch
+        {
+            InterruptMode.IM0 => "IM0",
+            InterruptMode.IM1 => "IM1",
+            InterruptMode.IM2 => "IM2",
+            _ => "UNKNOWN INTERRUPT MODE"
+        };
+
+
         public byte[] RegisterSet { get; init; }
 
         public bool IFF1 { get; set; }
