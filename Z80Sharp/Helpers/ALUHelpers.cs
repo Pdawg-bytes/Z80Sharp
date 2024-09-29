@@ -102,18 +102,18 @@ namespace Z80Sharp.Processor
         private void CMPAny(byte operand)
         {
             byte regA = Registers.RegisterSet[A];
-            byte diff = (byte)(regA - operand);
+            int diff = regA - operand;
 
             Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) != 0);             // (S) (check 7th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, diff == 0);                      // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < (operand & 0xF)); // (H) (Set if borrow occurs from bit 4)
 
             Registers.SetFlagConditionally(FlagType.PV,
-                (((regA ^ operand) & 0x80) == 0) // Check if regA and operand have the same sign (both positive or both negative)
-                && 
-                (((regA ^ diff) & 0x80) != 0));  // Check if diff. has a different sign from regA
+                ((regA ^ operand) & 0x80) != 0 // regA and operand have different signs
+                &&    
+                ((regA ^ diff) & 0x80) != 0);  // regA and result have different signs (indicating overflow)
 
-            Registers.SetFlagConditionally(FlagType.C, (diff & 0x100) != 0); // (C) (Set if borrow occurs from bit 8)
+            Registers.SetFlagConditionally(FlagType.C, operand > regA);
             Registers.SetFlag(FlagType.N);
             // N is unconditionally set as per page 178 of https://www.zilog.com/docs/z80/um0080.pdf
         }

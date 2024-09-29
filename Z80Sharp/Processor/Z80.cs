@@ -135,7 +135,7 @@ namespace Z80Sharp.Processor
             _memory.Write(0x001E, 0x21); */
 
             // I/O Test
-            string hexString = "31 00 FF DB FE FE 00 CA 03 00 FE 0D CA 13 00 F5 C3 03 00 F1 D3 00 FE 00 C2 13 00 C3 1E 00 3E 0A D3 00 76";
+            string hexString = "31 00 FF 21 48 00 CD 39 00 21 F0 EF CD 15 00 23 36 00 C3 2C 00 DB FE FE 00 CA 15 00 FE 0D C8 77 23 7D FE 64 38 03 21 F0 EF C3 15 00 3E 0A D3 00 21 F0 EF CD 39 00 C3 43 00 7E FE 00 C8 D3 00 23 C2 39 00 3E 0A D3 00 76 45 6E 74 65 72 20 69 6E 70 75 74 3A 20";
             string[] hexBytes = hexString.Split(' ');
 
             ushort address = 0x0000;

@@ -6,9 +6,11 @@ namespace Z80Sharp.Processor
     {
         private void ExecuteBitInstruction()
         {
-            _logger.Log(Enums.LogSeverity.Decode, $"BIT decoded: 0x{_currentInstruction:X2}");
+            //_logger.Log(Enums.LogSeverity.Decode, $"BIT decoded: 0x{_currentInstruction:X2}");
             switch (Fetch())
             {
+
+
                 default:
                     _logger.Log(Enums.LogSeverity.Fatal, $"Unrecognized BIT opcode: 0x{_currentInstruction:X2}");
                     Halted = true;
