@@ -101,20 +101,8 @@ namespace Z80Sharp.Processor
             Registers.IFF1 = false;
             Registers.IFF2 = false;
 
-            // temp
-            /*_memory.Write(0x0000, 0x21);
-            _memory.Write(0x0001, 0x34);
-            _memory.Write(0x0002, 0x12);
-            _memory.Write(0x0003, 0x31);
-            _memory.Write(0x0004, 0xA);
-            _memory.Write(0x0005, 0x00);
-            _memory.Write(0x0006, 0xE3);
-            _memory.Write(0x0007, 0x00);
-            _memory.Write(0xA, 0xFF);
-            _memory.Write(0xB, 0xEE);*/
-
             // Writes "Hello, world!" on to port 0
-            _memory.Write(0x0000, 0x21);
+            /*_memory.Write(0x0000, 0x21);
             _memory.Write(0x0001, 0x12);
             _memory.Write(0x0002, 0x00);
             _memory.Write(0x0003, 0x3E);
@@ -144,13 +132,21 @@ namespace Z80Sharp.Processor
             _memory.Write(0x001B, 0x72);
             _memory.Write(0x001C, 0x6C);
             _memory.Write(0x001D, 0x64); 
-            _memory.Write(0x001E, 0x21); 
+            _memory.Write(0x001E, 0x21); */
 
-            /*_memory.Write(0, 0x3E);
-            _memory.Write(1, 0xFF);
-            _memory.Write(2, 0x47);
-            _memory.Write(3, 0x00);
-            _memory.Write(4, 0x00);*/
+            // I/O Test
+            string hexString = "31 00 FF DB FE FE 00 CA 03 00 FE 0D CA 13 00 F5 C3 03 00 F1 D3 00 FE 00 C2 13 00 C3 1E 00 3E 0A D3 00 76";
+            string[] hexBytes = hexString.Split(' ');
+
+            ushort address = 0x0000;
+
+            for (int i = 0; i < hexBytes.Length; i++)
+            {
+                byte value = Convert.ToByte(hexBytes[i], 16);
+                _memory.Write(address, value);
+
+                address++;
+            }
 
             _logger.Log(LogSeverity.Info, "Processor reset");
         }
@@ -173,7 +169,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LogInstructionExec(string instruction)
         {
-            _logger.Log(LogSeverity.Execution, instruction);
+            //_logger.Log(LogSeverity.Execution, instruction);
         }
 
         /// <summary>
@@ -196,7 +192,7 @@ namespace Z80Sharp.Processor
         private byte Fetch()
         {
             byte val = _memory.Read(Registers.PC);
-            _logger.Log(LogSeverity.Memory, $"READ at 0x{Registers.PC.ToString("X")} -> 0x{val.ToString("X")}");
+            //_logger.Log(LogSeverity.Memory, $"READ at 0x{Registers.PC.ToString("X")} -> 0x{val.ToString("X")}");
             Registers.PC++;
             return val;
         }
@@ -208,7 +204,7 @@ namespace Z80Sharp.Processor
         private byte FetchLast()
         {
             byte val = _memory.Read((ushort)(Registers.PC - 1));
-            _logger.Log(LogSeverity.Memory, $"LREAD at 0x{((ushort)(Registers.PC - 1)).ToString("X")} -> 0x{val:X2}");
+            //_logger.Log(LogSeverity.Memory, $"LREAD at 0x{((ushort)(Registers.PC - 1)).ToString("X")} -> 0x{val:X2}");
             return val;
         }
 

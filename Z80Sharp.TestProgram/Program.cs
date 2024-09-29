@@ -28,7 +28,7 @@ namespace Z80Sharp
             Thread processorThread = new(() => z80.Run());
             processorThread.Start();
 
-            ReadConsoleInput();
+            //ReadConsoleInput();
         }
 
         private static void Logger_LogGenerated(object? sender, Events.LogGeneratedEventArgs e)
@@ -94,23 +94,25 @@ namespace Z80Sharp
 
             public byte ReadPort(ushort port)
             {
-                return 0x00;
+                _key = Console.ReadKey();
+                return (byte)_key.KeyChar;
             }
             int i = 0;
             byte len = 0;
             byte[] chars = new byte[20];
             public void WritePort(ushort port, byte data)
             {
-                if (port == 0x00)
+                if ((port & 0x00FF) == 0x00)
                 {
-                    if (i == 0) len = data;
-                    if (i > 0) chars[i - 1] = data;
+                    /*
                     if (len - 1 <= i)
                     {
                         string receivedString = System.Text.Encoding.ASCII.GetString(chars, 0, len);
                         Console.WriteLine($"Received data on PORT 0x{port:X}: {receivedString}");
                     }
-                    i++;
+                    i++;*/
+
+                    Console.Write((char)data);
                 }
             }
         }

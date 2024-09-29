@@ -83,10 +83,9 @@ namespace Z80Sharp.Processor
 
         private void OUT_NPORT_A()
         {
-            // this is bugged fix later
-            ushort port = (ushort)(Fetch() + (Registers.RegisterSet[A] << 8));
+            ushort port = (ushort)((Registers.RegisterSet[A] << 8) | Fetch());
             _dataBus.WritePort(port, Registers.RegisterSet[A]);
-            LogInstructionExec($"0xD3: OUT (N:0x{port:X4}), A");
+            LogInstructionExec($"0xD3: OUT (N:0x{(port & 0x00FF):X2}), A");
         }
         private void OUT_CPORT_R(byte operatingRegister)
         {
