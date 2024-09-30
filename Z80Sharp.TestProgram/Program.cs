@@ -9,7 +9,7 @@ using System.Diagnostics;
 using Z80Sharp.Memory;
 using System.Text;
 
-namespace Z80Sharp
+namespace Z80Sharp.TestProgram
 {
     public static class Program
     {

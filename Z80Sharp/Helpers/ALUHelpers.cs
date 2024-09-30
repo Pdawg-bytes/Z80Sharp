@@ -109,9 +109,9 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < (operand & 0xF)); // (H) (Set if borrow occurs from bit 4)
 
             Registers.SetFlagConditionally(FlagType.PV,
-                ((regA ^ operand) & 0x80) != 0 // regA and operand have different signs
+                ((regA ^ operand) & 0x80) != 0          // regA and operand have different signs
                 &&    
-                ((regA ^ diff) & 0x80) != 0);  // regA and result have different signs (indicating overflow)
+                ((operand ^ (byte)diff) & 0x80) == 0);  // operand and result have same signs
 
             Registers.SetFlagConditionally(FlagType.C, operand > regA);
             Registers.SetFlag(FlagType.N);

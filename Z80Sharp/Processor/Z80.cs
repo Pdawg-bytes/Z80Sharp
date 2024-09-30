@@ -102,40 +102,10 @@ namespace Z80Sharp.Processor
             Registers.IFF2 = false;
 
             // Writes "Hello, world!" on to port 0
-            /*_memory.Write(0x0000, 0x21);
-            _memory.Write(0x0001, 0x12);
-            _memory.Write(0x0002, 0x00);
-            _memory.Write(0x0003, 0x3E);
-            _memory.Write(0x0004, 0x0E);
-            _memory.Write(0x0005, 0xD3);
-            _memory.Write(0x0006, 0x00);
-            _memory.Write(0x0007, 0x7E);
-            _memory.Write(0x0008, 0xFE);
-            _memory.Write(0x0009, 0x00);
-            _memory.Write(0x000A, 0x28);
-            _memory.Write(0x000B, 0x05);
-            _memory.Write(0x000C, 0xD3);
-            _memory.Write(0x000D, 0x00);
-            _memory.Write(0x000E, 0x23); 
-            _memory.Write(0x000F, 0x18);
-            _memory.Write(0x0010, 0xF6);
-            _memory.Write(0x0011, 0x76);
-            _memory.Write(0x0012, 0x48); 
-            _memory.Write(0x0013, 0x65); 
-            _memory.Write(0x0014, 0x6C);
-            _memory.Write(0x0015, 0x6C);
-            _memory.Write(0x0016, 0x6F); 
-            _memory.Write(0x0017, 0x2C); 
-            _memory.Write(0x0018, 0x20); 
-            _memory.Write(0x0019, 0x77);
-            _memory.Write(0x001A, 0x6F); 
-            _memory.Write(0x001B, 0x72);
-            _memory.Write(0x001C, 0x6C);
-            _memory.Write(0x001D, 0x64); 
-            _memory.Write(0x001E, 0x21); */
+            // string helloWorld = "21 12 00 3E 0E D3 00 7E FE 00 28 05 D3 00 23 18 F6 76 48 65 6C 6C 6F 2C 20 77 6F 72 6C 64 21";
 
             // I/O Test
-            string hexString = "31 00 FF 21 48 00 CD 39 00 21 F0 EF CD 15 00 23 36 00 C3 2C 00 DB FE FE 00 CA 15 00 FE 0D C8 77 23 7D FE 64 38 03 21 F0 EF C3 15 00 3E 0A D3 00 21 F0 EF CD 39 00 C3 43 00 7E FE 00 C8 D3 00 23 C2 39 00 3E 0A D3 00 76 45 6E 74 65 72 20 69 6E 70 75 74 3A 20";
+            string hexString = "31 00 FF 21 4B 00 CD 3C 00 21 00 EF 06 40 CD 14 00 C3 2F 00 DB FE FE 00 CA 14 00 FE 0D C8 77 23 05 CA 27 00 C3 14 00 21 00 EF 06 40 C3 14 00 3E 0A D3 00 21 00 EF CD 3C 00 C3 46 00 7E FE 00 C8 D3 00 23 C2 3C 00 3E 0A D3 00 76 45 6E 74 65 72 20 69 6E 70 75 74 3A 20";
             string[] hexBytes = hexString.Split(' ');
 
             ushort address = 0x0000;
