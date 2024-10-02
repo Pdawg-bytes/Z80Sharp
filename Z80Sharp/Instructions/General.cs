@@ -69,6 +69,15 @@ namespace Z80Sharp.Processor
             _memory.WriteWord(sp, oldHl);
             LogInstructionExec("0xE3: EX (SP), HL");
         }
+        private void EX_SPMEM_IR(byte indexAddressingMode)
+        {
+            ushort sp = Registers.SP;
+            ushort oldIr = Registers.GetR16FromHighIndexer(indexAddressingMode);
+            Registers.RegisterSet[indexAddressingMode] = _memory.Read(sp++);
+            Registers.RegisterSet[indexAddressingMode + 1] = _memory.Read(sp);
+            _memory.WriteWord(sp, oldIr);
+            LogInstructionExec("0xE3: EX (SP), HL");
+        }
         private void EXX()
         {
             Registers.R16Exchange(B, B_);

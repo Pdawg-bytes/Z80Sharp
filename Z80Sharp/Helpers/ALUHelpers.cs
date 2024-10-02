@@ -16,7 +16,7 @@ namespace Z80Sharp.Processor
         /// </summary>
         /// <param name="increment">The value that will be incremented.</param>
         /// <returns>The incremented value.</returns>
-        private byte INCWithFlags(byte increment)
+        private byte INCAny(byte increment)
         {
             // https://www.zilog.com/docs/z80/um0080.pdf Flags detailed on page 179.
             byte sum = (byte)(increment + 1);
@@ -34,7 +34,7 @@ namespace Z80Sharp.Processor
         /// </summary>
         /// <param name="decrement">The value that will be decremented.</param>
         /// <returns>The decremented value.</returns>
-        private byte DECWithFlags(byte decrement)
+        private byte DECAny(byte decrement)
         {
             // https://www.zilog.com/docs/z80/um0080.pdf Flags detailed on page 185.
             byte diff = (byte)(decrement - 1);

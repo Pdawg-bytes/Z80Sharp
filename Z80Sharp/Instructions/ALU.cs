@@ -164,12 +164,12 @@ namespace Z80Sharp.Processor
         }
         private void INC_R(byte operatingRegister)
         {
-            Registers.RegisterSet[operatingRegister] = INCWithFlags(Registers.RegisterSet[operatingRegister]);
+            Registers.RegisterSet[operatingRegister] = INCAny(Registers.RegisterSet[operatingRegister]);
             LogInstructionExec($"0x{_currentInstruction:X2}: INC {Registers.RegisterName(operatingRegister)}");
         }
         private void INC_HLMEM()
         {
-            _memory.Write(Registers.HL, INCWithFlags(_memory.Read(Registers.HL)));
+            _memory.Write(Registers.HL, INCAny(_memory.Read(Registers.HL)));
             LogInstructionExec($"0x34: INC (HL:0x{Registers.HL:X4})");
         }
 
@@ -182,12 +182,12 @@ namespace Z80Sharp.Processor
         }
         private void DEC_R(byte operatingRegister)
         {
-            Registers.RegisterSet[operatingRegister] = DECWithFlags(Registers.RegisterSet[operatingRegister]);
+            Registers.RegisterSet[operatingRegister] = DECAny(Registers.RegisterSet[operatingRegister]);
             LogInstructionExec($"0x{_currentInstruction:X2}: DEC {Registers.RegisterName(operatingRegister)}");
         }
         private void DEC_HLMEM()
         {
-            _memory.Write(Registers.HL, DECWithFlags(_memory.Read(Registers.HL)));
+            _memory.Write(Registers.HL, DECAny(_memory.Read(Registers.HL)));
             LogInstructionExec($"0x35: DEC (HL:0x{Registers.HL:X4})");
         }
 
