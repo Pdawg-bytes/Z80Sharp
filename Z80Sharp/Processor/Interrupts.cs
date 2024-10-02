@@ -49,7 +49,7 @@ namespace Z80Sharp.Processor
                     PUSH_PC_SILENT();
                     byte interruptVector = _dataBus.Data;
                     ushort vectorAddress = (ushort)((Registers.RegisterSet[I] << 8) + interruptVector);
-                    Registers.PC = _memory.Read(vectorAddress);
+                    Registers.PC = _memory.ReadWord(vectorAddress);
                     LogInterrupt("MI Mode 2");
                     break;
             }

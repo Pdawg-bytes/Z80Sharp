@@ -131,20 +131,20 @@ namespace Z80Sharp.Registers
         #region Index register pairs
         public ushort IX
         {
-            get => (ushort)(RegisterSet[IXi] << 8 | RegisterSet[IXi + 1]);
+            get => (ushort)(RegisterSet[IXh] << 8 | RegisterSet[IXl]);
             set
             {
-                RegisterSet[IXi] = (byte)(value >> 8);
-                RegisterSet[IXi + 1] = (byte)(value & 0xFF);
+                RegisterSet[IXh] = (byte)(value >> 8);
+                RegisterSet[IXl] = (byte)(value & 0xFF);
             }
         }
         public ushort IY
         {
-            get => (ushort)(RegisterSet[IYi] << 8 | RegisterSet[IYi + 1]);
+            get => (ushort)(RegisterSet[IYh] << 8 | RegisterSet[IYl]);
             set
             {
-                RegisterSet[IYi] = (byte)(value >> 8);
-                RegisterSet[IYi + 1] = (byte)(value & 0xFF);
+                RegisterSet[IYh] = (byte)(value >> 8);
+                RegisterSet[IYl] = (byte)(value & 0xFF);
             }
         }
         #endregion

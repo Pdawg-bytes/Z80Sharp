@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DataBus\" />
+    <Compile Remove="DataBus\**" />
+    <EmbeddedResource Remove="DataBus\**" />
+    <None Remove="DataBus\**" />
   </ItemGroup>
 
 </Project>

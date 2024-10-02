@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Z80Sharp.Enums;
 using static Z80Sharp.Registers.ProcessorRegisters;
-using static Z80Sharp.Helpers.FlagHelpers;
 using System.Xml.Serialization;
 
 namespace Z80Sharp.Processor
@@ -208,8 +207,8 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.C, (sum & 0x10000) != 0); // (C) (Set if carry from bit 15)
             Registers.ClearFlag(FlagType.N); // N is reset unconditionally for ADD operations
 
-            Registers.SetFlagConditionally(FlagType.X, (sum & 0x2000) != 0); // (X) Copy of bit 5
-            Registers.SetFlagConditionally(FlagType.Y, (sum & 0x0800) != 0); // (Y) Copy of bit 3
+            Registers.SetFlagConditionally(FlagType.X, (sum & 0x2000) != 0); // (X) (Copy of bit 13)
+            Registers.SetFlagConditionally(FlagType.Y, (sum & 0x0800) != 0); // (Y) (Copy of bit 11)
         }
 
 
@@ -283,8 +282,8 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.C, regHL < (operand + carry)); // (C) (Set if borrow from bit 15)
             Registers.SetFlag(FlagType.N); // N is set unconditionally for SUB operations
 
-            Registers.SetFlagConditionally(FlagType.X, (diff & 0x2000) != 0); // (X) Copy of bit 5
-            Registers.SetFlagConditionally(FlagType.Y, (diff & 0x0800) != 0); // (Y) Copy of bit 3
+            Registers.SetFlagConditionally(FlagType.X, (diff & 0x2000) != 0); // (X) (Copy of bit 13)
+            Registers.SetFlagConditionally(FlagType.Y, (diff & 0x0800) != 0); // (Y) (Copy of bit 11)
         }
     }
 }

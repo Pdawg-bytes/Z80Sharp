@@ -58,9 +58,9 @@ namespace Z80Sharp.Processor
                 switch (_currentInstruction)
                 {
                     case 0xDD:
-                        ExecuteIndexXInstruction(); break;
+                        ExecuteIndexRInstruction(AddressingMode.IndexX); break;
                     case 0xFD:
-                        ExecuteIndexYInstruction(); break;
+                        ExecuteIndexRInstruction(AddressingMode.IndexY); break;
                     case 0xED:
                         ExecuteMiscInstruction(); break;
                     case 0xCB:
@@ -105,7 +105,8 @@ namespace Z80Sharp.Processor
             // string helloWorld = "21 12 00 3E 0E D3 00 7E FE 00 28 05 D3 00 23 18 F6 76 48 65 6C 6C 6F 2C 20 77 6F 72 6C 64 21";
 
             // I/O Test
-            string hexString = "31 00 FF 21 4B 00 CD 3C 00 21 00 EF 06 40 CD 14 00 C3 2F 00 DB FE FE 00 CA 14 00 FE 0D C8 77 23 05 CA 27 00 C3 14 00 21 00 EF 06 40 C3 14 00 3E 0A D3 00 21 00 EF CD 3C 00 C3 46 00 7E FE 00 C8 D3 00 23 C2 3C 00 3E 0A D3 00 76 45 6E 74 65 72 20 69 6E 70 75 74 3A 20";
+            //string hexString = "31 00 FF 21 4B 00 CD 3C 00 21 00 EF 06 40 CD 14 00 C3 2F 00 DB FE FE 00 CA 14 00 FE 0D C8 77 23 05 CA 27 00 C3 14 00 21 00 EF 06 40 C3 14 00 3E 0A D3 00 21 00 EF CD 3C 00 C3 46 00 7E FE 00 C8 D3 00 23 C2 3C 00 3E 0A D3 00 76 45 6E 74 65 72 20 69 6E 70 75 74 3A 20";
+            string hexString = "0xDD 0x21 0xFF 0xD2";
             string[] hexBytes = hexString.Split(' ');
 
             ushort address = 0x0000;
@@ -139,7 +140,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LogInstructionExec(string instruction)
         {
-            //_logger.Log(LogSeverity.Execution, instruction);
+            _logger.Log(LogSeverity.Execution, instruction);
         }
 
         /// <summary>

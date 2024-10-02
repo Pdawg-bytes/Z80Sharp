@@ -18,7 +18,8 @@ namespace Z80Sharp.Registers
             { B, "BC" }, { C, "BC" }, { B_, "BC'" }, { C_, "BC'" },
             { D, "DE" }, { E, "DE" }, { D_, "DE'" }, { E_, "DE'" },
             { H, "HL" }, { L, "HL" }, { H_, "HL'" }, { L_, "HL'" },
-            { IXi, "IX" }, { IYi, "IY" }, { SPi, "SP" }, { PCi, "PC" }
+            { IXh, "IX" }, { IXl, "IX" }, { IYh, "IY" }, { IYl, "IY" },
+            { SPi, "SP" }, { PCi, "PC" }
         };
 
         private static readonly Dictionary<byte, string> _lowBitRegisters = new()
@@ -27,6 +28,7 @@ namespace Z80Sharp.Registers
             { B, "B" }, { C, "C" }, { B_, "B'" }, { C_, "C'" },
             { D, "D" }, { E, "E" }, { D_, "D'" }, { E_, "E'" },
             { H, "H" }, { L, "L" }, { H_, "H'" }, { L_, "L'" },
+            { IXh, "IXH" }, { IXl, "IXL" }, { IYh, "IYH" }, { IYl, "IYL" },
             { I, "I" }, { R, "R" }
         };
 
@@ -234,19 +236,22 @@ namespace Z80Sharp.Registers
 
         #region Index register indexers
         /// <summary>
-        /// The index X register indexer.
+        /// The index X register high indexer.
         /// </summary>
-        /// <remarks>
-        /// This register is 16-bit only, therefore, it is 2 bytes wide.
-        /// </remarks>
-        public const byte IXi = 18;
+        public const byte IXh = 18;
+
         /// <summary>
-        /// The index Y register indexer.
+        /// The index X register low indexer.
         /// </summary>
-        /// <remarks>
-        /// This register is 16-bit only, therefore, it is 2 bytes wide.
-        /// </remarks>
-        public const byte IYi = 20;
+        public const byte IXl = 19;
+        /// <summary>
+        /// The index Y register high indexer.
+        /// </summary>
+        public const byte IYh = 20;
+        /// <summary>
+        /// The index Y register low indexer.
+        /// </summary>
+        public const byte IYl = 21;
         #endregion
 
 

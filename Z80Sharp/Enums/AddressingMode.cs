@@ -12,7 +12,7 @@ namespace Z80Sharp.Enums
     public enum AddressingMode : byte
     {
         Regular = 0,
-        IndexX = 0xDD,
-        IndexY = 0xFD
+        IndexX = 18,
+        IndexY = 20
     }
 }

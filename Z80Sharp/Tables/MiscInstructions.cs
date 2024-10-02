@@ -8,7 +8,9 @@ namespace Z80Sharp.Processor
         private void ExecuteMiscInstruction()
         {
             _logger.Log(Enums.LogSeverity.Decode, "MISC table");
-            switch (Fetch())
+            byte instruction = Fetch();
+            _currentInstruction = instruction;
+            switch (instruction)
             {
                 case 0x44: NEG(); break; // NEG
 

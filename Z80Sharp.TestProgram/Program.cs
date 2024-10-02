@@ -23,12 +23,12 @@ namespace Z80Sharp.TestProgram
 
             IDataBus dataBus = new DataBus();
 
-            z80 = new Z80(new MainMemory(65535), dataBus, logger, true);
+            z80 = new Z80(new MainMemory(0x5), dataBus, logger, true);
             z80.Reset();
             Thread processorThread = new(() => z80.Run());
             processorThread.Start();
 
-            //ReadConsoleInput();
+            ReadConsoleInput();
         }
 
         private static void Logger_LogGenerated(object? sender, Events.LogGeneratedEventArgs e)

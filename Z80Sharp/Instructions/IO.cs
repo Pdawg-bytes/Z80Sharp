@@ -24,7 +24,7 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlagConditionally(FlagType.S, (data & 0x80) != 0);             // (S) (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, data == 0);                      // (Z) (Set if result is zero)
-            Registers.SetFlagConditionally(FlagType.PV, FlagHelpers.CheckParity(data)); // (PV) (Set if bit parity is even)
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(data)); // (PV) (Set if bit parity is even)
             Registers.SetFlagConditionally(FlagType.X, (data & 0x20) != 0);             // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (data & 0x08) != 0);             // (Y) (Undocumented flag)
 
@@ -34,7 +34,7 @@ namespace Z80Sharp.Processor
         {
             byte data = _dataBus.ReadPort(Registers.BC);
             Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);
-            Registers.SetFlagConditionally(FlagType.PV, FlagHelpers.CheckParity(data));
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(data));
             LogInstructionExec("0x70: IN (C)");
         }
 

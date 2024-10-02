@@ -129,7 +129,7 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) != 0);             // (S)  (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, regA == 0);                      // (Z)  (Set if result is zero)
-            Registers.SetFlagConditionally(FlagType.PV, FlagHelpers.CheckParity(regA)); // (PV) (Set if bit parity is even)
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(regA));             // (PV) (Set if bit parity is even)
             Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
 
@@ -274,6 +274,11 @@ namespace Z80Sharp.Processor
         {
             Registers.HL = ADDWord(Registers.HL, Registers.GetR16FromHighIndexer(operatingRegister));
             LogInstructionExec($"0x{_currentInstruction}: ADD HL, {Registers.RegisterName(operatingRegister, true)}");
+        }
+        private void ADD_IR_RR(byte mode, byte operatingRegister)
+        {
+            ushort value = ADDWord(Registers.GetR16FromHighIndexer(mode), Registers.GetR16FromHighIndexer(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction}: ADD {Registers.RegisterName(mode, true)}, {Registers.RegisterName(operatingRegister, true)}");
         }
 
         private void ADC_A_R(byte operatingRegister)
