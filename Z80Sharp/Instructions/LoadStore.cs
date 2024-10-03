@@ -64,34 +64,45 @@ namespace Z80Sharp.Processor
         // Load from memory to register or register to memory
         private void LD_R_RRMEM(byte dest, byte source)
         {
-            byte val = _memory.Read(Registers.GetR16FromHighIndexer(source));
-            Registers.RegisterSet[dest] = val;
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(dest)}, ({Registers.RegisterName(source, true)}:0x{Registers.HL:X4}):0x{val:X2}");
+            Registers.RegisterSet[dest] = _memory.Read(Registers.GetR16FromHighIndexer(source));
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(dest)}, ({Registers.RegisterName(source, true)}:0x{Registers.HL:X4})");
+        }
+        private void LD_R_IRDMEM(byte dest, byte indexAddressingMode)
+        {
+            Registers.RegisterSet[dest] = _memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch()));
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(dest)}, ({Registers.RegisterName(indexAddressingMode, true)}:0x{Registers.HL:X4})");
         }
         private void LD_RRMEM_R(byte dest, byte source)
         {
             _memory.Write(Registers.GetR16FromHighIndexer(dest), Registers.RegisterSet[source]);
             LogInstructionExec($"0x{_currentInstruction:X2}: LD ({Registers.RegisterName(dest, true)}:0x{Registers.GetR16FromHighIndexer(dest):X2}), {Registers.RegisterName(source)}:0x{Registers.RegisterSet[source]:X2}");
         }
+        private void LD_IRDMEM_R(byte indexAddressingMode, byte source)
+        {
+            _memory.Write((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch()), Registers.RegisterSet[source]);
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD ({Registers.RegisterName(indexAddressingMode, true)}:0x{Registers.GetR16FromHighIndexer(indexAddressingMode):X2} + d), {Registers.RegisterName(source)}:0x{Registers.RegisterSet[source]:X2}");
+        }
 
         // Load regs into memory
         private void LD_NNMEM_R(byte operatingRegister)
         {
-            ushort word = FetchImmediateWord();
-            _memory.Write(word, Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x32: LD (NN:0x{word:X2}), {Registers.RegisterName(operatingRegister)}:0x{Registers.RegisterSet[operatingRegister]:X2}");
+            _memory.Write(FetchImmediateWord(), Registers.RegisterSet[operatingRegister]);
+            LogInstructionExec($"0x32: LD (NN), {Registers.RegisterName(operatingRegister)}:0x{Registers.RegisterSet[operatingRegister]:X2}");
         }
         private void LD_R_NNMEM(byte operatingRegister)
         {
-            ushort addr = FetchImmediateWord();
-            Registers.RegisterSet[operatingRegister] = _memory.Read(addr);
-            LogInstructionExec($"0x{_currentInstruction}: LD {Registers.RegisterName(operatingRegister)}, (NN:0x{addr:X4})");
+            Registers.RegisterSet[operatingRegister] = _memory.Read(FetchImmediateWord());
+            LogInstructionExec($"0x{_currentInstruction}: LD {Registers.RegisterName(operatingRegister)}, (NN)");
         }
         private void LD_HLMEM_N()
         {
-            byte n = Fetch();
-            _memory.Write(Registers.HL, n);
-            LogInstructionExec($"0x36: LD (HL:0x{Registers.HL:X4}), 0x{n:X2}");
+            _memory.Write(Registers.HL, Fetch());
+            LogInstructionExec($"0x36: LD (HL:0x{Registers.HL:X4}), N");
+        }
+        private void LD_IRDMEM_N(byte indexAddressingMode)
+        {
+            _memory.Write((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch()), Fetch());
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD ({Registers.RegisterName(indexAddressingMode, true)}), N");
         }
 
         // Complex load operations

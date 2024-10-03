@@ -113,12 +113,41 @@ namespace Z80Sharp.Processor
 
             LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(operatingRegister, true)})");
         }
+        private void SLA_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        {
+            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(reg);
+            byte carry = (byte)(result & 0x80); // Extract last bit
+            result = (byte)(result << 1);
+            _memory.Write(reg, result);
+
+            SetFlagsLSH(result);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+        }
+        private void SLA_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        {
+            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(reg);
+            byte carry = (byte)(result & 0x80); // Extract last bit
+            result = (byte)(result << 1);
+            _memory.Write(reg, result);
+            Registers.RegisterSet[outputRegister] = result;
+
+            SetFlagsLSH(result);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+        }
 
         private void SLL_R(byte operatingRegister) // UNDOCUMENTED
         {
             byte reg = Registers.RegisterSet[operatingRegister];
             byte carry = (byte)(reg & 0x80); // Extract MSB
-            Registers.RegisterSet[operatingRegister] = reg = (byte)(reg << 1);
+            Registers.RegisterSet[operatingRegister] = reg = (byte)((reg << 1) | 0x01); // Set LSB to 1
 
             SetFlagsLSH(reg);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
@@ -130,14 +159,43 @@ namespace Z80Sharp.Processor
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
             byte result = _memory.Read(reg);
-            byte carry = (byte)(result & 0x80); // Extract last bit
-            result = (byte)(result << 1);
+            byte carry = (byte)(result & 0x80); // Extract MSB
+            result = (byte)((result << 1) | 0x01); // Set LSB to 1
             _memory.Write(reg, result);
 
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
             LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(operatingRegister, true)})");
+        }
+        private void SLL_IRDMEM(sbyte displacement, byte indexAddressingMode) // UNDOCUMENTED
+        {
+            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(reg);
+            byte carry = (byte)(result & 0x80); // Extract MSB
+            result = (byte)((result << 1) | 0x01); // Set LSB to 1
+            _memory.Write(reg, result);
+
+            SetFlagsLSH(result);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+        }
+        private void SLL_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        {
+            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(reg);
+            byte carry = (byte)(result & 0x80); // Extract MSB
+            result = (byte)((result << 1) | 0x01); // Set LSB to 1
+            _memory.Write(reg, result);
+            Registers.RegisterSet[outputRegister] = result;
+
+            SetFlagsLSH(result);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
         private void SRA_R(byte operatingRegister)
@@ -157,7 +215,7 @@ namespace Z80Sharp.Processor
         {
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
-            byte result = Registers.RegisterSet[operatingRegister];
+            byte result = _memory.Read(reg);
             byte carry = (byte)(result & 0x01); // Extract LSB for carry
             byte msb = (byte)(result & 0x80);   // Preserve sign
             result = (byte)((result >> 1) | msb);
@@ -167,6 +225,37 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
             LogInstructionExec($"0x{_currentInstruction:X2}: SRA {Registers.RegisterName(operatingRegister)}");
+        }
+        private void SRA_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        {
+            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(reg);
+            byte carry = (byte)(result & 0x01); // Extract LSB for carry
+            byte msb = (byte)(result & 0x80);   // Preserve sign
+            result = (byte)((result >> 1) | msb);
+            _memory.Write(reg, result);
+
+            SetFlagsRSH(result);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRA ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+        }
+        private void SRA_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        {
+            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(reg);
+            byte carry = (byte)(result & 0x01);   // Extract LSB for carry
+            byte msb = (byte)(result & 0x80);     // Preserve sign
+            result = (byte)((result >> 1) | msb);
+            _memory.Write(reg, result);
+            Registers.RegisterSet[outputRegister] = result;
+
+            SetFlagsRSH(result);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRA ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
         private void SRL_R(byte operatingRegister)
@@ -193,6 +282,35 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
             LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(operatingRegister, true)})");
+        }
+        private void SRL_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        {
+            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(reg);
+            byte carry = (byte)(result & 0x01); // Extract LSB
+            result = (byte)(result >> 1);
+            _memory.Write(reg, result);
+
+            SetFlagsRSH(result);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+        }
+        private void SRL_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        {
+            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(reg);
+            byte carry = (byte)(result & 0x01); // Extract LSB
+            result = (byte)(result >> 1);
+            _memory.Write(reg, result);
+            Registers.RegisterSet[outputRegister] = result;
+
+            SetFlagsRSH(result);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
 
@@ -221,6 +339,35 @@ namespace Z80Sharp.Processor
 
             LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(operatingRegister, true)})");
         }
+        private void RLC_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        {
+            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(irdMem);
+            byte carry = (byte)((result & 0x80) >> 7); // Extract last bit and rotate it
+            result = (byte)((result << 1) | carry);
+            _memory.Write(irdMem, result);
+
+            SetFlagsRotate(result);
+            Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(indexAddressingMode, true)})");
+        }
+        private void RLC_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        {
+            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(irdMem);
+            byte carry = (byte)((result & 0x80) >> 7); // Extract last bit and rotate it
+            result = (byte)((result << 1) | carry);
+            _memory.Write(irdMem, result);
+            Registers.RegisterSet[outputRegister] = result;
+
+            SetFlagsRotate(result);
+            Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(indexAddressingMode, true)})");
+        }
 
         private void RL_R(byte operatingRegister)
         {
@@ -246,6 +393,35 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
             LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(operatingRegister, true)})");
+        }
+        private void RL_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        {
+            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(irdMem);
+            byte carry = (byte)((result & 0x80) >> 7); // Extract last bit and rotate it
+            result = (byte)((result << 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
+            _memory.Write(irdMem, result);
+
+            SetFlagsRotate(result);
+            Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+        }
+        private void RL_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        {
+            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(irdMem);
+            byte carry = (byte)((result & 0x80) >> 7); // Extract last bit and rotate it
+            result = (byte)((result << 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
+            _memory.Write(irdMem, result);
+            Registers.RegisterSet[outputRegister] = result;
+
+            SetFlagsRotate(result);
+            Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
 
@@ -274,6 +450,35 @@ namespace Z80Sharp.Processor
 
             LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(operatingRegister, true)})");
         }
+        private void RRC_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        {
+            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(irdMem);
+            byte carry = (byte)((result & 0x01) << 7); // Extract first bit and rotate it
+            result = (byte)((result >> 1) | carry);
+            _memory.Write(irdMem, result);
+
+            SetFlagsRotate(result);
+            Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+        }
+        private void RRC_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        {
+            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(irdMem);
+            byte carry = (byte)((result & 0x01) << 7); // Extract first bit and rotate it
+            result = (byte)((result >> 1) | carry);
+            _memory.Write(irdMem, result);
+            Registers.RegisterSet[outputRegister] = result;
+
+            SetFlagsRotate(result);
+            Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+        }
 
         private void RR_R(byte operatingRegister)
         {
@@ -299,6 +504,35 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is not 0)
 
             LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(operatingRegister, true)})");
+        }
+        private void RR_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        {
+            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(irdMem);
+            byte carry = (byte)((result & 0x01) << 7); // Extract first bit and rotate it
+            result = (byte)((result >> 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
+            _memory.Write(irdMem, result);
+
+            SetFlagsRotate(result);
+            Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+        }
+        private void RR_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        {
+            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+
+            byte result = _memory.Read(irdMem);
+            byte carry = (byte)((result & 0x01) << 7); // Extract first bit and rotate it
+            result = (byte)((result >> 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
+            _memory.Write(irdMem, result);
+            Registers.RegisterSet[outputRegister] = result;
+
+            SetFlagsRotate(result);
+            Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
     }
 }
