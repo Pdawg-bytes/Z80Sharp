@@ -106,7 +106,7 @@ namespace Z80Sharp.Processor
 
             // I/O Test
             //string hexString = "31 00 FF 21 4B 00 CD 3C 00 21 00 EF 06 40 CD 14 00 C3 2F 00 DB FE FE 00 CA 14 00 FE 0D C8 77 23 05 CA 27 00 C3 14 00 21 00 EF 06 40 C3 14 00 3E 0A D3 00 21 00 EF CD 3C 00 C3 46 00 7E FE 00 C8 D3 00 23 C2 3C 00 3E 0A D3 00 76 45 6E 74 65 72 20 69 6E 70 75 74 3A 20";
-            string hexString = "0xDD 0x21 0xFF 0xD2";
+            string hexString = "DD 21 00 00 3E C2 32 10 00 DD CB 10 26 76";
             string[] hexBytes = hexString.Split(' ');
 
             ushort address = 0x0000;
