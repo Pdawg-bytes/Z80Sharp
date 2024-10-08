@@ -25,14 +25,14 @@ namespace Z80Sharp.TestProgram
 
             IDataBus dataBus = new DataBus();
 
-            mainMemory = new MainMemory(0x20);
+            mainMemory = new MainMemory(65536);
 
             z80 = new Z80(mainMemory, dataBus, logger, true);
             z80.Reset();
             Thread processorThread = new(() => z80.Run());
             processorThread.Start();
 
-            ReadConsoleInput();
+            //ReadConsoleInput();
         }
 
         private static void Logger_LogGenerated(object? sender, Events.LogGeneratedEventArgs e)
@@ -130,26 +130,12 @@ namespace Z80Sharp.TestProgram
 
             public byte ReadPort(ushort port)
             {
-                _key = Console.ReadKey();
-                return (byte)_key.KeyChar;
+                //Console.Write($"IN 0x{port:X4}");
+                return 0;
             }
-            int i = 0;
-            byte len = 0;
-            byte[] chars = new byte[20];
             public void WritePort(ushort port, byte data)
             {
-                if ((port & 0x00FF) == 0x00)
-                {
-                    /*
-                    if (len - 1 <= i)
-                    {
-                        string receivedString = System.Text.Encoding.ASCII.GetString(chars, 0, len);
-                        Console.WriteLine($"Received data on PORT 0x{port:X}: {receivedString}");
-                    }
-                    i++;*/
-
-                    Console.Write((char)data);
-                }
+                //Console.Write($"OUT 0x{port:X4}, 0x{data:X2}");
             }
         }
     }

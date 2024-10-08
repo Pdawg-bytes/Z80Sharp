@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Net;
+using System.Runtime.CompilerServices;
 using Z80Sharp.Enums;
 using Z80Sharp.Interfaces;
 using Z80Sharp.Memory;
@@ -48,7 +49,7 @@ namespace Z80Sharp.Processor
 
         public void Run()
         {
-            while (Registers.PC < _memory.Length)
+            while (!_halted)
             {
                 HandleInterrupts();
                 if (_halted) { break; }
@@ -106,7 +107,8 @@ namespace Z80Sharp.Processor
 
             // I/O Test
             //string hexString = "31 00 FF 21 4B 00 CD 3C 00 21 00 EF 06 40 CD 14 00 C3 2F 00 DB FE FE 00 CA 14 00 FE 0D C8 77 23 05 CA 27 00 C3 14 00 21 00 EF 06 40 C3 14 00 3E 0A D3 00 21 00 EF CD 3C 00 C3 46 00 7E FE 00 C8 D3 00 23 C2 3C 00 3E 0A D3 00 76 45 6E 74 65 72 20 69 6E 70 75 74 3A 20";
-            string hexString = "DD 21 00 00 3E C2 32 10 00 DD CB 10 26 76";
+            //string hexString = "DD 21 00 00 3E C2 32 10 00 DD CB 10 26 76";
+            /*string hexString = "16 05 1E 00 0E FE 46 23 ED 78 A6 20 01 37 CB 13 23 15 20 F2 7B A7 C9 CD 24 00 A7 20 FA CD 24 00 A7 28 DE C9 21 42 00 16 08 0E FE 46 23 ED 78 E6 1F 1E 05 CB 3F 30 09 23 1D 20 F8 15 20 ED A7 C9 7E C9 FE 23 5A 58 43 56 FD 41 53 44 46 47 FB 51 57 45 52 54 F7 31 32 33 34 35 EF 30 39 38 37 36 DF 50 4F 49 55 59 BF 23 4C 4B 4A 48 7F 20 23 4D 4E 42 FB 01 FD 01 DF 02 DF 01 7F 01";
             string[] hexBytes = hexString.Split(' ');
 
             ushort address = 0x0000;
@@ -115,6 +117,17 @@ namespace Z80Sharp.Processor
             {
                 byte value = Convert.ToByte(hexBytes[i], 16);
                 _memory.Write(address, value);
+
+                address++;
+            }*/
+
+            byte[] rom = File.ReadAllBytes("48.rom");
+
+            ushort address = 0x0000;
+
+            for (int i = 0; i < rom.Length; i++)
+            {
+                _memory.Write(address, rom[i]);
 
                 address++;
             }
@@ -130,7 +143,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LogInstructionDecode(string instruction)
         {
-            _logger.Log(LogSeverity.Decode, instruction);
+            //_logger.Log(LogSeverity.Decode, instruction);
         }
 
         /// <summary>
@@ -140,7 +153,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LogInstructionExec(string instruction)
         {
-            _logger.Log(LogSeverity.Execution, instruction);
+            //_logger.Log(LogSeverity.Execution, instruction);
         }
 
         /// <summary>

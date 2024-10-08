@@ -7,7 +7,7 @@ namespace Z80Sharp.Processor
     {
         private void ExecuteIndexRInstruction(AddressingMode indexAddressingMode)
         {
-            _logger.Log(Enums.LogSeverity.Decode, $"INDR decoded: 0x{_currentInstruction:X2}");
+            LogInstructionDecode($"INDR decoded: 0x{_currentInstruction:X2}");
             byte instruction = Fetch();
             _currentInstruction = instruction;
             switch (instruction)

@@ -6,7 +6,7 @@ namespace Z80Sharp.Processor
     {
         private void ExecuteBitInstruction()
         {
-            _logger.Log(Enums.LogSeverity.Decode, $"BIT table");
+            LogInstructionDecode("BIT table");
 
             byte instruction = Fetch();
             _currentInstruction = instruction;
