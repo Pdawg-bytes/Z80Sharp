@@ -15,12 +15,14 @@ namespace Z80Sharp.TestProgram
     public static class Program
     {
         private static bool quitRequested = false;
-        private static IZ80Logger logger = new Logger(useColors: true);
+        private static IZ80Logger logger = new Logger(useColors: false);
         private static Z80 z80;
         private static MainMemory mainMemory;
+        private static StreamWriter streamWriter;
 
         public static void Main(string[] args)
         {
+            streamWriter = new StreamWriter("RunLog.txt", false);
             logger.LogGenerated += Logger_LogGenerated;
 
             IDataBus dataBus = new DataBus();
@@ -36,14 +38,14 @@ namespace Z80Sharp.TestProgram
                 {
                     if (z80.Halted) break;
                     z80.Step();
-                    if (z80.Registers.HL == 0xFFFE)
+                    /*if (z80.Registers.HL == 0xFFFE)
                     {
                         i++;
                         if (i > 4)
                         {
                             z80.Halted = true;
                         }
-                    }
+                    }*/
                 }
 
             });
@@ -54,7 +56,7 @@ namespace Z80Sharp.TestProgram
 
         private static void Logger_LogGenerated(object? sender, Events.LogGeneratedEventArgs e)
         {
-            Console.WriteLine(e.LogData);
+            streamWriter.WriteLine($"0x{z80.Registers.PC:X4}: " + e.LogData);
         }
 
         private static ConsoleKeyInfo _key;

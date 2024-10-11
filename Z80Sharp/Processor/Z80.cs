@@ -142,6 +142,7 @@ namespace Z80Sharp.Processor
             _logger.Log(LogSeverity.Info, "Processor reset");
         }
 
+
         #region Logging
         /// <summary>
         /// Logs the decode operation of a given instruction.
@@ -150,7 +151,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LogInstructionDecode(string instruction)
         {
-            _logger.Log(LogSeverity.Decode, instruction);
+            //_logger.Log(LogSeverity.Decode, instruction);
         }
 
         /// <summary>
@@ -183,7 +184,7 @@ namespace Z80Sharp.Processor
         private byte Fetch()
         {
             byte val = _memory.Read(Registers.PC);
-            _logger.Log(LogSeverity.Memory, $"READ at 0x{Registers.PC.ToString("X")} -> 0x{val.ToString("X")}");
+            //_logger.Log(LogSeverity.Memory, $"READ at 0x{Registers.PC.ToString("X")} -> 0x{val.ToString("X")}");
             Registers.PC++;
             return val;
         }

@@ -100,7 +100,7 @@ namespace Z80Sharp.Processor
         private void IM_M(InterruptMode mode)
         {
             Registers.InterruptMode = mode;
-            LogInstructionExec($"{Registers.InterruptModeName(mode)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: {Registers.InterruptModeName(mode)}");
         }
     }
 }

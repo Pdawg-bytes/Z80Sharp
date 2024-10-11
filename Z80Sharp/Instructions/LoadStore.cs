@@ -141,6 +141,7 @@ namespace Z80Sharp.Processor
             if (Registers.BC != 0)
             {
                 Registers.PC -= 2;
+                LogInstructionExec("0xB0: LDIR");
                 return;
             }
             LogInstructionExec("0xB0: LDIR");
@@ -179,6 +180,7 @@ namespace Z80Sharp.Processor
 
             if (Registers.BC != 0)
             {
+                LogInstructionExec("0xB0: LDDR");
                 Registers.PC -= 2;
                 return;
             }

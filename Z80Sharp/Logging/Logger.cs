@@ -43,7 +43,7 @@ namespace Z80Sharp.Logging
         {
             SeverityData severityData = _severityDict[severity];
 
-            if (_useColors)
+            /*if (_useColors)
             {
                 _logMessageBuilder.Append(Colors.ANSI_RESET);
                 _logMessageBuilder.Append(ColorString(Colors.WHITE, "["));
@@ -64,7 +64,10 @@ namespace Z80Sharp.Logging
                 LogGenerated?.Invoke(this, new LogGeneratedEventArgs(severity, _logMessageBuilder.ToString()));
 
                 _logMessageBuilder.Clear();
-            }
+            }*/
+
+            //string blankMne = message.ToString().Substring(6);
+            LogGenerated?.Invoke(this, new LogGeneratedEventArgs(severity, (string)message));
         }
 
         private string ColorString(string color, string input, bool close = false) 

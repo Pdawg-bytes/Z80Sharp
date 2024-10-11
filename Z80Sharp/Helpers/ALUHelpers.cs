@@ -148,7 +148,7 @@ namespace Z80Sharp.Processor
         /// <returns>The sum of the addends.</returns>
         private ushort ADDWord(ushort augend, ushort addend)
         {
-            int sum = (ushort)(augend + addend);
+            int sum = augend + addend;
 
             Registers.SetFlagConditionally(FlagType.H, 
                 ((augend & 0x0FFF) + (addend & 0x0FFF))  // Add lower 12 bits of each addend together.
@@ -275,11 +275,11 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.H, (regHL & 0x0FFF) < (operand & 0x0FFF) + carry); // (H) (Set if borrow occurs from bit 11)
 
             Registers.SetFlagConditionally(FlagType.PV, 
-                (((regHL ^ operand) & 0x8000) != 0) // 
+                (((regHL ^ operand) & 0x8000) != 0)
                 && 
                 (((regHL ^ diff) & 0x8000) != 0));
 
-            Registers.SetFlagConditionally(FlagType.C, regHL < (operand + carry)); // (C) (Set if borrow from bit 15)
+            Registers.SetFlagConditionally(FlagType.C, diff < 0); // (C) (Set if borrow from bit 15)
             Registers.SetFlag(FlagType.N); // N is set unconditionally for SUB operations
 
             Registers.SetFlagConditionally(FlagType.X, (diff & 0x2000) != 0); // (X) (Copy of bit 13)
