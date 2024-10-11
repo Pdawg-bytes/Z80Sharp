@@ -33,7 +33,7 @@ namespace Z80Sharp.Processor
             ushort addr = FetchImmediateWord();
             Registers.RegisterSet[operatingRegister + 1] = _memory.Read(addr++);
             Registers.RegisterSet[operatingRegister] = _memory.Read(addr);
-            LogInstructionExec($"0x{_currentInstruction}: LD {Registers.RegisterName(operatingRegister, true)}, (NN:0x{addr:X4}");
+            LogInstructionExec($"0x{_currentInstruction}: LD {Registers.RegisterName(operatingRegister, true)}, (NN:0x{addr:X4})");
         }
         private void LD_NNMEM_RR(byte operatingRegister)
         {

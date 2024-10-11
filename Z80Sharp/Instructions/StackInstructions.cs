@@ -40,7 +40,7 @@ namespace Z80Sharp.Processor
             _memory.Write(--sp, Registers.RegisterSet[operatingRegister]);
             _memory.Write(--sp, Registers.RegisterSet[operatingRegister + 1]);
             Registers.SP = sp;
-            LogInstructionExec($"0x{_currentInstruction}: PUSH {Registers.RegisterName(operatingRegister, true)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: PUSH {Registers.RegisterName(operatingRegister, true)}");
         }
         // We can't use the generic method because the register indexers for A and F are in the opposite order.
         private void PUSH_AF()

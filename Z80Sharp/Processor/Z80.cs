@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Runtime.CompilerServices;
 using Z80Sharp.Enums;
 using Z80Sharp.Interfaces;
@@ -47,35 +48,40 @@ namespace Z80Sharp.Processor
             IsDebug = isDebug;
         }
 
+        public void Step()
+        {
+            ExecuteOnce();
+        }
         public void Run()
         {
             while (!_halted)
             {
-                HandleInterrupts();
-                if (_halted) { break; }
-
-                _currentInstruction = Fetch();
-
-                switch (_currentInstruction)
-                {
-                    case 0xDD:
-                        ExecuteIndexRInstruction(AddressingMode.IndexX); break;
-                    case 0xFD:
-                        ExecuteIndexRInstruction(AddressingMode.IndexY); break;
-                    case 0xED:
-                        ExecuteMiscInstruction(); break;
-                    case 0xCB:
-                        ExecuteBitInstruction(); break;
-
-                    default:
-                        ExecuteMainInstruction(); break;
-                }
+                ExecuteOnce();
             }
         }
 
-        public void Stop()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ExecuteOnce()
         {
+            HandleInterrupts();
+            if (_halted) { return; }
 
+            _currentInstruction = Fetch();
+
+            switch (_currentInstruction)
+            {
+                case 0xDD:
+                    ExecuteIndexRInstruction(AddressingMode.IndexX); break;
+                case 0xFD:
+                    ExecuteIndexRInstruction(AddressingMode.IndexY); break;
+                case 0xED:
+                    ExecuteMiscInstruction(); break;
+                case 0xCB:
+                    ExecuteBitInstruction(); break;
+
+                default:
+                    ExecuteMainInstruction(); break;
+            }
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)
@@ -121,7 +127,8 @@ namespace Z80Sharp.Processor
                 address++;
             }*/
 
-            byte[] rom = File.ReadAllBytes("48.rom");
+            //byte[] rom = File.ReadAllBytes(@"..\..\ROM\48.rom");
+            byte[] rom = File.ReadAllBytes(@"48.rom");
 
             ushort address = 0x0000;
 
@@ -143,7 +150,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LogInstructionDecode(string instruction)
         {
-            //_logger.Log(LogSeverity.Decode, instruction);
+            _logger.Log(LogSeverity.Decode, instruction);
         }
 
         /// <summary>
@@ -153,7 +160,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LogInstructionExec(string instruction)
         {
-            //_logger.Log(LogSeverity.Execution, instruction);
+            _logger.Log(LogSeverity.Execution, instruction);
         }
 
         /// <summary>
@@ -163,7 +170,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LogInterrupt(string interruptName)
         {
-            _logger.Log(LogSeverity.Interrupt, interruptName);
+            //_logger.Log(LogSeverity.Interrupt, interruptName);
         }
         #endregion
 
@@ -176,7 +183,7 @@ namespace Z80Sharp.Processor
         private byte Fetch()
         {
             byte val = _memory.Read(Registers.PC);
-            //_logger.Log(LogSeverity.Memory, $"READ at 0x{Registers.PC.ToString("X")} -> 0x{val.ToString("X")}");
+            _logger.Log(LogSeverity.Memory, $"READ at 0x{Registers.PC.ToString("X")} -> 0x{val.ToString("X")}");
             Registers.PC++;
             return val;
         }

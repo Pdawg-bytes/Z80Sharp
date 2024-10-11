@@ -27,9 +27,26 @@ namespace Z80Sharp.TestProgram
 
             mainMemory = new MainMemory(65536);
 
+            int i = 0;
             z80 = new Z80(mainMemory, dataBus, logger, true);
             z80.Reset();
-            Thread processorThread = new(() => z80.Run());
+            Thread processorThread = new(() =>
+            {
+                while(true)
+                {
+                    if (z80.Halted) break;
+                    z80.Step();
+                    if (z80.Registers.HL == 0xFFFE)
+                    {
+                        i++;
+                        if (i > 4)
+                        {
+                            z80.Halted = true;
+                        }
+                    }
+                }
+
+            });
             processorThread.Start();
 
             //ReadConsoleInput();

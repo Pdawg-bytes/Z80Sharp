@@ -57,7 +57,7 @@ namespace Z80Sharp.Processor
             {
                 ushort jumpTo = (ushort)(Registers.PC + displacement);
                 Registers.PC = jumpTo;
-                LogInstructionExec($"0x{_currentInstruction:X2}: JR {Registers.JumpConditionName(flagCondition)} D:0x{displacement.ToString()} -> 0x{jumpTo:X4}");
+                LogInstructionExec($"0x{_currentInstruction:X2}: JR {Registers.JumpConditionName(flagCondition)} D:0x{((byte)displacement).ToString("X2")} -> 0x{jumpTo:X4}");
             }
             else
             {

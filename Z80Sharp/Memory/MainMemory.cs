@@ -5,7 +5,7 @@ namespace Z80Sharp.Memory
 {
     public class MainMemory : IMemory
     {
-        private byte[] _memory { get; set; }
+        public byte[] _memory { get; set; }
 
         public MainMemory(int size) 
         {
