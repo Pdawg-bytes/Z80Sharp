@@ -193,22 +193,35 @@ namespace Z80Sharp.Processor
         {
             ushort regHL = Registers.HL;
             byte carry = (byte)(Registers.RegisterSet[F] & 0b00000001);
-            int sum = regHL + operand + carry;
+            var sum = regHL + operand + carry;
+
+            Registers.ClearFlag(FlagType.N);
+            Registers.SetFlagConditionally(FlagType.Z, (ushort)sum == 0 ? true : false);
+            Registers.SetFlagConditionally(FlagType.S, (ushort)(sum & 0b1000_0000_0000_0000) > 0);
+
+            var loA = (byte)(regHL & 0xFF);
+            var loB = (byte)(operand & 0xFF);
+            var hiA = (byte)((regHL & 0xFF00) >> 8);
+            var hiB = (byte)((operand & 0xFF00) >> 8);
+
+            if ((loA + loB + carry) > 0xFF) hiB++;
+
+            Registers.SetFlagConditionally(FlagType.H, ((hiA & 0x0F) + (hiB & 0x0F) > 0xF) ? true : false);
+            Registers.SetFlagConditionally(FlagType.C, (sum > 0xFFFF) ? true : false);
+
+            // Overflow flag
+            if (((hiA ^ hiB) & 0x80) == 0 // Same sign
+                && (((hiA ^ (hiA + hiB)) & 0x80) != 0)) // Different sign
+            {
+                Registers.SetFlag(FlagType.PV);
+            }
+            else
+            {
+                Registers.ClearFlag(FlagType.PV);
+            }
+
+
             Registers.HL = (ushort)sum;
-
-            Registers.SetFlagConditionally(FlagType.S, (sum & 0x8000) != 0);                                    // (S) (check 15th bit for sign)
-            Registers.SetFlagConditionally(FlagType.Z, sum == 0);                                               // (Z) (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, (regHL & 0x0FFF) + (operand & 0x0FFF) + carry > 0x0FFF); // (H) (Set if borrow occurs from bit 11)
-
-            Registers.SetFlagConditionally(FlagType.PV,
-                (((regHL ^ operand) & 0x8000) == 0) && // Check if regHL and operand have the same sign
-                (((regHL ^ sum) & 0x8000) != 0));      // Check if the sum has a different sign from regHL
-
-            Registers.SetFlagConditionally(FlagType.C, (sum & 0x10000) != 0); // (C) (Set if carry from bit 15)
-            Registers.ClearFlag(FlagType.N); // N is reset unconditionally for ADD operations
-
-            Registers.SetFlagConditionally(FlagType.X, (sum & 0x2000) != 0); // (X) (Copy of bit 13)
-            Registers.SetFlagConditionally(FlagType.Y, (sum & 0x0800) != 0); // (Y) (Copy of bit 11)
         }
 
 
