@@ -15,7 +15,7 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[operatingRegister + 1] = _memory.Read(sp++);
             Registers.RegisterSet[operatingRegister] = _memory.Read(sp++);
             Registers.SP = sp;
-            LogInstructionExec($"0x{_currentInstruction}: POP {Registers.RegisterName(operatingRegister, true)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: POP {Registers.RegisterName(operatingRegister, true)}");
         }
         // We can't use the generic method because the register indexers for A and F are in the opposite order.
         private void POP_AF()

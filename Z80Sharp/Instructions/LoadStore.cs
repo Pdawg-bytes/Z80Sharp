@@ -132,10 +132,11 @@ namespace Z80Sharp.Processor
             Registers.DE++;
             Registers.BC--;
 
-            Registers.RegisterSet[F] = (byte)~(FlagType.N | FlagType.H | FlagType.PV); // (N, H, PV) (Unconditionally reset)
+            Registers.RegisterSet[F] = (byte)~(FlagType.N | FlagType.H); // (N, H) (Unconditionally reset)
+            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
 
             byte undoc = (byte)(Registers.RegisterSet[A] + hlMem);
-            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x20) > 0);  // (X) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
 
             if (Registers.BC != 0)

@@ -43,9 +43,10 @@ namespace Z80Sharp.Processor
         // No generic instruction here as JR D is the only (JR n) format instruction.
         private void JR_D()
         {
-            ushort jumpTo = (ushort)(Registers.PC + (sbyte)Fetch());
+            sbyte displacement = (sbyte)Fetch();
+            ushort jumpTo = (ushort)(Registers.PC + displacement);
             Registers.PC = jumpTo;
-            LogInstructionExec($"0x{_currentInstruction:X2}: JR D:0x{FetchLast():X2}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: JR D:0x{displacement:X2} -> 0x{Registers.PC:X4}");
         }
         // Technically, if we were doing this off of ((_currentInstruction >> 3) & 0x07), we'd need to (& 0x3) the value
         // again to get the right flag condition. However, instead of computing it on the fly, we can use our jump table
@@ -68,14 +69,29 @@ namespace Z80Sharp.Processor
         // Operation: Fetch displacement; Decrement B; Check if B == zero; If not, jump to PC + displacement.
         private void DJNZ_D()
         {
-            sbyte displacement = (sbyte)Fetch();
+            /*sbyte displacement = (sbyte)Fetch();
             byte b = Registers.RegisterSet[B];
-            Registers.RegisterSet[B] = --b;
+            b--;
             if (b != 0)
             {
                 ushort jumpTo = (ushort)(Registers.PC + displacement);
                 Registers.PC = jumpTo;
                 LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ D:0x{displacement.ToString()} -> 0x{jumpTo:X4}");
+            }
+            else
+            {
+                LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ (no jump), B not 0 after decrement.");
+            }*/
+            var d = (sbyte)Fetch();
+
+            var initialVal = Registers.RegisterSet[B];
+            Registers.RegisterSet[B]--;
+            DECAny(initialVal);
+
+            if (!Registers.IsFlagSet(FlagType.Z))
+            {
+                Registers.PC = (ushort)(Registers.PC + d);
+                LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ D:0x{d.ToString()} -> 0x{Registers.PC:X4}");
             }
             else
             {

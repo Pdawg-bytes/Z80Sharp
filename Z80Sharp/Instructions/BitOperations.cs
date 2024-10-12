@@ -92,7 +92,7 @@ namespace Z80Sharp.Processor
         private void SET_B_IRDMEM(byte bit, sbyte displacement, byte indexAddressingMode)
         {
             ushort ird = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
-            _memory.Write(ird, (byte)(_memory.Read(ird) | (byte)(1 << bit))); // Clear bit n of (RR)
+            _memory.Write(ird, (byte)(_memory.Read(ird) | (byte)(1 << bit))); // Set bit n of (RR)
             LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, ({Registers.RegisterName(indexAddressingMode, true)})");
         }
         private void SET_B_IRDMEM_R(byte bit, sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED

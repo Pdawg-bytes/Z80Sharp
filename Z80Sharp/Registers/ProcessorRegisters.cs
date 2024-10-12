@@ -108,7 +108,7 @@ namespace Z80Sharp.Registers
         public void R8Exchange(byte reg1, byte reg2)
         {
             byte reg1_old = RegisterSet[reg1];
-            RegisterSet[reg1] = reg2;
+            RegisterSet[reg1] = RegisterSet[reg2];
             RegisterSet[reg2] = reg1_old;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
