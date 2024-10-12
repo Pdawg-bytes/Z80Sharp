@@ -59,7 +59,7 @@ namespace Z80Sharp.Processor
         {
             Registers.R8Exchange(D, H);
             Registers.R8Exchange(E, L);
-            LogInstructionExec("0x08: EX DE, HL");
+            LogInstructionExec("0xEB: EX DE, HL");
         }
         private void EX_SPMEM_HL()
         {

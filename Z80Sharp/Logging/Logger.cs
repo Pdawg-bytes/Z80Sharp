@@ -66,7 +66,6 @@ namespace Z80Sharp.Logging
                 _logMessageBuilder.Clear();
             }*/
 
-            //string blankMne = message.ToString().Substring(6);
             LogGenerated?.Invoke(this, new LogGeneratedEventArgs(severity, (string)message));
         }
 

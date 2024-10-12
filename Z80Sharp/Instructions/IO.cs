@@ -28,7 +28,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (data & 0x20) != 0);             // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (data & 0x08) != 0);             // (Y) (Undocumented flag)
 
-            LogInstructionExec($"0x{_currentInstruction}: IN {Registers.RegisterName(operatingRegister)}, (C)");
+            LogInstructionExec($"0x{_currentInstruction:X2}: IN {Registers.RegisterName(operatingRegister)}, (C)");
         }
         private void IN_CPORT() // UNDOCUMENTED
         {
@@ -90,7 +90,7 @@ namespace Z80Sharp.Processor
         private void OUT_CPORT_R(byte operatingRegister)
         {
             _dataBus.WritePort(Registers.BC, Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction}: OUT (C), {Registers.RegisterName(operatingRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: OUT (C), {Registers.RegisterName(operatingRegister)}");
         }
         private void OUT_CPORT_0()
         {

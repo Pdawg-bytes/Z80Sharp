@@ -17,7 +17,7 @@ namespace Z80Sharp.Processor
 
         public bool IsDebug { get; init; }
 
-        private byte _currentInstruction;
+        public byte _currentInstruction;
 
         public ProcessorRegisters Registers = new ProcessorRegisters();
 
@@ -30,11 +30,11 @@ namespace Z80Sharp.Processor
                 _halted = value;
                 if(value)
                 {
-                    _logger.Log(LogSeverity.Info, "Processor halted");
+                    //_logger.Log(LogSeverity.Info, "Processor halted");
                 }
                 else
                 {
-                    _logger.Log(LogSeverity.Info, "Processor unhalted");
+                    //_logger.Log(LogSeverity.Info, "Processor unhalted");
                 }
             }
         }
@@ -139,7 +139,7 @@ namespace Z80Sharp.Processor
                 address++;
             }
 
-            _logger.Log(LogSeverity.Info, "Processor reset");
+            //_logger.Log(LogSeverity.Info, "Processor reset");
         }
 
 

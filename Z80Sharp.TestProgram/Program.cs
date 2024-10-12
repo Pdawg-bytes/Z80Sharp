@@ -22,7 +22,7 @@ namespace Z80Sharp.TestProgram
 
         public static void Main(string[] args)
         {
-            streamWriter = new StreamWriter("RunLog.txt", false);
+            streamWriter = new StreamWriter("RunLogZS.txt", false);
             logger.LogGenerated += Logger_LogGenerated;
 
             IDataBus dataBus = new DataBus();
@@ -46,6 +46,10 @@ namespace Z80Sharp.TestProgram
                             z80.Halted = true;
                         }
                     }*/
+                    if (z80._currentInstruction == 0x4E && z80.Registers.PC == 0x1621)
+                    {
+                        //_cpu.IsHalted = true; break;
+                    }
                 }
 
             });

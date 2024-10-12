@@ -310,12 +310,12 @@ namespace Z80Sharp.Processor
         private void ADD_HL_RR(byte operatingRegister)
         {
             Registers.HL = ADDWord(Registers.HL, Registers.GetR16FromHighIndexer(operatingRegister));
-            LogInstructionExec($"0x{_currentInstruction}: ADD HL, {Registers.RegisterName(operatingRegister, true)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADD HL, {Registers.RegisterName(operatingRegister, true)}");
         }
         private void ADD_IR_RR(byte mode, byte operatingRegister)
         {
             ushort value = ADDWord(Registers.GetR16FromHighIndexer(mode), Registers.GetR16FromHighIndexer(operatingRegister));
-            LogInstructionExec($"0x{_currentInstruction}: ADD {Registers.RegisterName(mode, true)}, {Registers.RegisterName(operatingRegister, true)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADD {Registers.RegisterName(mode, true)}, {Registers.RegisterName(operatingRegister, true)}");
         }
 
         private void ADC_A_R(byte operatingRegister)

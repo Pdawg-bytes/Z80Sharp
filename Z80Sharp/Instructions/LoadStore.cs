@@ -33,7 +33,7 @@ namespace Z80Sharp.Processor
             ushort addr = FetchImmediateWord();
             Registers.RegisterSet[operatingRegister + 1] = _memory.Read(addr++);
             Registers.RegisterSet[operatingRegister] = _memory.Read(addr);
-            LogInstructionExec($"0x{_currentInstruction}: LD {Registers.RegisterName(operatingRegister, true)}, (NN:0x{addr:X4})");
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(operatingRegister, true)}, (NN:0x{addr:X4})");
         }
         private void LD_NNMEM_RR(byte operatingRegister)
         {
@@ -58,7 +58,7 @@ namespace Z80Sharp.Processor
         {
             Registers.RegisterSet[dest + 1] = Registers.RegisterSet[source + 1];
             Registers.RegisterSet[dest] = Registers.RegisterSet[source];
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(dest, true)}:{Registers.GetR16FromHighIndexer(dest)}, {Registers.RegisterName(source, true)}:{Registers.GetR16FromHighIndexer(source)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(dest, true)}, {Registers.RegisterName(source, true)}:0x{Registers.GetR16FromHighIndexer(source):X4}");
         }
 
         // Load from memory to register or register to memory
@@ -92,7 +92,7 @@ namespace Z80Sharp.Processor
         private void LD_R_NNMEM(byte operatingRegister)
         {
             Registers.RegisterSet[operatingRegister] = _memory.Read(FetchImmediateWord());
-            LogInstructionExec($"0x{_currentInstruction}: LD {Registers.RegisterName(operatingRegister)}, (NN)");
+            LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(operatingRegister)}, (NN)");
         }
         private void LD_HLMEM_N()
         {
@@ -180,8 +180,8 @@ namespace Z80Sharp.Processor
 
             if (Registers.BC != 0)
             {
-                LogInstructionExec("0xB0: LDDR");
                 Registers.PC -= 2;
+                LogInstructionExec("0xB8: LDDR");
                 return;
             }
             LogInstructionExec("0xB8: LDDR");
