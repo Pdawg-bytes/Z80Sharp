@@ -284,13 +284,13 @@ namespace Z80Sharp.Processor
             Registers.HL = (ushort)diff;
 
             Registers.SetFlagConditionally(FlagType.S, (diff & 0x8000) != 0);                          // (S) (check 15th bit for sign)
-            Registers.SetFlagConditionally(FlagType.Z, diff == 0);                                     // (Z) (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.Z, (ushort)diff == 0);                             // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.H, (regHL & 0x0FFF) < (operand & 0x0FFF) + carry); // (H) (Set if borrow occurs from bit 11)
 
             Registers.SetFlagConditionally(FlagType.PV, 
-                (((regHL ^ operand) & 0x8000) != 0)
+                (((regHL ^ (operand + carry)) & 0x8000) != 0)
                 && 
-                (((regHL ^ diff) & 0x8000) != 0));
+                ((((operand + carry) ^ (ushort)diff) & 0x8000) == 0));
 
             Registers.SetFlagConditionally(FlagType.C, diff < 0); // (C) (Set if borrow from bit 15)
             Registers.SetFlag(FlagType.N); // N is set unconditionally for SUB operations
