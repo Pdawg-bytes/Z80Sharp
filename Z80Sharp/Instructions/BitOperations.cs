@@ -80,26 +80,26 @@ namespace Z80Sharp.Processor
 
         private void SET_B_R(byte bit, byte operatingRegister)
         {
-            Registers.RegisterSet[operatingRegister] = (byte)(Registers.RegisterSet[operatingRegister] | (byte)(1 << bit)); // Set bit n of R
+            Registers.RegisterSet[operatingRegister] = (byte)(Registers.RegisterSet[operatingRegister] | (byte)(1 << bit));
             LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, {Registers.RegisterName(operatingRegister)}");
         }
         private void SET_B_RRMEM(byte bit, byte operatingRegister)
         {
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
-            _memory.Write(reg, (byte)(_memory.Read(reg) | (byte)(1 << bit))); // Set bit n of (RR)
+            _memory.Write(reg, (byte)(_memory.Read(reg) | (byte)(1 << bit)));
             LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void SET_B_IRDMEM(byte bit, sbyte displacement, byte indexAddressingMode)
         {
             ushort ird = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
-            _memory.Write(ird, (byte)(_memory.Read(ird) | (byte)(1 << bit))); // Set bit n of (RR)
+            _memory.Write(ird, (byte)(_memory.Read(ird) | (byte)(1 << bit)));
             LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, ({Registers.RegisterName(indexAddressingMode, true)})");
         }
         private void SET_B_IRDMEM_R(byte bit, sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
         {
             ushort ird = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
             byte result = (byte)(_memory.Read(ird) | (byte)(1 << bit));
-            _memory.Write(ird, result); // Clear bit n of (RR)
+            _memory.Write(ird, result);
             Registers.RegisterSet[outputRegister] = result;
             LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }

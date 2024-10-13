@@ -21,10 +21,10 @@ namespace Z80Sharp.Processor
             // https://www.zilog.com/docs/z80/um0080.pdf Flags detailed on page 179.
             byte sum = (byte)(increment + 1);
 
-            Registers.SetFlagConditionally(FlagType.S, (sum & 0x80) > 0);           // (S) (check 7th bit for sign)
-            Registers.SetFlagConditionally(FlagType.Z, sum == 0);                   // (Z) (set if result is zero)
-            Registers.SetFlagConditionally(FlagType.H, (increment & 0x0F) == 0x0F); // (H) (set if carry from bit 3 to bit 4)
-            Registers.SetFlagConditionally(FlagType.PV, increment == 0x7F);         // (P/V) (set on signed overflow)
+            Registers.SetFlagConditionally(FlagType.S, (sum & 0x80) > 0);                         // (S) (check 7th bit for sign)
+            Registers.SetFlagConditionally(FlagType.Z, sum == 0);                                 // (Z) (set if result is zero)
+            Registers.SetFlagConditionally(FlagType.H, (increment & 0x0F) + (0x01 & 0x0F) > 0xF); // (H) (set if carry from bit 3 to bit 4)
+            Registers.SetFlagConditionally(FlagType.PV, increment == 0x7F);                       // (P/V) (set on signed overflow)
             Registers.ClearFlag(FlagType.N); // Clear the N flag (as INC is not a subtraction)
 
             return sum;
@@ -39,10 +39,10 @@ namespace Z80Sharp.Processor
             // https://www.zilog.com/docs/z80/um0080.pdf Flags detailed on page 185.
             byte diff = (byte)(decrement - 1);
 
-            Registers.SetFlagConditionally(FlagType.PV, decrement == 0x80);      // (P/V) (set on signed overflow -128 -> 127)
-            Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) > 0);       // (S) (check 7th bit for sign)
-            Registers.SetFlagConditionally(FlagType.Z, diff == 0);               // (Z) (set if result is zero)
-            Registers.SetFlagConditionally(FlagType.H, (decrement & 0x0F) == 0); // (H) (borrow from bit 4)
+            Registers.SetFlagConditionally(FlagType.PV, decrement == 0x80);                 // (P/V) (set on signed overflow -128 -> 127)
+            Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) > 0);                  // (S) (check 7th bit for sign)
+            Registers.SetFlagConditionally(FlagType.Z, diff == 0);                          // (Z) (set if result is zero)
+            Registers.SetFlagConditionally(FlagType.H, (decrement & 0x0F) < (0x01 & 0x0F)); // (H) (borrow from bit 4)
             Registers.SetFlag(FlagType.N); // Set the N flag (subtract flag)
 
             return diff;
@@ -127,8 +127,8 @@ namespace Z80Sharp.Processor
             int sum = regA + operand;
             Registers.RegisterSet[A] = (byte)sum;
 
-            Registers.SetFlagConditionally(FlagType.S, (sum & 0x80) != 0);                      // (S) (check 7th bit for sign)
-            Registers.SetFlagConditionally(FlagType.Z, sum == 0);                               // (Z) (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.S, ((byte)sum & 0x80) != 0);                      // (S) (check 7th bit for sign)
+            Registers.SetFlagConditionally(FlagType.Z, (byte)sum == 0);                               // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.H, ((regA & 0xF) + (operand & 0xF)) > 0xF); // (H) (Set if borrow occurs from bit 4)
 
             Registers.SetFlagConditionally(FlagType.PV,
@@ -235,14 +235,14 @@ namespace Z80Sharp.Processor
             int diff = regA - operand;
             Registers.RegisterSet[A] = (byte)diff;
 
-            Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) != 0);                   // (S) (check 7th bit for sign)
-            Registers.SetFlagConditionally(FlagType.Z, diff == 0);                            // (Z) (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, ((regA & 0xF) - (operand & 0xF)) < 0); // (H) (Set if borrow occurs from bit 4)
+            Registers.SetFlagConditionally(FlagType.S, ((byte)diff & 0x80) != 0);                   // (S) (check 7th bit for sign)
+            Registers.SetFlagConditionally(FlagType.Z, (byte)diff == 0);                            // (Z) (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < (operand & 0xF));             // (H) (Set if borrow occurs from bit 4)
 
             Registers.SetFlagConditionally(FlagType.PV,
                 (((regA ^ operand) & 0x80) != 0) // Check if regA and operand have the same sign (both positive or both negative)
                 && 
-                (((regA ^ diff) & 0x80) != 0));  // Check if diff. has a different sign from regA 
+                (((regA ^ (byte)diff) & 0x80) != 0));  // Check if diff. has a different sign from regA 
 
             Registers.SetFlagConditionally(FlagType.C, regA < operand); // (C) (Set if borrow from bit 8)
             Registers.SetFlag(FlagType.N);
@@ -261,14 +261,14 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) != 0);                           // (S) (check 7th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, diff == 0);                                    // (Z) (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, ((regA & 0xF) - (operand & 0xF) - carry) < 0); // (H) (Set if borrow occurs from bit 4)
+            Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < ((operand + carry) & 0xF));     // (H) (Set if borrow occurs from bit 4)
 
             Registers.SetFlagConditionally(FlagType.PV,
-                (((regA ^ operand) & 0x80) != 0) // Check if regA and operand have the same sign (both positive or both negative)
+                (((regA ^ (operand + carry)) & 0x80) != 0)   // Check if regA and operand have the same sign (both positive or both negative)
                 && 
-                (((regA ^ diff) & 0x80) != 0));  // Check if diff. has a different sign from regA
+                ((((operand + carry) ^ diff) & 0x80) == 0)); // Check if diff. has a different sign from regA
 
-            Registers.SetFlagConditionally(FlagType.C, regA < (operand + carry)); // (C) (Set if borrow from bit 8)
+            Registers.SetFlagConditionally(FlagType.C, diff < 0); // (C) (Set if borrow from bit 8)
             Registers.SetFlag(FlagType.N);
             // N is unconditionally set as per page 160 of https://www.zilog.com/docs/z80/um0080.pdf
         }
@@ -283,7 +283,7 @@ namespace Z80Sharp.Processor
             int diff = Registers.HL - operand - carry;
             Registers.HL = (ushort)diff;
 
-            Registers.SetFlagConditionally(FlagType.S, (diff & 0x8000) != 0);                          // (S) (check 15th bit for sign)
+            Registers.SetFlagConditionally(FlagType.S, ((ushort)diff & 0x8000) > 0);                   // (S) (check 15th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, (ushort)diff == 0);                             // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.H, (regHL & 0x0FFF) < (operand & 0x0FFF) + carry); // (H) (Set if borrow occurs from bit 11)
 

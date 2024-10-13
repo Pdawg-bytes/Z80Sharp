@@ -66,32 +66,18 @@ namespace Z80Sharp.Processor
             }
         }
 
-        // Operation: Fetch displacement; Decrement B; Check if B == zero; If not, jump to PC + displacement.
         private void DJNZ_D()
         {
-            /*sbyte displacement = (sbyte)Fetch();
-            byte b = Registers.RegisterSet[B];
-            b--;
-            if (b != 0)
-            {
-                ushort jumpTo = (ushort)(Registers.PC + displacement);
-                Registers.PC = jumpTo;
-                LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ D:0x{displacement.ToString()} -> 0x{jumpTo:X4}");
-            }
-            else
-            {
-                LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ (no jump), B not 0 after decrement.");
-            }*/
-            var d = (sbyte)Fetch();
+            sbyte displacement = (sbyte)Fetch();
 
-            var initialVal = Registers.RegisterSet[B];
-            Registers.RegisterSet[B]--;
-            DECAny(initialVal);
+            byte b = Registers.RegisterSet[B];
+
+            Registers.RegisterSet[B] = DECAny(b);
 
             if (!Registers.IsFlagSet(FlagType.Z))
             {
-                Registers.PC = (ushort)(Registers.PC + d);
-                LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ D:0x{d.ToString()} -> 0x{Registers.PC:X4}");
+                Registers.PC = (ushort)(Registers.PC + displacement);
+                LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ D:0x{displacement.ToString()} -> 0x{Registers.PC:X4}");
             }
             else
             {
@@ -103,20 +89,14 @@ namespace Z80Sharp.Processor
         // Return instructions
         private void RET()
         {
-            ushort sp = Registers.SP;
-            Registers.RegisterSet[PCi + 1] = _memory.Read(sp++);
-            Registers.RegisterSet[PCi] = _memory.Read(sp++);
-            Registers.SP = sp;
+            POP_PC_SILENT();
             LogInstructionExec("0xC9: RET");
         }
         private void RET_CC(byte flagCondition)
         {
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
             {
-                ushort sp = Registers.SP;
-                Registers.RegisterSet[PCi + 1] = _memory.Read(sp++);
-                Registers.RegisterSet[PCi] = _memory.Read(sp++);
-                Registers.SP = sp;
+                POP_PC_SILENT();
                 LogInstructionExec($"0x{_currentInstruction:X2}: RET {Registers.JumpConditionName(flagCondition)}");
             }
             else
@@ -140,19 +120,13 @@ namespace Z80Sharp.Processor
 
         private void RST_HH(byte pcStart)
         {
-            ushort sp = Registers.SP;
-            _memory.Write(--sp, Registers.RegisterSet[PCi]);
-            _memory.Write(--sp, Registers.RegisterSet[PCi + 1]);
-            Registers.SP = sp;
+            PUSH_PC_SILENT();
             Registers.PC = pcStart;
             LogInstructionExec($"0x{_currentInstruction:X2}: RST 0x{pcStart:X4}");
         }
         private void RST_HH_SILENT(byte pcStart)
         {
-            ushort sp = Registers.SP;
-            _memory.Write(--sp, Registers.RegisterSet[PCi]);
-            _memory.Write(--sp, Registers.RegisterSet[PCi + 1]);
-            Registers.SP = sp;
+            PUSH_PC_SILENT();
             Registers.PC = pcStart;
         }
 
@@ -160,10 +134,7 @@ namespace Z80Sharp.Processor
         private void CALL_NN()
         {
             ushort jumpTo = FetchImmediateWord();
-            ushort sp = Registers.SP;
-            _memory.Write(--sp, Registers.RegisterSet[PCi]);
-            _memory.Write(--sp, Registers.RegisterSet[PCi + 1]);
-            Registers.SP = sp;
+            PUSH_PC_SILENT();
             Registers.PC = jumpTo;
             LogInstructionExec($"0x{_currentInstruction:X2}: CALL NN:0x{jumpTo:X4}");
         }
