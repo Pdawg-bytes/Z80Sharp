@@ -20,12 +20,6 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[operatingRegister] = Fetch();
             LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(operatingRegister, true)}, 0x{Registers.RegisterSet[operatingRegister]:X2}{Registers.RegisterSet[operatingRegister + 1]:X2}");
         }
-        private void LD_SP_NN()
-        {
-            ushort word = FetchImmediateWord();
-            Registers.SP = word;
-            LogInstructionExec($"0x31: LD SP, 0x{word:X4}");
-        }
 
         // Load from/to memory with register pairs
         private void LD_RR_NNMEM(byte operatingRegister)

@@ -14,15 +14,7 @@ namespace Z80Sharp.Memory
         }
 
         public byte Read(ushort address) => _memory[address];
-        //public void Write(ushort address, byte value) => _memory[address] = value;
-        public void Write(ushort address, byte value)
-        {
-            _memory[address] = value;
-            if(address == 0x5CBA)
-            {
-                Debug.WriteLine($"write to that special fucker: {value}");
-            }
-        }
+        public void Write(ushort address, byte value) => _memory[address] = value;
 
         public ushort ReadWord(ushort address) => (ushort)(Read(address) | (Read((ushort)(address + 1)) << 8));
         public void WriteWord(ushort address, ushort value) { Write(address, value.GetLowerByte()); Write((ushort)(address + 1), value.GetUpperByte()); }

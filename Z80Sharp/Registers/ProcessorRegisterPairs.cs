@@ -117,6 +117,7 @@ namespace Z80Sharp.Registers
                 RegisterSet[SPi + 1] = (byte)(value & 0xFF);
             }
         }
+
         public ushort PC
         {
             get => (ushort)(RegisterSet[PCi] << 8 | RegisterSet[PCi + 1]);

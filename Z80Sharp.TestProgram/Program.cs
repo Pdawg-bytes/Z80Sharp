@@ -22,7 +22,7 @@ namespace Z80Sharp.TestProgram
 
         public static void Main(string[] args)
         {
-            streamWriter = new StreamWriter(@"C:\Users\pgago\Downloads\comp\RunLogZS.txt", false);
+            streamWriter = new StreamWriter(@"RunLogZS.txt", false);
             logger.LogGenerated += Logger_LogGenerated;
 
             IDataBus dataBus = new DataBus();
@@ -46,7 +46,7 @@ namespace Z80Sharp.TestProgram
                             z80.Halted = true;
                         }
                     }*/
-                    if (z80._currentInstruction == 0xC9 && z80.Registers.PC == 0x3FF8)
+                    if (z80._currentInstruction == 0x3E && z80.Registers.PC == 0x0DF6)
                     {
                         PrintProcessorState(z80.Registers);
                     }

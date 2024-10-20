@@ -122,10 +122,10 @@ namespace Z80Sharp.Processor
                 case 0x37: SCF(); break; // SCF
 
                 // LD instructions: Load immediate 16-bit values into register pairs
-                case 0x01: LD_RR_NN(B); break;  // LD BC, NN
-                case 0x11: LD_RR_NN(D); break;  // LD DE, NN
-                case 0x21: LD_RR_NN(H); break;  // LD HL, NN
-                case 0x31: LD_SP_NN(); break;   // LD SP, NN
+                case 0x01: LD_RR_NN(B); break;   // LD BC, NN
+                case 0x11: LD_RR_NN(D); break;   // LD DE, NN
+                case 0x21: LD_RR_NN(H); break;   // LD HL, NN
+                case 0x31: LD_RR_NN(SPi); break; // LD SP, NN
 
                 // LD instructions: Load values between 16-bit register pairs
                 case 0xF9: LD_RR_RR(SPi, H); break; // LD SP, HL

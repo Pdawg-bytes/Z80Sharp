@@ -143,8 +143,13 @@ namespace Z80Sharp.Processor
             ushort jumpTo = FetchImmediateWord();
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
             {
+                PUSH_PC_SILENT();
                 Registers.PC = jumpTo;
                 LogInstructionExec($"0x{_currentInstruction:X2}: CALL {Registers.JumpConditionName(flagCondition)}, NN:{jumpTo:X4}");
+            }
+            else
+            {
+                LogInstructionExec($"0x{_currentInstruction:X2}: CALL (no call), {Registers.JumpConditionName(flagCondition)} not set to expected value.");
             }
         }
     }

@@ -51,7 +51,7 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[A] = aTemp;
             Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagBits(carry);
-            LogInstructionExec("0x17: RRA");
+            LogInstructionExec("0x1F: RRA");
         }
 
         private void RRD()
