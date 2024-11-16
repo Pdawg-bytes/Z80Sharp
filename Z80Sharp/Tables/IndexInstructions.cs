@@ -199,7 +199,7 @@ namespace Z80Sharp.Processor
 
                 // INC instructions: increments RR/R by 1.
                 case 0x23: INC_RR((byte)indexAddressingMode); break;     // INC IR
-                case 0x34: INC_IRDMEM((byte)indexAddressingMode); break; // INC (HL)
+                case 0x34: INC_IRDMEM((byte)indexAddressingMode); break; // INC (IR)
                 case 0x04: INC_R(B); break;    // INC B | UNDOCUMENTED
                 case 0x0C: INC_R(C); break;    // INC C | UNDOCUMENTED
                 case 0x14: INC_R(D); break;    // INC D | UNDOCUMENTED
@@ -210,7 +210,7 @@ namespace Z80Sharp.Processor
 
                 // DEC instructions: decrements RR/R by 1.
                 case 0x2B: DEC_RR((byte)indexAddressingMode); break;     // DEC IR
-                case 0x35: DEC_IRDMEM((byte)indexAddressingMode); break; // DEC (HL)
+                case 0x35: DEC_IRDMEM((byte)indexAddressingMode); break; // DEC (IR)
                 case 0x05: DEC_R(B); break;    // DEC B | UNDOCUMENTED
                 case 0x0D: DEC_R(C); break;    // DEC C | UNDOCUMENTED
                 case 0x15: DEC_R(D); break;    // DEC D | UNDOCUMENTED

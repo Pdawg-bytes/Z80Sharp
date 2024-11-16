@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Timers;
 using Z80Sharp.Enums;
 using Z80Sharp.Interfaces;
 using Z80Sharp.Memory;
@@ -16,6 +17,10 @@ namespace Z80Sharp.Processor
         private readonly IDataBus _dataBus;
 
         public bool IsDebug { get; init; }
+
+        private ulong InstrsExecuted;
+        private ulong InstrsExecutedLastSecond;
+        private System.Timers.Timer _cycleTimer;
 
         public byte _currentInstruction;
 
@@ -54,10 +59,20 @@ namespace Z80Sharp.Processor
         }
         public void Run()
         {
+            _cycleTimer = new System.Timers.Timer(1000); // Trigger every 1000ms (1 second)
+            _cycleTimer.Elapsed += ReportCyclesPerSecond;
+            _cycleTimer.AutoReset = true;
+            _cycleTimer.Start();
+
             while (!_halted)
             {
                 ExecuteOnce();
             }
+        }
+        private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
+        {
+            Debug.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond} cycles/s");
+            InstrsExecutedLastSecond = InstrsExecuted;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -82,6 +97,7 @@ namespace Z80Sharp.Processor
                 default:
                     ExecuteMainInstruction(); break;
             }
+            InstrsExecuted++;
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)
@@ -89,19 +105,19 @@ namespace Z80Sharp.Processor
         {
             Halted = false;
 
-            Registers.RegisterSet[A] = 0xFF;
-            Registers.RegisterSet[F] = 0xFF;
-            Registers.RegisterSet[A_] = 0xFF;
-            Registers.RegisterSet[F_] = 0xFF;
+            Registers.RegisterSet[A] = 0x00;
+            Registers.RegisterSet[F] = 0x00;
+            Registers.RegisterSet[A_] = 0x00;
+            Registers.RegisterSet[F_] = 0x00;
 
-            Registers.BC = Registers.BC_ = 0xFFFF;
-            Registers.DE = Registers.DE_ = 0xFFFF;
-            Registers.HL = Registers.HL_ = 0xFFFF;
+            Registers.BC = Registers.BC_ = 0x0000;
+            Registers.DE = Registers.DE_ = 0x0000;
+            Registers.HL = Registers.HL_ = 0x0000;
 
             Registers.RegisterSet[I] = 0x00;
 
             Registers.PC = 0x0000;
-            Registers.SP = 0xFFFF;
+            Registers.SP = 0x0000;
 
             Registers.InterruptMode = InterruptMode.IM0;
 
@@ -128,7 +144,7 @@ namespace Z80Sharp.Processor
             }*/
 
             //byte[] rom = File.ReadAllBytes(@"..\..\ROM\48.rom");
-            byte[] rom = File.ReadAllBytes(@"48.rom");
+            /*byte[] rom = File.ReadAllBytes(@"48.rom");
 
             ushort address = 0x0000;
 
@@ -137,7 +153,7 @@ namespace Z80Sharp.Processor
                 _memory.Write(address, rom[i]);
 
                 address++;
-            }
+            }*/
 
             //_logger.Log(LogSeverity.Info, "Processor reset");
         }

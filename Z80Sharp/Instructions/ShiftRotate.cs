@@ -14,12 +14,11 @@ namespace Z80Sharp.Processor
     {
         private void RLCA()
         {
-            byte carry = (byte)(Registers.RegisterSet[A] >> 7);
-            Registers.RegisterSet[A] <<= 1;
-            Registers.RegisterSet[A] |= (byte)(carry << 7);
+            byte carry = (byte)((Registers.RegisterSet[A] >> 7) & 0x1);
+            Registers.RegisterSet[A] = (byte)((Registers.RegisterSet[A] << 1) | carry);
             Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
-            Registers.SetFlagBits(carry);
-            LogInstructionExec("0x07: RLCA");
+            Registers.SetFlagConditionally(FlagType.C, carry != 0);
+            //LogInstructionExec("0x07: RLCA");
         }
         private void RLA()
         {
@@ -30,7 +29,7 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[A] = aTemp;
             Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagBits(carry);
-            LogInstructionExec("0x17: RLA");
+            //LogInstructionExec("0x17: RLA");
         }
 
         private void RRCA()
@@ -40,7 +39,7 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[A] |= (byte)(carry << 7);
             Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagBits(carry);
-            LogInstructionExec("0x0F: RRCA");
+            //LogInstructionExec("0x0F: RRCA");
         }
         private void RRA()
         {
@@ -51,7 +50,7 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[A] = aTemp;
             Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagBits(carry);
-            LogInstructionExec("0x1F: RRA");
+            //LogInstructionExec("0x1F: RRA");
         }
 
         private void RRD()
@@ -68,7 +67,7 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[F] = (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
             Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
-            LogInstructionExec("0x67: RRD");
+            //LogInstructionExec("0x67: RRD");
         }
         private void RLD()
         {
@@ -84,7 +83,7 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[F] = (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
             Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
-            LogInstructionExec("0x6F: RLD");
+            //LogInstructionExec("0x6F: RLD");
         }
 
 
@@ -97,7 +96,7 @@ namespace Z80Sharp.Processor
             SetFlagsLSH(reg);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SLA {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SLA {Registers.RegisterName(operatingRegister)}");
         }
         private void SLA_RRMEM(byte operatingRegister)
         {
@@ -111,7 +110,7 @@ namespace Z80Sharp.Processor
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void SLA_IRDMEM(sbyte displacement, byte indexAddressingMode)
         {
@@ -125,7 +124,7 @@ namespace Z80Sharp.Processor
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
         private void SLA_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
         {
@@ -140,7 +139,7 @@ namespace Z80Sharp.Processor
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
         private void SLL_R(byte operatingRegister) // UNDOCUMENTED
@@ -152,7 +151,7 @@ namespace Z80Sharp.Processor
             SetFlagsLSH(reg);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SLL {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SLL {Registers.RegisterName(operatingRegister)}");
         }
         private void SLL_RRMEM(byte operatingRegister) // UNDOCUMENTED
         {
@@ -166,7 +165,7 @@ namespace Z80Sharp.Processor
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void SLL_IRDMEM(sbyte displacement, byte indexAddressingMode) // UNDOCUMENTED
         {
@@ -180,7 +179,7 @@ namespace Z80Sharp.Processor
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
         private void SLL_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
         {
@@ -195,7 +194,7 @@ namespace Z80Sharp.Processor
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
         private void SRA_R(byte operatingRegister)
@@ -209,7 +208,7 @@ namespace Z80Sharp.Processor
             SetFlagsRSH(reg);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SRA {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SRA {Registers.RegisterName(operatingRegister)}");
         }
         private void SRA_RRMEM(byte operatingRegister)
         {
@@ -224,7 +223,7 @@ namespace Z80Sharp.Processor
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SRA {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SRA {Registers.RegisterName(operatingRegister)}");
         }
         private void SRA_IRDMEM(sbyte displacement, byte indexAddressingMode)
         {
@@ -239,7 +238,7 @@ namespace Z80Sharp.Processor
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SRA ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SRA ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
         private void SRA_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
         {
@@ -255,7 +254,7 @@ namespace Z80Sharp.Processor
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SRA ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SRA ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
         private void SRL_R(byte operatingRegister)
@@ -267,7 +266,7 @@ namespace Z80Sharp.Processor
             SetFlagsRSH(reg);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SRL {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SRL {Registers.RegisterName(operatingRegister)}");
         }
         private void SRL_RRMEM(byte operatingRegister)
         {
@@ -281,7 +280,7 @@ namespace Z80Sharp.Processor
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void SRL_IRDMEM(sbyte displacement, byte indexAddressingMode)
         {
@@ -295,7 +294,7 @@ namespace Z80Sharp.Processor
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
         private void SRL_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
         {
@@ -310,7 +309,7 @@ namespace Z80Sharp.Processor
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
 
@@ -323,7 +322,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(reg);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RLC {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RLC {Registers.RegisterName(operatingRegister)}");
         }
         private void RLC_RRMEM(byte operatingRegister)
         {
@@ -337,7 +336,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void RLC_IRDMEM(sbyte displacement, byte indexAddressingMode)
         {
@@ -351,7 +350,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(indexAddressingMode, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(indexAddressingMode, true)})");
         }
         private void RLC_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
         {
@@ -366,7 +365,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(indexAddressingMode, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(indexAddressingMode, true)})");
         }
 
         private void RL_R(byte operatingRegister)
@@ -378,7 +377,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(reg);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RL {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RL {Registers.RegisterName(operatingRegister)}");
         }
         private void RL_RRMEM(byte operatingRegister)
         {
@@ -392,7 +391,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void RL_IRDMEM(sbyte displacement, byte indexAddressingMode)
         {
@@ -406,7 +405,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
         private void RL_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
         {
@@ -421,7 +420,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
 
@@ -434,7 +433,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(reg);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is not 0)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RRC {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RRC {Registers.RegisterName(operatingRegister)}");
         }
         private void RRC_RRMEM(byte operatingRegister)
         {
@@ -448,7 +447,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is not 0)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void RRC_IRDMEM(sbyte displacement, byte indexAddressingMode)
         {
@@ -462,7 +461,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
         private void RRC_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
         {
@@ -477,7 +476,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
         private void RR_R(byte operatingRegister)
@@ -489,7 +488,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(reg);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is not 0)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RR {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RR {Registers.RegisterName(operatingRegister)}");
         }
         private void RR_RRMEM(byte operatingRegister)
         {
@@ -503,7 +502,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is not 0)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void RR_IRDMEM(sbyte displacement, byte indexAddressingMode)
         {
@@ -517,7 +516,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
         private void RR_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
         {
@@ -532,7 +531,7 @@ namespace Z80Sharp.Processor
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
     }
 }

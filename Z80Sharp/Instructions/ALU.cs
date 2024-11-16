@@ -29,7 +29,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
 
-            LogInstructionExec("0xA1: CPI");
+            //LogInstructionExec("0xA1: CPI");
         }
         private void CPIR()
         {
@@ -54,7 +54,7 @@ namespace Z80Sharp.Processor
                 Registers.PC -= 2;
             }
 
-            LogInstructionExec("0xB1: CPIR");
+            //LogInstructionExec("0xB1: CPIR");
         }
         private void CPD()
         {
@@ -74,7 +74,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
 
-            LogInstructionExec("0xA9: CPI");
+            //LogInstructionExec("0xA9: CPI");
         }
         private void CPDR()
         {
@@ -99,7 +99,7 @@ namespace Z80Sharp.Processor
                 Registers.PC -= 2;
             }
 
-            LogInstructionExec("0xB9: CPIR");
+            //LogInstructionExec("0xB9: CPIR");
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (Page 18)
@@ -133,7 +133,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
 
-            LogInstructionExec("0x27: DAA");
+            //LogInstructionExec("0x27: DAA");
         }
 
         private void NEG()
@@ -152,7 +152,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (result & 0x20) > 0);            // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (result & 0x08) > 0);            // (Y)  (Undocumented flag)
 
-            LogInstructionExec("0x44: NEG");
+            //LogInstructionExec("0x44: NEG");
         }
 
         private void INC_RR(byte operatingRegister)
@@ -160,23 +160,23 @@ namespace Z80Sharp.Processor
             ushort value = (ushort)(Registers.GetR16FromHighIndexer(operatingRegister) + 1);
             Registers.RegisterSet[operatingRegister] = value.GetUpperByte();
             Registers.RegisterSet[operatingRegister + 1] = value.GetLowerByte();
-            LogInstructionExec($"0x{_currentInstruction:X2}: INC {Registers.RegisterName(operatingRegister, true)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: INC {Registers.RegisterName(operatingRegister, true)}");
         }
         private void INC_R(byte operatingRegister)
         {
             Registers.RegisterSet[operatingRegister] = INCAny(Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: INC {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: INC {Registers.RegisterName(operatingRegister)}");
         }
         private void INC_HLMEM()
         {
             _memory.Write(Registers.HL, INCAny(_memory.Read(Registers.HL)));
-            LogInstructionExec($"0x34: INC (HL)");
+            //LogInstructionExec($"0x34: INC (HL)");
         }
         private void INC_IRDMEM(byte indexAddressingMode)
         {
-            ushort irValue = Registers.GetR16FromHighIndexer(indexAddressingMode);
-            _memory.Write(irValue, INCAny(_memory.Read((ushort)(irValue + (sbyte)Fetch()))));
-            LogInstructionExec($"0x34: INC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            ushort addr = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch());
+            _memory.Write(addr, INCAny(_memory.Read(addr)));
+            //LogInstructionExec($"0x34: INC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
 
         private void DEC_RR(byte operatingRegister)
@@ -184,213 +184,213 @@ namespace Z80Sharp.Processor
             ushort value = (ushort)(Registers.GetR16FromHighIndexer(operatingRegister) - 1);
             Registers.RegisterSet[operatingRegister] = value.GetUpperByte();
             Registers.RegisterSet[operatingRegister + 1] = value.GetLowerByte();
-            LogInstructionExec($"0x{_currentInstruction:X2}: DEC {Registers.RegisterName(operatingRegister, true)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: DEC {Registers.RegisterName(operatingRegister, true)}");
         }
         private void DEC_R(byte operatingRegister)
         {
             Registers.RegisterSet[operatingRegister] = DECAny(Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: DEC {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: DEC {Registers.RegisterName(operatingRegister)}");
         }
         private void DEC_HLMEM()
         {
             _memory.Write(Registers.HL, DECAny(_memory.Read(Registers.HL)));
-            LogInstructionExec($"0x35: DEC (HL)");
+            //LogInstructionExec($"0x35: DEC (HL)");
         }
         private void DEC_IRDMEM(byte indexAddressingMode)
         {
-            ushort irValue = Registers.GetR16FromHighIndexer(indexAddressingMode);
-            _memory.Write(irValue, DECAny(_memory.Read((ushort)(irValue + (sbyte)Fetch()))));
-            LogInstructionExec($"0x35: DEC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            ushort addr = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch());
+            _memory.Write(addr, DECAny(_memory.Read(addr)));
+            //LogInstructionExec($"0x35: DEC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
 
         private void OR_R(byte operatingRegister)
         {
             ORAny(Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: OR {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: OR {Registers.RegisterName(operatingRegister)}");
         }
         private void OR_N()
         {
             ORAny(Fetch());
-            LogInstructionExec($"0xF6: OR N:0x{FetchLast():X2}");
+            //LogInstructionExec($"0xF6: OR N:0x{FetchLast():X2}");
         }
         private void OR_RRMEM(byte operatingRegister)
         {
             ORAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            LogInstructionExec($"0x{_currentInstruction:X2}: OR ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: OR ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void OR_IRDMEM(byte indexAddressingMode)
         {
             ORAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            LogInstructionExec($"0x{_currentInstruction:X2}: OR ({Registers.RegisterName(indexAddressingMode, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: OR ({Registers.RegisterName(indexAddressingMode, true)})");
         }
 
         private void XOR_R(byte operatingRegister)
         {
             XORAny(Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: XOR {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: XOR {Registers.RegisterName(operatingRegister)}");
         }
         private void XOR_N()
         {
             XORAny(Fetch());
-            LogInstructionExec($"0xEE: XOR N:0x{FetchLast():X2}");
+            //LogInstructionExec($"0xEE: XOR N:0x{FetchLast():X2}");
         }
         private void XOR_RRMEM(byte operatingRegister)
         {
             XORAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            LogInstructionExec($"0x{_currentInstruction:X2}: XOR ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: XOR ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void XOR_IRDMEM(byte indexAddressingMode)
         {
             XORAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            LogInstructionExec($"0x{_currentInstruction:X2}: XOR ({Registers.RegisterName(indexAddressingMode, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: XOR ({Registers.RegisterName(indexAddressingMode, true)})");
         }
 
         private void AND_R(byte operatingRegister)
         {
             ANDAny(Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: AND {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: AND {Registers.RegisterName(operatingRegister)}");
         }
         private void AND_N()
         {
             ANDAny(Fetch());
-            LogInstructionExec($"0xE6: XOR N:0x{FetchLast():X2}");
+            //LogInstructionExec($"0xE6: XOR N:0x{FetchLast():X2}");
         }
         private void AND_RRMEM(byte operatingRegister)
         {
             ANDAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            LogInstructionExec($"0x{_currentInstruction:X2}: AND ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: AND ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void AND_IRDMEM(byte indexAddressingMode)
         {
             ANDAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            LogInstructionExec($"0x{_currentInstruction:X2}: AND ({Registers.RegisterName(indexAddressingMode, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: AND ({Registers.RegisterName(indexAddressingMode, true)})");
         }
 
         private void CMP_R(byte operatingRegister)
         {
             CMPAny(Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: CP {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: CP {Registers.RegisterName(operatingRegister)}");
         }
         private void CMP_N()
         {
             CMPAny(Fetch());
-            LogInstructionExec($"0xFE: CP N:0x{FetchLast():X2}");
+            //LogInstructionExec($"0xFE: CP N:0x{FetchLast():X2}");
         }
         private void CMP_RRMEM(byte operatingRegister)
         {
             CMPAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            LogInstructionExec($"0x{_currentInstruction:X2}: CP ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: CP ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void CMP_IRDMEM(byte indexAddressingMode)
         {
             CMPAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            LogInstructionExec($"0x{_currentInstruction:X2}: CP ({Registers.RegisterName(indexAddressingMode, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: CP ({Registers.RegisterName(indexAddressingMode, true)})");
         }
 
         private void ADD_A_R(byte operatingRegister)
         {
             ADDAny(Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: ADD {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: ADD {Registers.RegisterName(operatingRegister)}");
         }
         private void ADD_A_N()
         {
             ADDAny(Fetch());
-            LogInstructionExec($"0xC6: ADD N:0x{FetchLast():X2}");
+            //LogInstructionExec($"0xC6: ADD N:0x{FetchLast():X2}");
         }
         private void ADD_A_RRMEM(byte operatingRegister)
         {
             ADDAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            LogInstructionExec($"0x{_currentInstruction:X2}: ADD ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: ADD ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void ADD_A_IRDMEM(byte indexAddressingMode)
         {
             ADDAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            LogInstructionExec($"0x{_currentInstruction:X2}: ADD ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: ADD ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
         private void ADD_HL_RR(byte operatingRegister)
         {
             Registers.HL = ADDWord(Registers.HL, Registers.GetR16FromHighIndexer(operatingRegister));
-            LogInstructionExec($"0x{_currentInstruction:X2}: ADD HL, {Registers.RegisterName(operatingRegister, true)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: ADD HL, {Registers.RegisterName(operatingRegister, true)}");
         }
         private void ADD_IR_RR(byte mode, byte operatingRegister)
         {
             ushort value = ADDWord(Registers.GetR16FromHighIndexer(mode), Registers.GetR16FromHighIndexer(operatingRegister));
-            LogInstructionExec($"0x{_currentInstruction:X2}: ADD {Registers.RegisterName(mode, true)}, {Registers.RegisterName(operatingRegister, true)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: ADD {Registers.RegisterName(mode, true)}, {Registers.RegisterName(operatingRegister, true)}");
         }
 
         private void ADC_A_R(byte operatingRegister)
         {
             ADCAny(Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: ADC {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: ADC {Registers.RegisterName(operatingRegister)}");
         }
         private void ADC_A_N()
         {
             ADCAny(Fetch());
-            LogInstructionExec($"0xCE: ADC N:0x{FetchLast():X2}");
+            //LogInstructionExec($"0xCE: ADC N:0x{FetchLast():X2}");
         }
         private void ADC_A_RRMEM(byte operatingRegister)
         {
             ADCAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            LogInstructionExec($"0x{_currentInstruction:X2}: ADC ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: ADC ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void ADC_A_IRDMEM(byte indexAddressingMode)
         {
             ADCAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            LogInstructionExec($"0x{_currentInstruction:X2}: ADC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: ADC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
 
         private void ADC_HL_RR(byte operatingRegister)
         {
             ADCHL(Registers.GetR16FromHighIndexer(operatingRegister));
-            LogInstructionExec($"0x{_currentInstruction:X2}: ADC HL, {Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: ADC HL, {Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4}");
         }
 
         private void SUB_R(byte operatingRegister)
         {
             SUBAny(Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: SUB {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SUB {Registers.RegisterName(operatingRegister)}");
         }
         private void SUB_N()
         {
             SUBAny(Fetch());
-            LogInstructionExec($"0xD6: SUB N:0x{FetchLast():X2}");
+            //LogInstructionExec($"0xD6: SUB N:0x{FetchLast():X2}");
         }
         private void SUB_RRMEM(byte operatingRegister)
         {
             SUBAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            LogInstructionExec($"0x{_currentInstruction:X2}: SUB ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SUB ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void SUB_IRDMEM(byte indexAddressingMode)
         {
             SUBAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            LogInstructionExec($"0x{_currentInstruction:X2}: SUB ({Registers.RegisterName(indexAddressingMode, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SUB ({Registers.RegisterName(indexAddressingMode, true)})");
         }
 
         private void SBC_A_R(byte operatingRegister)
         {
             SBCAny(Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: SBC {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SBC {Registers.RegisterName(operatingRegister)}");
         }
         private void SBC_A_N()
         {
             SBCAny(Fetch());
-            LogInstructionExec($"0xDE: SBC N:0x{FetchLast():X2}");
+            //LogInstructionExec($"0xDE: SBC N:0x{FetchLast():X2}");
         }
         private void SBC_A_RRMEM(byte operatingRegister)
         {
             SBCAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            LogInstructionExec($"0x{_currentInstruction:X2}: SBC ({Registers.RegisterName(operatingRegister, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SBC ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void SBC_A_IRDMEM(byte indexAddressingMode)
         {
             SBCAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            LogInstructionExec($"0x{_currentInstruction:X2}: SUB ({Registers.RegisterName(indexAddressingMode, true)})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SUB ({Registers.RegisterName(indexAddressingMode, true)})");
         }
 
         private void SBC_HL_RR(byte operatingRegister)
         {
             SBCHL(Registers.GetR16FromHighIndexer(operatingRegister));
-            LogInstructionExec($"0x{_currentInstruction:X2}: SBC HL, {Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: SBC HL, {Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4}");
         }
     }
 }

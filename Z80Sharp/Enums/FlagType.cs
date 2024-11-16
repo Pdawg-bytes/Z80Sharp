@@ -2,6 +2,8 @@ namespace Z80Sharp.Enums
 {
     /*
      * Reference: https://area51.dev/asm/z80/about/flags/
+     * 
+     * SZYHXPNC
      */
     public enum FlagType : byte
     {

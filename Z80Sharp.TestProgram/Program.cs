@@ -12,12 +12,12 @@ using System;
 
 namespace Z80Sharp.TestProgram
 {
-    public static class Program
+    public static partial class Program
     {
         private static bool quitRequested = false;
         private static IZ80Logger logger = new Logger(useColors: false);
-        private static Z80 z80;
-        private static MainMemory mainMemory;
+        internal static Z80 z80;
+        internal static MainMemory mainMemory;
         private static StreamWriter streamWriter;
 
         public static void Main(string[] args)
@@ -25,7 +25,7 @@ namespace Z80Sharp.TestProgram
             streamWriter = new StreamWriter(@"RunLogZS.txt", false);
             logger.LogGenerated += Logger_LogGenerated;
 
-            IDataBus dataBus = new DataBus();
+            IDataBus dataBus = new CPMBus();
 
             mainMemory = new MainMemory(65536);
 
@@ -34,24 +34,7 @@ namespace Z80Sharp.TestProgram
             z80.Reset();
             Thread processorThread = new(() =>
             {
-                while(true)
-                {
-                    if (z80.Halted) break;
-                    z80.Step();
-                    /*if (z80.Registers.HL == 0xFFFE)
-                    {
-                        i++;
-                        if (i > 4)
-                        {
-                            z80.Halted = true;
-                        }
-                    }*/
-                    if (z80._currentInstruction == 0x3E && z80.Registers.PC == 0x0DF6)
-                    {
-                        PrintProcessorState(z80.Registers);
-                    }
-                }
-
+                RunCPMBinary("zexdoc.com");
             });
             processorThread.Start();
 
@@ -60,7 +43,12 @@ namespace Z80Sharp.TestProgram
 
         private static void Logger_LogGenerated(object? sender, Events.LogGeneratedEventArgs e)
         {
-            streamWriter.WriteLine($"0x{z80.Registers.PC:X4}: " + e.LogData);
+            //streamWriter.WriteLine($"0x{z80.Registers.PC:X4}: " + e.LogData);
+            //streamWriter.WriteLine(GetRegs());
+        }
+        private static string GetRegs()
+        {
+            return $"B: {z80.Registers.RegisterSet[B]:X2}; C: {z80.Registers.RegisterSet[C]:X2}; D: {z80.Registers.RegisterSet[D]:X2}; E: {z80.Registers.RegisterSet[E]:X2}; H: {z80.Registers.RegisterSet[H]:X2}; L: {z80.Registers.RegisterSet[L]:X2}; A: {z80.Registers.RegisterSet[A]:X2}; IX: {z80.Registers.IX:X4}; IY: {z80.Registers.IY:X4}; SP: {z80.Registers.SP:X4}; PC: {z80.Registers.PC:X4}";
         }
 
         private static ConsoleKeyInfo _key;

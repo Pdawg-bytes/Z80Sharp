@@ -15,7 +15,7 @@ namespace Z80Sharp.Processor
             Registers.SP++;
             Registers.RegisterSet[operatingRegister] = _memory.Read(Registers.SP);
             Registers.SP++;
-            LogInstructionExec($"0x{_currentInstruction:X2}: POP {Registers.RegisterName(operatingRegister, true)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: POP {Registers.RegisterName(operatingRegister, true)}");
         }
         // We can't use the generic method because the register indexers for A and F are in the opposite order.
         private void POP_AF()
@@ -24,7 +24,7 @@ namespace Z80Sharp.Processor
             Registers.SP++;
             Registers.RegisterSet[A] = _memory.Read(Registers.SP);
             Registers.SP++;
-            LogInstructionExec($"0xF1: POP AF");
+            //LogInstructionExec($"0xF1: POP AF");
         }
         private void POP_PC_SILENT()
         {
@@ -42,7 +42,7 @@ namespace Z80Sharp.Processor
             _memory.Write(Registers.SP, Registers.RegisterSet[operatingRegister]);
             Registers.SP--;
             _memory.Write(Registers.SP, Registers.RegisterSet[operatingRegister + 1]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: PUSH {Registers.RegisterName(operatingRegister, true)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: PUSH {Registers.RegisterName(operatingRegister, true)}");
         }
         // We can't use the generic method because the register indexers for A and F are in the opposite order.
         private void PUSH_AF()
@@ -51,7 +51,7 @@ namespace Z80Sharp.Processor
             _memory.Write(Registers.SP, Registers.RegisterSet[A]);
             Registers.SP--;
             _memory.Write(Registers.SP, Registers.RegisterSet[F]);
-            LogInstructionExec($"0xF5: PUSH AF");
+            //LogInstructionExec($"0xF5: PUSH AF");
         }
         private void PUSH_PC_SILENT()
         {

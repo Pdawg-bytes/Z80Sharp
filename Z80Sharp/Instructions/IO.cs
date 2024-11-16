@@ -15,7 +15,7 @@ namespace Z80Sharp.Processor
         {
             ushort port = (ushort)(Fetch() + (Registers.RegisterSet[A] << 8));
             Registers.RegisterSet[A] = _dataBus.ReadPort(port);
-            LogInstructionExec($"0xDB: IN A, (N:0x{port:X4})");
+            //LogInstructionExec($"0xDB: IN A, (N:0x{port:X4})");
         }
         private void IN_R_CPORT(byte operatingRegister)
         {
@@ -28,14 +28,14 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (data & 0x20) != 0);             // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (data & 0x08) != 0);             // (Y) (Undocumented flag)
 
-            LogInstructionExec($"0x{_currentInstruction:X2}: IN {Registers.RegisterName(operatingRegister)}, (C)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: IN {Registers.RegisterName(operatingRegister)}, (C)");
         }
         private void IN_CPORT() // UNDOCUMENTED
         {
             byte data = _dataBus.ReadPort(Registers.BC);
             Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(data));
-            LogInstructionExec("0x70: IN (C)");
+            //LogInstructionExec("0x70: IN (C)");
         }
 
         private void INI()
@@ -46,7 +46,7 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlag(FlagType.N);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
-            LogInstructionExec("0xA2: INI");
+            //LogInstructionExec("0xA2: INI");
         }
         private void INIR()
         {
@@ -57,7 +57,7 @@ namespace Z80Sharp.Processor
                 Registers.PC -= 2;
             }
 
-            LogInstructionExec("0xA2: INI");
+            //LogInstructionExec("0xA2: INI");
         }
         private void IND()
         {
@@ -67,7 +67,7 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlag(FlagType.N);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
-            LogInstructionExec("0xAA: IND");
+            //LogInstructionExec("0xAA: IND");
         }
         private void INDR()
         {
@@ -78,24 +78,24 @@ namespace Z80Sharp.Processor
                 Registers.PC -= 2;
             }
 
-            LogInstructionExec("0xBA: INDR");
+            //LogInstructionExec("0xBA: INDR");
         }
 
         private void OUT_NPORT_A()
         {
             ushort port = (ushort)((Registers.RegisterSet[A] << 8) | Fetch());
             _dataBus.WritePort(port, Registers.RegisterSet[A]);
-            LogInstructionExec($"0xD3: OUT (N:0x{(port & 0x00FF):X2}), A");
+            //LogInstructionExec($"0xD3: OUT (N:0x{(port & 0x00FF):X2}), A");
         }
         private void OUT_CPORT_R(byte operatingRegister)
         {
             _dataBus.WritePort(Registers.BC, Registers.RegisterSet[operatingRegister]);
-            LogInstructionExec($"0x{_currentInstruction:X2}: OUT (C), {Registers.RegisterName(operatingRegister)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: OUT (C), {Registers.RegisterName(operatingRegister)}");
         }
         private void OUT_CPORT_0()
         {
             _dataBus.WritePort(Registers.BC, 0); // Should be 255 on a CMOS Z80, 0 on NMOS
-            LogInstructionExec("0x71: OUT (C), 0");
+            //LogInstructionExec("0x71: OUT (C), 0");
         }
 
         private void OUTI()
@@ -106,7 +106,7 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlag(FlagType.N);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
-            LogInstructionExec("0xA3: OUTI");
+            //LogInstructionExec("0xA3: OUTI");
         }
         private void OTIR()
         {
@@ -117,7 +117,7 @@ namespace Z80Sharp.Processor
                 Registers.PC -= 2;
             }
 
-            LogInstructionExec("0xB3: OTIR");
+            //LogInstructionExec("0xB3: OTIR");
         }
         private void OUTD()
         {
@@ -127,7 +127,7 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlag(FlagType.N);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
-            LogInstructionExec("0xAB: OUTD");
+            //LogInstructionExec("0xAB: OUTD");
         }
         private void OTDR()
         {
@@ -138,7 +138,7 @@ namespace Z80Sharp.Processor
                 Registers.PC -= 2;
             }
 
-            LogInstructionExec("0xBB: OTDR");
+            //LogInstructionExec("0xBB: OTDR");
         }
     }
 }

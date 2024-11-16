@@ -17,13 +17,13 @@ namespace Z80Sharp.Processor
             ushort jumpTo = FetchImmediateWord();
             Registers.RegisterSet[PCi] = jumpTo.GetUpperByte();
             Registers.RegisterSet[PCi + 1] = jumpTo.GetLowerByte();
-            LogInstructionExec($"0xC3: JP 0x{jumpTo:X4}");
+            //LogInstructionExec($"0xC3: JP 0x{jumpTo:X4}");
         }
         private void JP_RR(byte operatingRegister)
         {
             ushort jumpTo = Registers.GetR16FromHighIndexer(operatingRegister);
             Registers.PC = jumpTo;
-            LogInstructionExec($"0x{_currentInstruction:X2}: JP ({Registers.RegisterName(operatingRegister, true)}:0x{jumpTo:X4})");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: JP ({Registers.RegisterName(operatingRegister, true)}:0x{jumpTo:X4})");
         }
         // Conditional jump to immediate
         private void JP_NN_C(byte flagCondition)
@@ -32,11 +32,11 @@ namespace Z80Sharp.Processor
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
             {
                 Registers.PC = jumpTo;
-                LogInstructionExec($"0x{_currentInstruction:X2}: JP {Registers.JumpConditionName(flagCondition)} 0x{jumpTo:X4}");
+                //LogInstructionExec($"0x{_currentInstruction:X2}: JP {Registers.JumpConditionName(flagCondition)} 0x{jumpTo:X4}");
             }
             else
             {
-                LogInstructionExec($"0x{_currentInstruction:X2}: JP (no jump), {Registers.JumpConditionName(flagCondition)} not set.");
+                //LogInstructionExec($"0x{_currentInstruction:X2}: JP (no jump), {Registers.JumpConditionName(flagCondition)} not set.");
             }
         }
 
@@ -46,7 +46,7 @@ namespace Z80Sharp.Processor
             sbyte displacement = (sbyte)Fetch();
             ushort jumpTo = (ushort)(Registers.PC + displacement);
             Registers.PC = jumpTo;
-            LogInstructionExec($"0x{_currentInstruction:X2}: JR D:0x{displacement:X2} -> 0x{Registers.PC:X4}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: JR D:0x{displacement:X2} -> 0x{Registers.PC:X4}");
         }
         // Technically, if we were doing this off of ((_currentInstruction >> 3) & 0x07), we'd need to (& 0x3) the value
         // again to get the right flag condition. However, instead of computing it on the fly, we can use our jump table
@@ -58,11 +58,11 @@ namespace Z80Sharp.Processor
             {
                 ushort jumpTo = (ushort)(Registers.PC + displacement);
                 Registers.PC = jumpTo;
-                LogInstructionExec($"0x{_currentInstruction:X2}: JR {Registers.JumpConditionName(flagCondition)} D:0x{((byte)displacement).ToString("X2")} -> 0x{jumpTo:X4}");
+                //LogInstructionExec($"0x{_currentInstruction:X2}: JR {Registers.JumpConditionName(flagCondition)} D:0x{((byte)displacement).ToString("X2")} -> 0x{jumpTo:X4}");
             }
             else
             {
-                LogInstructionExec($"0x{_currentInstruction:X2}: JR (no jump), {Registers.JumpConditionName(flagCondition)} not set.");
+                //LogInstructionExec($"0x{_currentInstruction:X2}: JR (no jump), {Registers.JumpConditionName(flagCondition)} not set.");
             }
         }
 
@@ -77,11 +77,11 @@ namespace Z80Sharp.Processor
             if (!Registers.IsFlagSet(FlagType.Z))
             {
                 Registers.PC = (ushort)(Registers.PC + displacement);
-                LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ D:0x{displacement.ToString()} -> 0x{Registers.PC:X4}");
+                //LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ D:0x{displacement.ToString()} -> 0x{Registers.PC:X4}");
             }
             else
             {
-                LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ (no jump), B not 0 after decrement.");
+                //LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ (no jump), B not 0 after decrement.");
             }
         }
 
@@ -90,31 +90,31 @@ namespace Z80Sharp.Processor
         private void RET()
         {
             POP_PC_SILENT();
-            LogInstructionExec("0xC9: RET");
+            //LogInstructionExec("0xC9: RET");
         }
         private void RET_CC(byte flagCondition)
         {
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
             {
                 POP_PC_SILENT();
-                LogInstructionExec($"0x{_currentInstruction:X2}: RET {Registers.JumpConditionName(flagCondition)}");
+                //LogInstructionExec($"0x{_currentInstruction:X2}: RET {Registers.JumpConditionName(flagCondition)}");
             }
             else
             {
-                LogInstructionExec($"0x{_currentInstruction:X2}: RET (no ret), {Registers.JumpConditionName(flagCondition)} not set to expected value.");
+                //LogInstructionExec($"0x{_currentInstruction:X2}: RET (no ret), {Registers.JumpConditionName(flagCondition)} not set to expected value.");
             }
         }
         private void RETN()
         {
             POP_PC_SILENT();
             Registers.IFF1 = Registers.IFF2;
-            LogInstructionExec("0x45: RETN");
+            //LogInstructionExec("0x45: RETN");
         }
         private void RETI()
         {
             POP_PC_SILENT();
             // signal device triggering NMI that routine has completed
-            LogInstructionExec("0x4D: RETI");
+            //LogInstructionExec("0x4D: RETI");
         }
 
 
@@ -122,7 +122,7 @@ namespace Z80Sharp.Processor
         {
             PUSH_PC_SILENT();
             Registers.PC = pcStart;
-            LogInstructionExec($"0x{_currentInstruction:X2}: RST 0x{pcStart:X4}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: RST 0x{pcStart:X4}");
         }
         private void RST_HH_SILENT(byte pcStart)
         {
@@ -136,7 +136,7 @@ namespace Z80Sharp.Processor
             ushort jumpTo = FetchImmediateWord();
             PUSH_PC_SILENT();
             Registers.PC = jumpTo;
-            LogInstructionExec($"0x{_currentInstruction:X2}: CALL NN:0x{jumpTo:X4}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: CALL NN:0x{jumpTo:X4}");
         }
         private void CALL_CC_NN(byte flagCondition)
         {
@@ -145,11 +145,11 @@ namespace Z80Sharp.Processor
             {
                 PUSH_PC_SILENT();
                 Registers.PC = jumpTo;
-                LogInstructionExec($"0x{_currentInstruction:X2}: CALL {Registers.JumpConditionName(flagCondition)}, NN:{jumpTo:X4}");
+                //LogInstructionExec($"0x{_currentInstruction:X2}: CALL {Registers.JumpConditionName(flagCondition)}, NN:{jumpTo:X4}");
             }
             else
             {
-                LogInstructionExec($"0x{_currentInstruction:X2}: CALL (no call), {Registers.JumpConditionName(flagCondition)} not set to expected value.");
+                //LogInstructionExec($"0x{_currentInstruction:X2}: CALL (no call), {Registers.JumpConditionName(flagCondition)} not set to expected value.");
             }
         }
     }
