@@ -54,10 +54,12 @@ namespace Z80Sharp.TestProgram
         }
     }
 
-    internal class CPMBus : IDataBus
+    internal struct CPMBus : IDataBus
     {
-        public bool MI { get; set; } = false;
-        public bool NMI { get; set; } = false;
+        public CPMBus() { }
+
+        public byte InterruptStatus { get; set; } = 0x00;
+
         public byte Data { get; set; }
 
         public byte ReadPort(ushort port)

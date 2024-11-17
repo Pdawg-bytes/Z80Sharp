@@ -10,9 +10,10 @@ using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80 /*: IProcessor*/
+    public sealed partial class Z80 /*: IProcessor*/
     {
-        private readonly IMemory _memory;
+        //private readonly IMemory _memory;
+        private readonly MainMemory _memory;
         private readonly IZ80Logger _logger;
         private readonly IDataBus _dataBus;
 
@@ -35,17 +36,17 @@ namespace Z80Sharp.Processor
                 _halted = value;
                 if(value)
                 {
-                    //_logger.Log(LogSeverity.Info, "Processor halted");
+                    _logger.Log(LogSeverity.Info, "Processor halted");
                 }
                 else
                 {
-                    //_logger.Log(LogSeverity.Info, "Processor unhalted");
+                    _logger.Log(LogSeverity.Info, "Processor unhalted");
                 }
             }
         }
         private void UnhaltIfHalted() { if(_halted) Halted = false; }
 
-        public Z80(IMemory memory, IDataBus dataBus, IZ80Logger logger, bool isDebug)
+        public Z80(MainMemory memory, IDataBus dataBus, IZ80Logger logger, bool isDebug)
         {
             _memory = memory;
             _dataBus = dataBus;
@@ -59,7 +60,7 @@ namespace Z80Sharp.Processor
         }
         public void Run()
         {
-            _cycleTimer = new System.Timers.Timer(1000); // Trigger every 1000ms (1 second)
+            _cycleTimer = new System.Timers.Timer(1000);
             _cycleTimer.Elapsed += ReportCyclesPerSecond;
             _cycleTimer.AutoReset = true;
             _cycleTimer.Start();
@@ -71,7 +72,7 @@ namespace Z80Sharp.Processor
         }
         private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
         {
-            Debug.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond} cycles/s");
+            //Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond} instr/s");
             InstrsExecutedLastSecond = InstrsExecuted;
         }
 
@@ -115,6 +116,7 @@ namespace Z80Sharp.Processor
             Registers.HL = Registers.HL_ = 0x0000;
 
             Registers.RegisterSet[I] = 0x00;
+            Registers.RegisterSet[R] = 0x00;
 
             Registers.PC = 0x0000;
             Registers.SP = 0x0000;
@@ -155,8 +157,38 @@ namespace Z80Sharp.Processor
                 address++;
             }*/
 
-            //_logger.Log(LogSeverity.Info, "Processor reset");
+            _logger.Log(LogSeverity.Info, "Processor reset");
         }
+        public void Reset(ProcessorRegisters state)
+        {
+            // General registers
+            Registers.AF = state.AF;
+            Registers.BC = state.BC;
+            Registers.DE = state.DE;
+            Registers.HL = state.HL;
+
+            // Alternate general registers
+            Registers.AF_ = state.AF_;
+            Registers.BC_ = state.BC_;
+            Registers.DE_ = state.DE_;
+            Registers.HL_ = state.HL_;
+
+            // Index registers
+            Registers.IX = state.IX;
+            Registers.IY = state.IY;
+
+            // Utility registers
+            Registers.PC = state.PC;
+            Registers.SP = state.SP;
+
+            // Special flags
+            Registers.IFF1 = state.IFF1;
+            Registers.IFF2 = state.IFF2;
+            Registers.InterruptMode = state.InterruptMode;
+            Registers.RegisterSet[I] = state.RegisterSet[I];
+            Registers.RegisterSet[R] = state.RegisterSet[R];
+        }
+
 
 
         #region Logging
@@ -199,10 +231,7 @@ namespace Z80Sharp.Processor
         /// <returns>The value at the address.</returns>
         private byte Fetch()
         {
-            byte val = _memory.Read(Registers.PC);
-            //_logger.Log(LogSeverity.Memory, $"READ at 0x{Registers.PC.ToString("X")} -> 0x{val.ToString("X")}");
-            Registers.PC++;
-            return val;
+            return _memory.Read(Registers.PC++);
         }
 
         /// <summary>

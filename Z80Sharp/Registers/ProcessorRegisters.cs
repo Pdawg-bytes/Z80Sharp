@@ -1,15 +1,29 @@
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Z80Sharp.Enums;
 using Z80Sharp.Helpers;
 using Z80Sharp.Interfaces;
 
 namespace Z80Sharp.Registers
 {
-    public partial struct ProcessorRegisters /*: IRegisterSet */
+    public unsafe partial struct ProcessorRegisters
     {
+        private GCHandle _regSetHandle;
+        private byte* pRegSet;
+        public byte[] RegisterSet;
+
+        public bool IFF1 { get; set; }
+        public bool IFF2 { get; set; }
+
+        public InterruptMode InterruptMode { get; set; }
+
+
         public ProcessorRegisters()
         {
             RegisterSet = new byte[26];
+            _regSetHandle = GCHandle.Alloc(RegisterSet, GCHandleType.Pinned);
+            pRegSet = (byte*)_regSetHandle.AddrOfPinnedObject();
         }
 
         private static readonly Dictionary<byte, string> _highBitRegisterPairs = new()
@@ -126,14 +140,6 @@ namespace Z80Sharp.Registers
             InterruptMode.IM2 => "IM2",
             _ => "UNKNOWN INTERRUPT MODE"
         };
-
-
-        public byte[] RegisterSet { get; init; }
-
-        public bool IFF1 { get; set; }
-        public bool IFF2 { get; set; }
-
-        public InterruptMode InterruptMode { get; set; }
 
 
         #region Main register indexers
@@ -263,6 +269,7 @@ namespace Z80Sharp.Registers
         /// This register is 16-bit only, therefore, it is 2 bytes wide.
         /// </remarks>
         public const byte SPi = 22;
+        public const byte SPiL = 23;
         /// <summary>
         /// The program counter register indexer.
         /// </summary>
@@ -270,35 +277,42 @@ namespace Z80Sharp.Registers
         /// This register is 16-bit only, therefore, it is 2 bytes wide.
         /// </remarks>
         public const byte PCi = 24;
+        public const byte PCiL = 25;
         #endregion
 
 
         #region Flags register operations
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetFlag(FlagType flag)
         {
             RegisterSet[F] |= (byte)flag;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ClearFlag(FlagType flag)
         {
             RegisterSet[F] &= (byte)~flag;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsFlagSet(FlagType flag)
         {
             return (RegisterSet[F] & (byte)flag) == (byte)flag;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetFlagBits(byte flagMask)
         {
             RegisterSet[F] |= flagMask;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void InvertFlag(FlagType flag)
         {
             RegisterSet[F] ^= (byte)flag;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetFlagConditionally(FlagType flag, bool condition)
         {
             if (condition)

@@ -9,7 +9,7 @@ using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80
+    public sealed partial class Z80
     {
         private void IN_A_NPORT()
         {

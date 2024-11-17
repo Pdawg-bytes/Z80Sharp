@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Z80Sharp.Enums;
@@ -12,10 +13,12 @@ namespace Z80Sharp.Processor
     {
         private void HandleInterrupts()
         {
-            if (_dataBus.NMI) HandleNMI();
-            if (_dataBus.MI) HandleMI();
+            byte status = _dataBus.InterruptStatus;
+            if ((status & 0x2) != 0) HandleNMI();
+            if ((status & 0x1) != 0) HandleMI();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void HandleNMI()
         {
             UnhaltIfHalted();
@@ -26,6 +29,7 @@ namespace Z80Sharp.Processor
             LogInterrupt("NMI");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void HandleMI()
         {
             UnhaltIfHalted();

@@ -9,14 +9,12 @@ namespace Z80Sharp.Interfaces
     public interface IDataBus
     {
         /// <summary>
-        /// Maskable Interrupt raised
+        /// NMI and MI status.
         /// </summary>
-        bool MI { get; set; }
-
-        /// <summary>
-        /// Non-maskable Interrupt raised.
-        /// </summary>
-        bool NMI { get; set; }
+        /// <remarks>
+        /// NMI and MI are raised by flipping bits 0 and 1 in this byte.
+        /// </remarks>
+        byte InterruptStatus { get; set; }
 
         /// <summary>
         /// Read data from a port.

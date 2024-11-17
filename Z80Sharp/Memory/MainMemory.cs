@@ -1,24 +1,33 @@
-﻿using System.Diagnostics;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Z80Sharp.Helpers;
 using Z80Sharp.Interfaces;
 
 namespace Z80Sharp.Memory
 {
-    public class MainMemory : IMemory
+    public unsafe class MainMemory /*: IMemory*/
     {
-        public byte[] _memory { get; set; }
+        private GCHandle _memHandle;
+        private byte* pMem;
+        public byte[] _memory;
 
         public MainMemory(int size) 
         {
             _memory = new byte[size];
+            _memHandle = GCHandle.Alloc(_memory, GCHandleType.Pinned);
+            pMem = (byte*)_memHandle.AddrOfPinnedObject();
         }
 
-        public byte Read(ushort address) => _memory[address];
-        public void Write(ushort address, byte value) => _memory[address] = value;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte Read(ushort address) => pMem[address];
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Write(ushort address, byte value) => pMem[address] = value;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort ReadWord(ushort address) => (ushort)(Read(address) | (Read((ushort)(address + 1)) << 8));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteWord(ushort address, ushort value) { Write(address, value.GetLowerByte()); Write((ushort)(address + 1), value.GetUpperByte()); }
 
-        public ushort Length { get => (ushort)_memory.Length; }
+        public int Length { get => _memory.Length; }
     }
 }

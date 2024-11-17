@@ -20,6 +20,7 @@ namespace Z80Sharp.TestProgram
         internal static MainMemory mainMemory;
         private static StreamWriter streamWriter;
 
+
         public static void Main(string[] args)
         {
             streamWriter = new StreamWriter(@"RunLogZS.txt", false);
@@ -28,9 +29,20 @@ namespace Z80Sharp.TestProgram
             IDataBus dataBus = new CPMBus();
 
             mainMemory = new MainMemory(65536);
+            Array.Clear(mainMemory._memory, 0, mainMemory._memory.Length);
 
-            int i = 0;
             z80 = new Z80(mainMemory, dataBus, logger, true);
+            /*z80.Reset(new ProcessorRegisters
+            {
+                AF = 0x5555,
+                BC = 0x5555,
+                DE = 0x5555,
+                HL = 0x5555,
+                IX = 0x5555,
+                IY = 0x5555,
+                PC = 0x0000,
+                SP = 0x5555
+            });*/
             z80.Reset();
             Thread processorThread = new(() =>
             {
@@ -38,7 +50,7 @@ namespace Z80Sharp.TestProgram
             });
             processorThread.Start();
 
-            //ReadConsoleInput();
+            ReadConsoleInput();
         }
 
         private static void Logger_LogGenerated(object? sender, Events.LogGeneratedEventArgs e)
@@ -106,11 +118,14 @@ namespace Z80Sharp.TestProgram
         }
         public static void DumpMemory()
         {
+            z80.Halted = true;
             int bytesPerLine = 16;
-            ushort length = mainMemory.Length;
+            int length = mainMemory.Length;
             int addrWidth = 4;
 
             Console.WriteLine();
+
+            Console.WriteLine($"{Colors.LIGHT_BLUE}        00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F{Colors.ANSI_RESET}");
 
             for (int addr = 0; addr < length; addr += bytesPerLine)
             {
@@ -132,11 +147,12 @@ namespace Z80Sharp.TestProgram
 
                 Console.WriteLine();
             }
+            Console.WriteLine($"{Colors.LIGHT_BLUE}        00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F{Colors.ANSI_RESET}");
+            z80.Halted = false;
         }
         private class DataBus : IDataBus
         {
-            public bool MI { get; set; } = false;
-            public bool NMI { get; set; } = false;
+            public byte InterruptStatus { get; set; } = 0x00;
             public byte Data { get; set; }
 
             public byte ReadPort(ushort port)

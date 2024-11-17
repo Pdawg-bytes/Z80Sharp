@@ -1,8 +1,9 @@
-﻿using Z80Sharp.Interfaces;
+﻿using System.Runtime.CompilerServices;
+using Z80Sharp.Interfaces;
 
 namespace Z80Sharp.Registers
 {
-    public partial struct ProcessorRegisters /*: IRegisterSet*/
+    public unsafe partial struct ProcessorRegisters
     {
         #region Register pairs
         /// <summary>
@@ -10,142 +11,166 @@ namespace Z80Sharp.Registers
         /// </summary>
         public ushort BC
         {
-            get => (ushort)(RegisterSet[B] << 8 | RegisterSet[C]);
+            get => (ushort)((pRegSet[B] << 8) | pRegSet[C]);
             set
             {
-                RegisterSet[B] = (byte)(value >> 8);
-                RegisterSet[C] = (byte)(value & 0xFF);
+                pRegSet[B] = (byte)(value >> 8);
+                pRegSet[C] = (byte)value;
             }
         }
+
         /// <summary>
         /// The 16-bit register pair composed of D and E.
         /// </summary>
         public ushort DE
         {
-            get => (ushort)(RegisterSet[D] << 8 | RegisterSet[E]);
+            get => (ushort)((pRegSet[D] << 8) | pRegSet[E]);
             set
             {
-                RegisterSet[D] = (byte)(value >> 8);
-                RegisterSet[E] = (byte)(value & 0xFF);
+                pRegSet[D] = (byte)(value >> 8);
+                pRegSet[E] = (byte)value;
             }
         }
+
         /// <summary>
         /// The 16-bit register pair composed of H and L.
         /// </summary>
         public ushort HL
         {
-            get => (ushort)(RegisterSet[H] << 8 | RegisterSet[L]);
+            get => (ushort)((pRegSet[H] << 8) | pRegSet[L]);
             set
             {
-                RegisterSet[H] = (byte)(value >> 8);
-                RegisterSet[L] = (byte)(value & 0xFF);
+                pRegSet[H] = (byte)(value >> 8);
+                pRegSet[L] = (byte)value;
             }
         }
+
         /// <summary>
         /// The 16-bit register pair composed of A and F.
         /// </summary>
+        /// <remarks>
+        /// This register pair is generally not used in code, and is only addressed in this way in EXX.
+        /// </remarks>
         public ushort AF
         {
-            get => (ushort)(RegisterSet[A] << 8 | RegisterSet[F]);
+            get => (ushort)((pRegSet[A] << 8) | pRegSet[F]); // A = 7, F = 6
             set
             {
-                RegisterSet[A] = (byte)(value >> 8);
-                RegisterSet[F] = (byte)(value & 0xFF);
+                pRegSet[A] = (byte)(value >> 8);
+                pRegSet[F] = (byte)value;
             }
         }
         #endregion
 
         #region Alternate register pairs
         /// <summary>
-        /// The alternate 16-bit register pair composed of B' and C'.
-        /// </summary>
-        public ushort HL_
-        {
-            get => (ushort)(RegisterSet[H_] << 8 | RegisterSet[L_]);
-            set
-            {
-                RegisterSet[H_] = (byte)(value >> 8);
-                RegisterSet[L_] = (byte)(value & 0xFF);
-            }
-        }
-        /// <summary>
-        /// The alternate 16-bit register pair composed of D' and E'.
-        /// </summary>
-        public ushort DE_
-        {
-            get => (ushort)(RegisterSet[D_] << 8 | RegisterSet[E_]);
-            set
-            {
-                RegisterSet[D_] = (byte)(value >> 8);
-                RegisterSet[E_] = (byte)(value & 0xFF);
-            }
-        }
-        /// <summary>
-        /// The alternate 16-bit register pair composed of B' and C'.
+        /// The 16-bit register pair composed of B' and C'.
         /// </summary>
         public ushort BC_
         {
-            get => (ushort)(RegisterSet[B_] << 8 | RegisterSet[C_]);
+            get => (ushort)((pRegSet[B_] << 8) | pRegSet[C_]);
             set
             {
-                RegisterSet[B_] = (byte)(value >> 8);
-                RegisterSet[C_] = (byte)(value & 0xFF);
+                pRegSet[B_] = (byte)(value >> 8);
+                pRegSet[C_] = (byte)value;
             }
         }
+
         /// <summary>
-        /// The alternate 16-bit register pair composed of A' and F'.
+        /// The 16-bit register pair composed of D' and E'.
         /// </summary>
-        public ushort AF_
+        public ushort DE_
         {
-            get => (ushort)(RegisterSet[A_] << 8 | RegisterSet[F_]);
+            get => (ushort)((pRegSet[D_] << 8) | pRegSet[E_]);
             set
             {
-                RegisterSet[A_] = (byte)(value >> 8);
-                RegisterSet[F_] = (byte)(value & 0xFF);
+                pRegSet[D_] = (byte)(value >> 8);
+                pRegSet[E_] = (byte)value;
+            }
+        }
+
+        /// <summary>
+        /// The 16-bit register pair composed of H' and L'.
+        /// </summary>
+        public ushort HL_
+        {
+            get => (ushort)((pRegSet[H_] << 8) | pRegSet[L_]); // Example indices
+            set
+            {
+                pRegSet[H_] = (byte)(value >> 8);
+                pRegSet[H_] = (byte)value;
+            }
+        }
+
+        /// <summary>
+        /// The 16-bit register pair composed of A' and F'.
+        /// </summary>
+        /// <remarks>
+        /// This register pair is generally not used in code, and is only addressed in this way in EXX.
+        /// </remarks>
+        public ushort AF_
+        {
+            get => (ushort)((pRegSet[A_] << 8) | pRegSet[F_]);
+            set
+            {
+                pRegSet[A_] = (byte)(value >> 8);
+                pRegSet[F_] = (byte)value;
             }
         }
         #endregion
 
-
         #region Utility register pairs
+        /// <summary>
+        /// The stack pointer register.
+        /// </summary>
         public ushort SP
         {
-            get => (ushort)(RegisterSet[SPi] << 8 | RegisterSet[SPi + 1]);
+            get => (ushort)((pRegSet[SPi] << 8) | pRegSet[SPiL]);
             set
             {
-                RegisterSet[SPi] = (byte)(value >> 8);
-                RegisterSet[SPi + 1] = (byte)(value & 0xFF);
+                pRegSet[SPi] = (byte)(value >> 8);
+                pRegSet[SPiL] = (byte)value;
             }
         }
 
+        /// <summary>
+        /// The program counter register.
+        /// </summary>
         public ushort PC
         {
-            get => (ushort)(RegisterSet[PCi] << 8 | RegisterSet[PCi + 1]);
+            get => (ushort)((pRegSet[PCi] << 8) | pRegSet[PCiL]);
             set
             {
-                RegisterSet[PCi] = (byte)(value >> 8);
-                RegisterSet[PCi + 1] = (byte)(value & 0xFF);
+                pRegSet[PCi] = (byte)(value >> 8);
+                pRegSet[PCiL] = (byte)value;
             }
         }
         #endregion
 
         #region Index register pairs
+        /// <summary>
+        /// The index X register.
+        /// </summary>
         public ushort IX
         {
-            get => (ushort)(RegisterSet[IXh] << 8 | RegisterSet[IXl]);
+            get => (ushort)((pRegSet[IXh] << 8) | pRegSet[IXl]);
             set
             {
-                RegisterSet[IXh] = (byte)(value >> 8);
-                RegisterSet[IXl] = (byte)(value & 0xFF);
+                pRegSet[IXh] = (byte)(value >> 8);
+                pRegSet[IXl] = (byte)value;
             }
         }
+
+        /// <summary>
+        /// The index Y register.
+        /// </summary>
         public ushort IY
         {
-            get => (ushort)(RegisterSet[IYh] << 8 | RegisterSet[IYl]);
+            get => (ushort)((pRegSet[IYh] << 8) | pRegSet[IYl]);
             set
             {
-                RegisterSet[IYh] = (byte)(value >> 8);
-                RegisterSet[IYl] = (byte)(value & 0xFF);
+                pRegSet[IYh] = (byte)(value >> 8);
+                pRegSet[IYl] = (byte)value;
             }
         }
         #endregion

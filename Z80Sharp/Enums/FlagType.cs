@@ -5,6 +5,7 @@ namespace Z80Sharp.Enums
      * 
      * SZYHXPNC
      */
+    [Flags]
     public enum FlagType : byte
     {
         /// <summary>

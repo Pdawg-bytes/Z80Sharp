@@ -9,7 +9,7 @@ using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80
+    public sealed partial class Z80
     {
         private void CPI()
         {
@@ -103,28 +103,29 @@ namespace Z80Sharp.Processor
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (Page 18)
-        private void DAA()
+        /*private void DAA()
         {
             byte regA = Registers.RegisterSet[A];
             byte adjustment = 0;
+            bool flagN = Registers.IsFlagSet(FlagType.N);
 
             // Carry over from first nibble
-            if ((regA & 0x0F) > 0x09 || Registers.IsFlagSet(FlagType.H))
+            if ((!flagN && (regA & 0x0F) > 0x09) || Registers.IsFlagSet(FlagType.H))
             {
-                adjustment += 0x06;
+                adjustment |= 0x06;
                 Registers.SetFlagConditionally(FlagType.H, ((regA & 0x0F) + 0x06) > 0x0F); // If our adjustment carries over into top 4 bits
             }
 
             // Full carry
-            if ((regA & 0xF0) > 0x90 || Registers.IsFlagSet(FlagType.C))
+            if ((regA > 0x99) && !flagN || Registers.IsFlagSet(FlagType.C))
             {
-                adjustment += 0x60;
+                adjustment |= 0x60;
                 Registers.SetFlag(FlagType.C);
             }
             else
                 Registers.ClearFlag(FlagType.C);
 
-            Registers.RegisterSet[A] += adjustment;
+            Registers.RegisterSet[A] += flagN ? (byte)-adjustment : adjustment;
             regA = Registers.RegisterSet[A];
 
             Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) != 0);             // (S)  (Set if negative)
@@ -134,6 +135,51 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
 
             //LogInstructionExec("0x27: DAA");
+        }*/
+        // Reference: https://stackoverflow.com/questions/8119577/z80-daa-instruction
+        private void DAA()
+        {
+            int t;
+
+            t = 0;
+
+            if (Registers.IsFlagSet(FlagType.H) || ((A & 0xF) > 9))
+                t++;
+
+            if (Registers.IsFlagSet(FlagType.C) || (A > 0x99))
+            {
+                t += 2;
+                Registers.SetFlag(FlagType.C);
+            }
+
+            if (Registers.IsFlagSet(FlagType.N) && !Registers.IsFlagSet(FlagType.H))
+                Registers.ClearFlag(FlagType.H);
+            else
+            {
+                if (Registers.IsFlagSet(FlagType.N) && Registers.IsFlagSet(FlagType.H))
+                    Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) < 6);
+                else
+                    Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) >= 0x0A);
+            }
+
+            switch (t)
+            {
+                case 1:
+                    Registers.RegisterSet[A] += Registers.IsFlagSet(FlagType.N) ? (byte)0xFA : (byte)0x06; // -6:6
+                    break;
+                case 2:
+                    Registers.RegisterSet[A] += Registers.IsFlagSet(FlagType.N) ? (byte)0xA0 : (byte)0x60; // -0x60:0x60
+                    break;
+                case 3:
+                    Registers.RegisterSet[A] += Registers.IsFlagSet(FlagType.N) ? (byte)0x9A : (byte)0x66; // -0x66:0x66
+                    break;
+            }
+
+            Registers.SetFlagConditionally(FlagType.S, (Registers.RegisterSet[A] & 0x80) != 0);             // (S)  (Set if negative)
+            Registers.SetFlagConditionally(FlagType.Z, Registers.RegisterSet[A] == 0);                      // (Z)  (Set if result is zero)
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(Registers.RegisterSet[A]));             // (PV) (Set if bit parity is even)
+            Registers.SetFlagConditionally(FlagType.X, (Registers.RegisterSet[A] & 1 << 5) > 0);            // (X)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.RegisterSet[A] & 1 << 3) > 0);            // (Y)  (Undocumented flag)
         }
 
         private void NEG()
@@ -315,6 +361,8 @@ namespace Z80Sharp.Processor
         private void ADD_IR_RR(byte mode, byte operatingRegister)
         {
             ushort value = ADDWord(Registers.GetR16FromHighIndexer(mode), Registers.GetR16FromHighIndexer(operatingRegister));
+            Registers.RegisterSet[mode] = value.GetUpperByte();
+            Registers.RegisterSet[mode + 1] = value.GetLowerByte();
             //LogInstructionExec($"0x{_currentInstruction:X2}: ADD {Registers.RegisterName(mode, true)}, {Registers.RegisterName(operatingRegister, true)}");
         }
 

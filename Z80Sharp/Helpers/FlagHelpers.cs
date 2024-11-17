@@ -9,15 +9,16 @@ namespace Z80Sharp.Processor
         /// Checks the parity of a <see cref="ushort"/>.
         /// </summary>
         /// <param name="value">The value to check.</param>
-        /// <returns>True if the amount of 1s are even, false otherwise.</returns>
+        /// <returns>True if the amount of 1s is even, false otherwise.</returns>
         private bool CheckParity(ushort value)
         {
-            value ^= (ushort)(value >> 8);
-            value ^= (ushort)(value >> 4);
-            value ^= (ushort)(value >> 2);
-            value ^= (ushort)(value >> 1);
-
-            return ((value & 1) == 0);
+            bool parity = true;
+            while (value > 0)
+            {
+                if ((value & 1) == 1) parity = !parity;
+                value = (byte)(value >> 1);
+            }
+            return parity;
         }
 
         /// <summary>

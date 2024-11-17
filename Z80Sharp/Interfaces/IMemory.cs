@@ -14,6 +14,9 @@ namespace Z80Sharp.Interfaces
         ushort ReadWord(ushort address);
         void WriteWord(ushort address, ushort value);
 
-        ushort Length { get; }
+        /// <remarks>
+        /// This value should never exceed 65536.
+        /// </remarks>
+        int Length { get; }
     }
 }
