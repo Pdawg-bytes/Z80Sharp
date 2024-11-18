@@ -20,7 +20,6 @@ namespace Z80Sharp.TestProgram
             IDataBus dataBus = new CPMBus();
 
             mainMemory = new MainMemory(65536);
-            Array.Clear(mainMemory._memory, 0, mainMemory._memory.Length);
             byte[] program = new byte[]
             {
                 0x3E, 0xB0, 0x47, 0x4F, 0x57, 0x5F, 0x67, 0x6F,
@@ -118,7 +117,7 @@ namespace Z80Sharp.TestProgram
         {
             z80.Halted = true;
             int bytesPerLine = 16;
-            int length = mainMemory.Length;
+            uint length = mainMemory.Length;
             int addrWidth = 4;
 
             Console.WriteLine();

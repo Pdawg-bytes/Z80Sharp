@@ -28,6 +28,6 @@ namespace Z80Sharp.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteWord(ushort address, ushort value) { Write(address, value.GetLowerByte()); Write((ushort)(address + 1), value.GetUpperByte()); }
 
-        public int Length { get => _memory.Length; }
+        public uint Length { get => (uint)_memory.Length; }
     }
 }

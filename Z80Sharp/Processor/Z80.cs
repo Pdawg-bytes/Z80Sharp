@@ -4,12 +4,13 @@ using Z80Sharp.Registers;
 using Z80Sharp.Interfaces;
 using System.Runtime.CompilerServices;
 using static Z80Sharp.Registers.ProcessorRegisters;
+using Z80Sharp.Memory;
 
 namespace Z80Sharp.Processor
 {
     public unsafe partial class Z80 /*: IProcessor*/
     {
-        private static IMemory _memory;
+        private static MainMemory _memory;
         private readonly IZ80Logger _logger;
         private static IDataBus _dataBus;
 
@@ -43,7 +44,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void UnhaltIfHalted() { if(_halted) Halted = false; }
 
-        public Z80(IMemory memory, IDataBus dataBus, IZ80Logger logger, bool isDebug)
+        public Z80(MainMemory memory, IDataBus dataBus, IZ80Logger logger, bool isDebug)
         {
             _memory = memory;
             _dataBus = dataBus;
@@ -69,7 +70,7 @@ namespace Z80Sharp.Processor
         }
         private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
         {
-            //Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond} instr/s");
+            Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond} instr/s");
             InstrsExecutedLastSecond = InstrsExecuted;
         }
 
@@ -95,7 +96,7 @@ namespace Z80Sharp.Processor
                 default:
                     ExecuteMainInstruction(); break;
             }
-            //InstrsExecuted++;
+            InstrsExecuted++;
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)

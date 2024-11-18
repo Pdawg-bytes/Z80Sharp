@@ -11,6 +11,6 @@
         /// <remarks>
         /// This value should never exceed 65536.
         /// </remarks>
-        int Length { get; }
+        uint Length { get; }
     }
 }
