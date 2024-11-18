@@ -5,17 +5,19 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Z80Sharp.Enums;
+using Z80Sharp.Interfaces;
 using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80
+    public unsafe partial class Z80
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void HandleInterrupts()
         {
             byte status = _dataBus.InterruptStatus;
-            if ((status & 0x2) != 0) HandleNMI();
-            if ((status & 0x1) != 0) HandleMI();
+            if ((status & 0x2) > 0) HandleNMI();
+            if ((status & 0x1) > 0) HandleMI();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

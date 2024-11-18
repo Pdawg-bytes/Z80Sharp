@@ -10,7 +10,7 @@ using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80
+    public unsafe partial class Z80
     {
         private void RLCA()
         {
@@ -64,7 +64,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) > 0);              // (S) (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, regA == 0);                      // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(regA)); // (PV) (Set if bit parity is even)
-            Registers.RegisterSet[F] = (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
+            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
             Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
             //LogInstructionExec("0x67: RRD");
@@ -80,7 +80,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) > 0);              // (S) (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, regA == 0);                      // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(regA));             // (PV) (Set if bit parity is even)
-            Registers.RegisterSet[F] = (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
+            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
             Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
             //LogInstructionExec("0x6F: RLD");
@@ -103,7 +103,7 @@ namespace Z80Sharp.Processor
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
             byte result = _memory.Read(reg);
-            byte carry = (byte)(result & 0x80); // Extract last bit
+            byte carry = (byte)(result & 0x80); // Extract MSB
             result = (byte)(result << 1);
             _memory.Write(reg, result);
 
@@ -514,7 +514,7 @@ namespace Z80Sharp.Processor
             _memory.Write(irdMem, result);
 
             SetFlagsRotate(result);
-            Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
+            Registers.SetFlagConditionally(FlagType.C, carry > 0); // (C) (Set if carried MSB is 1)
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }

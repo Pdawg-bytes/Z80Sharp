@@ -1,10 +1,12 @@
-﻿using Z80Sharp.Enums;
+﻿using System.Runtime.CompilerServices;
+using Z80Sharp.Enums;
 using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80
+    public unsafe partial class Z80
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ExecuteMiscInstruction()
         {
             LogInstructionDecode("MISC table");

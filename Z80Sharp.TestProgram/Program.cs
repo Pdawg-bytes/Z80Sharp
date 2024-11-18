@@ -1,14 +1,10 @@
-﻿using Z80Sharp.Logging;
+﻿using Z80Sharp.Memory;
+using Z80Sharp.Logging;
 using Z80Sharp.Processor;
-using Z80Sharp.Enums;
 using Z80Sharp.Constants;
-using Z80Sharp.Interfaces;
 using Z80Sharp.Registers;
+using Z80Sharp.Interfaces;
 using static Z80Sharp.Registers.ProcessorRegisters;
-using System.Diagnostics;
-using Z80Sharp.Memory;
-using System.Text;
-using System;
 
 namespace Z80Sharp.TestProgram
 {
@@ -18,18 +14,24 @@ namespace Z80Sharp.TestProgram
         private static IZ80Logger logger = new Logger(useColors: false);
         internal static Z80 z80;
         internal static MainMemory mainMemory;
-        private static StreamWriter streamWriter;
-
 
         public static void Main(string[] args)
         {
-            streamWriter = new StreamWriter(@"RunLogZS.txt", false);
-            logger.LogGenerated += Logger_LogGenerated;
-
             IDataBus dataBus = new CPMBus();
 
             mainMemory = new MainMemory(65536);
             Array.Clear(mainMemory._memory, 0, mainMemory._memory.Length);
+            byte[] program = new byte[]
+            {
+                0x3E, 0xB0, 0x47, 0x4F, 0x57, 0x5F, 0x67, 0x6F,
+                0x32, 0x00, 0x90, 0xCB, 0x17, 0x32, 0x03, 0x90,
+                0xCB, 0x07, 0x32, 0x06, 0x90, 0xCB, 0x1F, 0x32,
+                0x09, 0x90, 0xCB, 0x0F, 0x32, 0x0C, 0x90, 0xCB,
+                0x3F, 0x32, 0x0F, 0x90, 0xCB, 0x2F, 0x32, 0x12,
+                0x90, 0x00, 0xC3, 0x2A
+            };
+
+            Array.Copy(program, 0, mainMemory._memory, 0x0, program.Length);
 
             z80 = new Z80(mainMemory, dataBus, logger, true);
             /*z80.Reset(new ProcessorRegisters
@@ -46,21 +48,12 @@ namespace Z80Sharp.TestProgram
             z80.Reset();
             Thread processorThread = new(() =>
             {
-                RunCPMBinary("zexdoc.com");
+                //RunCPMBinary("zexdoc.com");
+                z80.Run();
             });
             processorThread.Start();
 
             ReadConsoleInput();
-        }
-
-        private static void Logger_LogGenerated(object? sender, Events.LogGeneratedEventArgs e)
-        {
-            //streamWriter.WriteLine($"0x{z80.Registers.PC:X4}: " + e.LogData);
-            //streamWriter.WriteLine(GetRegs());
-        }
-        private static string GetRegs()
-        {
-            return $"B: {z80.Registers.RegisterSet[B]:X2}; C: {z80.Registers.RegisterSet[C]:X2}; D: {z80.Registers.RegisterSet[D]:X2}; E: {z80.Registers.RegisterSet[E]:X2}; H: {z80.Registers.RegisterSet[H]:X2}; L: {z80.Registers.RegisterSet[L]:X2}; A: {z80.Registers.RegisterSet[A]:X2}; IX: {z80.Registers.IX:X4}; IY: {z80.Registers.IY:X4}; SP: {z80.Registers.SP:X4}; PC: {z80.Registers.PC:X4}";
         }
 
         private static ConsoleKeyInfo _key;
@@ -95,6 +88,8 @@ namespace Z80Sharp.TestProgram
 
         public static void PrintProcessorState(ProcessorRegisters registers)
         {
+            z80.Halted = true;
+
             Console.WriteLine($"\n{Colors.LIGHT_BLUE}General-purpose registers{Colors.ANSI_RESET}");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}B:{Colors.ANSI_RESET} 0x{registers.RegisterSet[B].ToString("X").PadLeft(2, '0')}    {Colors.LIGHT_YELLOW}C:{Colors.ANSI_RESET} 0x{registers.RegisterSet[C].ToString("X").PadLeft(2, '0')}");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}D:{Colors.ANSI_RESET} 0x{registers.RegisterSet[D].ToString("X").PadLeft(2, '0')}    {Colors.LIGHT_YELLOW}E:{Colors.ANSI_RESET} 0x{registers.RegisterSet[E].ToString("X").PadLeft(2, '0')}");
@@ -115,6 +110,9 @@ namespace Z80Sharp.TestProgram
             Console.WriteLine($"\n{Colors.LIGHT_BLUE}Operating registers{Colors.ANSI_RESET}");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}PC:{Colors.ANSI_RESET} 0x{registers.PC.ToString("X").PadLeft(4, '0')}");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}SP:{Colors.ANSI_RESET} 0x{registers.SP.ToString("X").PadLeft(4, '0')}");
+            Console.WriteLine();
+
+            z80.Halted = false;
         }
         public static void DumpMemory()
         {

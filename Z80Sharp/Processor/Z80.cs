@@ -1,21 +1,17 @@
-﻿using System.Diagnostics;
-using System.Net;
-using System.Runtime.CompilerServices;
-using System.Timers;
+﻿using System.Timers;
 using Z80Sharp.Enums;
-using Z80Sharp.Interfaces;
-using Z80Sharp.Memory;
 using Z80Sharp.Registers;
+using Z80Sharp.Interfaces;
+using System.Runtime.CompilerServices;
 using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public sealed partial class Z80 /*: IProcessor*/
+    public unsafe partial class Z80 /*: IProcessor*/
     {
-        //private readonly IMemory _memory;
-        private readonly MainMemory _memory;
+        private static IMemory _memory;
         private readonly IZ80Logger _logger;
-        private readonly IDataBus _dataBus;
+        private static IDataBus _dataBus;
 
         public bool IsDebug { get; init; }
 
@@ -23,7 +19,7 @@ namespace Z80Sharp.Processor
         private ulong InstrsExecutedLastSecond;
         private System.Timers.Timer _cycleTimer;
 
-        public byte _currentInstruction;
+        private byte _currentInstruction;
 
         public ProcessorRegisters Registers = new ProcessorRegisters();
 
@@ -44,9 +40,10 @@ namespace Z80Sharp.Processor
                 }
             }
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void UnhaltIfHalted() { if(_halted) Halted = false; }
 
-        public Z80(MainMemory memory, IDataBus dataBus, IZ80Logger logger, bool isDebug)
+        public Z80(IMemory memory, IDataBus dataBus, IZ80Logger logger, bool isDebug)
         {
             _memory = memory;
             _dataBus = dataBus;
@@ -65,7 +62,7 @@ namespace Z80Sharp.Processor
             _cycleTimer.AutoReset = true;
             _cycleTimer.Start();
 
-            while (!_halted)
+            while(true)
             {
                 ExecuteOnce();
             }
@@ -98,7 +95,7 @@ namespace Z80Sharp.Processor
                 default:
                     ExecuteMainInstruction(); break;
             }
-            InstrsExecuted++;
+            //InstrsExecuted++;
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)
@@ -125,37 +122,6 @@ namespace Z80Sharp.Processor
 
             Registers.IFF1 = false;
             Registers.IFF2 = false;
-
-            // Writes "Hello, world!" on to port 0
-            // string helloWorld = "21 12 00 3E 0E D3 00 7E FE 00 28 05 D3 00 23 18 F6 76 48 65 6C 6C 6F 2C 20 77 6F 72 6C 64 21";
-
-            // I/O Test
-            //string hexString = "31 00 FF 21 4B 00 CD 3C 00 21 00 EF 06 40 CD 14 00 C3 2F 00 DB FE FE 00 CA 14 00 FE 0D C8 77 23 05 CA 27 00 C3 14 00 21 00 EF 06 40 C3 14 00 3E 0A D3 00 21 00 EF CD 3C 00 C3 46 00 7E FE 00 C8 D3 00 23 C2 3C 00 3E 0A D3 00 76 45 6E 74 65 72 20 69 6E 70 75 74 3A 20";
-            //string hexString = "DD 21 00 00 3E C2 32 10 00 DD CB 10 26 76";
-            /*string hexString = "16 05 1E 00 0E FE 46 23 ED 78 A6 20 01 37 CB 13 23 15 20 F2 7B A7 C9 CD 24 00 A7 20 FA CD 24 00 A7 28 DE C9 21 42 00 16 08 0E FE 46 23 ED 78 E6 1F 1E 05 CB 3F 30 09 23 1D 20 F8 15 20 ED A7 C9 7E C9 FE 23 5A 58 43 56 FD 41 53 44 46 47 FB 51 57 45 52 54 F7 31 32 33 34 35 EF 30 39 38 37 36 DF 50 4F 49 55 59 BF 23 4C 4B 4A 48 7F 20 23 4D 4E 42 FB 01 FD 01 DF 02 DF 01 7F 01";
-            string[] hexBytes = hexString.Split(' ');
-
-            ushort address = 0x0000;
-
-            for (int i = 0; i < hexBytes.Length; i++)
-            {
-                byte value = Convert.ToByte(hexBytes[i], 16);
-                _memory.Write(address, value);
-
-                address++;
-            }*/
-
-            //byte[] rom = File.ReadAllBytes(@"..\..\ROM\48.rom");
-            /*byte[] rom = File.ReadAllBytes(@"48.rom");
-
-            ushort address = 0x0000;
-
-            for (int i = 0; i < rom.Length; i++)
-            {
-                _memory.Write(address, rom[i]);
-
-                address++;
-            }*/
 
             _logger.Log(LogSeverity.Info, "Processor reset");
         }
@@ -188,7 +154,6 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[I] = state.RegisterSet[I];
             Registers.RegisterSet[R] = state.RegisterSet[R];
         }
-
 
 
         #region Logging
@@ -229,26 +194,21 @@ namespace Z80Sharp.Processor
         /// Reads current byte at the <see cref="ProcessorRegisters.PC"/> then increments PC.
         /// </summary>
         /// <returns>The value at the address.</returns>
-        private byte Fetch()
-        {
-            return _memory.Read(Registers.PC++);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private byte Fetch() => _memory.Read(Registers.PC++);
 
         /// <summary>
         /// Reads the last byte fetched at --<see cref="ProcessorRegisters.PC"/>.
         /// </summary>
         /// <returns>The byte before the current PC.</returns>
-        private byte FetchLast()
-        {
-            byte val = _memory.Read((ushort)(Registers.PC - 1));
-            //_logger.Log(LogSeverity.Memory, $"LREAD at 0x{((ushort)(Registers.PC - 1)).ToString("X")} -> 0x{val:X2}");
-            return val;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private byte FetchLast() => _memory.Read((ushort)(Registers.PC - 1));
 
         /// <summary>
         /// Fetches the value at the <see cref="IRegisterSet.PC", and the value at the next address ahead to create a word./>
         /// </summary>
         /// <returns>The word (<see cref="ushort")./></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ushort FetchImmediateWord() => (ushort)(Fetch() | (Fetch() << 8));
         #endregion
     }

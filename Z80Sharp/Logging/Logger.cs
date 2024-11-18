@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
-using Z80Sharp.Constants;
+﻿using System.Text;
 using Z80Sharp.Enums;
 using Z80Sharp.Events;
+using Z80Sharp.Constants;
 using Z80Sharp.Interfaces;
+using System.Runtime.CompilerServices;
+
 using SeverityData = (string Header, string HeaderColor, string TextColor);
 
 namespace Z80Sharp.Logging
@@ -43,7 +40,7 @@ namespace Z80Sharp.Logging
         {
             SeverityData severityData = _severityDict[severity];
 
-            /*if (_useColors)
+            if (_useColors)
             {
                 _logMessageBuilder.Append(Colors.ANSI_RESET);
                 _logMessageBuilder.Append(ColorString(Colors.WHITE, "["));
@@ -64,11 +61,12 @@ namespace Z80Sharp.Logging
                 LogGenerated?.Invoke(this, new LogGeneratedEventArgs(severity, _logMessageBuilder.ToString()));
 
                 _logMessageBuilder.Clear();
-            }*/
+            }
 
-            LogGenerated?.Invoke(this, new LogGeneratedEventArgs(severity, (string)message));
+            //LogGenerated?.Invoke(this, new LogGeneratedEventArgs(severity, (string)message));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string ColorString(string color, string input, bool close = false) 
         {
             if (close) return color + input + Colors.ANSI_RESET;

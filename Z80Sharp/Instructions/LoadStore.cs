@@ -11,7 +11,7 @@ using Z80Sharp.Helpers;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80
+    public unsafe partial class Z80
     {
         // Load immediate values into registers
         private void LD_RR_NN(byte operatingRegister)
@@ -108,12 +108,12 @@ namespace Z80Sharp.Processor
             Registers.DE++;
             Registers.BC--;
 
-            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0); // (PV) (Set if bit parity is even)
-            Registers.RegisterSet[F] = (byte)~(FlagType.N | FlagType.H);    // (N, H) (Unconditionally reset)
+            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0); // (PV) (Reset in case of overflow; BC = 0)
+            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);    // (N, H) (Unconditionally reset)
 
             byte undoc = (byte)(Registers.RegisterSet[A] + hlMem);
-            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x20) > 0);  // (X) (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x20) > 0); // (X) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0); // (Y) (Undocumented flag)
 
             //LogInstructionExec("0xA0: LDI");
         }
@@ -126,7 +126,7 @@ namespace Z80Sharp.Processor
             Registers.DE++;
             Registers.BC--;
 
-            Registers.RegisterSet[F] = (byte)~(FlagType.N | FlagType.H); // (N, H) (Unconditionally reset)
+            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H); // (N, H) (Unconditionally reset)
             Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
 
             byte undoc = (byte)(Registers.RegisterSet[A] + hlMem);
@@ -150,7 +150,7 @@ namespace Z80Sharp.Processor
             Registers.BC--;
 
             Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0); // (PV) (Set if bit parity is even)
-            Registers.RegisterSet[F] = (byte)~(FlagType.N | FlagType.H);    // (N, H) (Unconditionally reset)
+            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);    // (N, H) (Unconditionally reset)
 
             byte undoc = (byte)(Registers.RegisterSet[A] + hlMem);
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x20) > 0);  // (X) (Undocumented flag)
@@ -167,7 +167,7 @@ namespace Z80Sharp.Processor
             Registers.HL--;
             Registers.BC--;
 
-            Registers.RegisterSet[F] = (byte)~(FlagType.N | FlagType.H | FlagType.PV); // (N, H, PV) (Unconditionally reset)
+            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.PV); // (N, H, PV) (Unconditionally reset)
 
             byte undoc = (byte)(Registers.RegisterSet[A] + hlMem);
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x20) > 0);  // (X) (Undocumented flag)

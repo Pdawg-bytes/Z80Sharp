@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Z80Sharp.Interfaces;
 
 namespace Z80Sharp.Registers
@@ -11,11 +12,11 @@ namespace Z80Sharp.Registers
         /// </summary>
         public ushort BC
         {
-            get => (ushort)((pRegSet[B] << 8) | pRegSet[C]);
+            get => (ushort)((RegisterSet[B] << 8) | RegisterSet[C]);
             set
             {
-                pRegSet[B] = (byte)(value >> 8);
-                pRegSet[C] = (byte)value;
+                RegisterSet[B] = (byte)(value >> 8);
+                RegisterSet[C] = (byte)value;
             }
         }
 
@@ -24,11 +25,11 @@ namespace Z80Sharp.Registers
         /// </summary>
         public ushort DE
         {
-            get => (ushort)((pRegSet[D] << 8) | pRegSet[E]);
+            get => (ushort)((RegisterSet[D] << 8) | RegisterSet[E]);
             set
             {
-                pRegSet[D] = (byte)(value >> 8);
-                pRegSet[E] = (byte)value;
+                RegisterSet[D] = (byte)(value >> 8);
+                RegisterSet[E] = (byte)value;
             }
         }
 
@@ -37,11 +38,11 @@ namespace Z80Sharp.Registers
         /// </summary>
         public ushort HL
         {
-            get => (ushort)((pRegSet[H] << 8) | pRegSet[L]);
+            get => (ushort)((RegisterSet[H] << 8) | RegisterSet[L]);
             set
             {
-                pRegSet[H] = (byte)(value >> 8);
-                pRegSet[L] = (byte)value;
+                RegisterSet[H] = (byte)(value >> 8);
+                RegisterSet[L] = (byte)value;
             }
         }
 
@@ -53,11 +54,11 @@ namespace Z80Sharp.Registers
         /// </remarks>
         public ushort AF
         {
-            get => (ushort)((pRegSet[A] << 8) | pRegSet[F]); // A = 7, F = 6
+            get => (ushort)((RegisterSet[A] << 8) | RegisterSet[F]);
             set
             {
-                pRegSet[A] = (byte)(value >> 8);
-                pRegSet[F] = (byte)value;
+                RegisterSet[A] = (byte)(value >> 8);
+                RegisterSet[F] = (byte)value;
             }
         }
         #endregion
@@ -68,11 +69,11 @@ namespace Z80Sharp.Registers
         /// </summary>
         public ushort BC_
         {
-            get => (ushort)((pRegSet[B_] << 8) | pRegSet[C_]);
+            get => (ushort)((RegisterSet[B_] << 8) | RegisterSet[C_]);
             set
             {
-                pRegSet[B_] = (byte)(value >> 8);
-                pRegSet[C_] = (byte)value;
+                RegisterSet[B_] = (byte)(value >> 8);
+                RegisterSet[C_] = (byte)value;
             }
         }
 
@@ -81,11 +82,11 @@ namespace Z80Sharp.Registers
         /// </summary>
         public ushort DE_
         {
-            get => (ushort)((pRegSet[D_] << 8) | pRegSet[E_]);
+            get => (ushort)((RegisterSet[D_] << 8) | RegisterSet[E_]);
             set
             {
-                pRegSet[D_] = (byte)(value >> 8);
-                pRegSet[E_] = (byte)value;
+                RegisterSet[D_] = (byte)(value >> 8);
+                RegisterSet[E_] = (byte)value;
             }
         }
 
@@ -94,11 +95,11 @@ namespace Z80Sharp.Registers
         /// </summary>
         public ushort HL_
         {
-            get => (ushort)((pRegSet[H_] << 8) | pRegSet[L_]); // Example indices
+            get => (ushort)((RegisterSet[H_] << 8) | RegisterSet[L_]);
             set
             {
-                pRegSet[H_] = (byte)(value >> 8);
-                pRegSet[H_] = (byte)value;
+                RegisterSet[H_] = (byte)(value >> 8);
+                RegisterSet[H_] = (byte)value;
             }
         }
 
@@ -110,11 +111,11 @@ namespace Z80Sharp.Registers
         /// </remarks>
         public ushort AF_
         {
-            get => (ushort)((pRegSet[A_] << 8) | pRegSet[F_]);
+            get => (ushort)((RegisterSet[A_] << 8) | RegisterSet[F_]);
             set
             {
-                pRegSet[A_] = (byte)(value >> 8);
-                pRegSet[F_] = (byte)value;
+                RegisterSet[A_] = (byte)(value >> 8);
+                RegisterSet[F_] = (byte)value;
             }
         }
         #endregion
@@ -125,26 +126,27 @@ namespace Z80Sharp.Registers
         /// </summary>
         public ushort SP
         {
-            get => (ushort)((pRegSet[SPi] << 8) | pRegSet[SPiL]);
+            get => (ushort)((RegisterSet[SPi] << 8) | RegisterSet[SPiL]);
             set
             {
-                pRegSet[SPi] = (byte)(value >> 8);
-                pRegSet[SPiL] = (byte)value;
+                RegisterSet[SPi] = (byte)(value >> 8);
+                RegisterSet[SPiL] = (byte)value;
             }
         }
 
         /// <summary>
         /// The program counter register.
         /// </summary>
-        public ushort PC
+        /*public ushort PC
         {
-            get => (ushort)((pRegSet[PCi] << 8) | pRegSet[PCiL]);
+            get => (ushort)((RegisterSet[PCi] << 8) | RegisterSet[PCiL]);
             set
             {
-                pRegSet[PCi] = (byte)(value >> 8);
-                pRegSet[PCiL] = (byte)value;
+                RegisterSet[PCi] = (byte)(value >> 8);
+                RegisterSet[PCiL] = (byte)value;
             }
-        }
+        }*/
+        public ushort PC;
         #endregion
 
         #region Index register pairs
@@ -153,11 +155,11 @@ namespace Z80Sharp.Registers
         /// </summary>
         public ushort IX
         {
-            get => (ushort)((pRegSet[IXh] << 8) | pRegSet[IXl]);
+            get => (ushort)((RegisterSet[IXh] << 8) | RegisterSet[IXl]);
             set
             {
-                pRegSet[IXh] = (byte)(value >> 8);
-                pRegSet[IXl] = (byte)value;
+                RegisterSet[IXh] = (byte)(value >> 8);
+                RegisterSet[IXl] = (byte)value;
             }
         }
 
@@ -166,11 +168,11 @@ namespace Z80Sharp.Registers
         /// </summary>
         public ushort IY
         {
-            get => (ushort)((pRegSet[IYh] << 8) | pRegSet[IYl]);
+            get => (ushort)((RegisterSet[IYh] << 8) | RegisterSet[IYl]);
             set
             {
-                pRegSet[IYh] = (byte)(value >> 8);
-                pRegSet[IYl] = (byte)value;
+                RegisterSet[IYh] = (byte)(value >> 8);
+                RegisterSet[IYl] = (byte)value;
             }
         }
         #endregion

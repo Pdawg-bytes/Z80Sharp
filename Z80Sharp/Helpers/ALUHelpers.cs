@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Z80Sharp.Enums;
-using static Z80Sharp.Registers.ProcessorRegisters;
-using System.Xml.Serialization;
+﻿using Z80Sharp.Enums;
 using Z80Sharp.Helpers;
+using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public sealed partial class Z80
+    public unsafe partial class Z80
     {
         /// <summary>
         /// Increments the input value and sets the flags register accordingly.
@@ -151,15 +145,9 @@ namespace Z80Sharp.Processor
         {
             int sum = augend + addend;
 
-            var hiA = addend.GetUpperByte();
-            var hiB = addend.GetUpperByte();
-            var loA = augend.GetLowerByte();
-            var loB = addend.GetLowerByte();
-
-            if ((loA + loB) > 0xFF) hiB++;
-
-            Registers.SetFlagConditionally(FlagType.H, 
-                ((hiA & 0x0F) + (hiB & 0x0F)) > 0xFF);
+            Registers.SetFlagConditionally(FlagType.H,
+                ((augend & 0x0FFF) + (addend & 0x0FFF))  // Add lower 12 bits of each addend together.
+                > 0x0FFFF);                              // Check if add overflowed into top 4 bits.
 
             Registers.SetFlagConditionally(FlagType.C, sum > 0xFFFF); // (C) (Set if sum exceeds ushort.MaxValue)
 

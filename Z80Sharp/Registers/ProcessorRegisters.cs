@@ -1,3 +1,7 @@
+using System;
+using System.Buffers.Binary;
+using System.Diagnostics;
+using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -9,9 +13,32 @@ namespace Z80Sharp.Registers
 {
     public unsafe partial struct ProcessorRegisters
     {
-        private GCHandle _regSetHandle;
-        private byte* pRegSet;
-        public byte[] RegisterSet;
+        [InlineArray(24)]
+        public struct RegisterArray
+        {
+            private byte _element0;
+
+            private byte this[byte index]
+            {
+                get
+                {
+                    if (index < 0 || index >= 24) throw new ArgumentOutOfRangeException();
+                    fixed (byte* ptr = &_element0)
+                    {
+                        return *(ptr + index);
+                    }
+                }
+                set
+                {
+                    if (index < 0 || index >= 24) throw new ArgumentOutOfRangeException();
+                    fixed (byte* ptr = &_element0)
+                    {
+                        *(ptr + index) = value;
+                    }
+                }
+            }
+        }
+        public RegisterArray RegisterSet;
 
         public bool IFF1 { get; set; }
         public bool IFF2 { get; set; }
@@ -21,10 +48,9 @@ namespace Z80Sharp.Registers
 
         public ProcessorRegisters()
         {
-            RegisterSet = new byte[26];
-            _regSetHandle = GCHandle.Alloc(RegisterSet, GCHandleType.Pinned);
-            pRegSet = (byte*)_regSetHandle.AddrOfPinnedObject();
+            RegisterSet = new RegisterArray();
         }
+
 
         private static readonly Dictionary<byte, string> _highBitRegisterPairs = new()
         {

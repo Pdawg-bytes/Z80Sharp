@@ -9,7 +9,7 @@ using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public sealed partial class Z80
+    public unsafe partial class Z80
     {
         private void IN_A_NPORT()
         {
@@ -24,7 +24,7 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlagConditionally(FlagType.S, (data & 0x80) != 0);             // (S) (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, data == 0);                      // (Z) (Set if result is zero)
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity(data)); // (PV) (Set if bit parity is even)
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(data));             // (PV) (Set if bit parity is even)
             Registers.SetFlagConditionally(FlagType.X, (data & 0x20) != 0);             // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (data & 0x08) != 0);             // (Y) (Undocumented flag)
 

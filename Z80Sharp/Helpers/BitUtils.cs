@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Helpers
 {
@@ -27,7 +22,7 @@ namespace Z80Sharp.Helpers
         /// <param name="value">The <see cref="ushort"/> to extract the data from.</param>
         /// <returns>The lower 8 bits of the <see cref="ushort"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte GetLowerByte(this ushort value) => (byte)(value & 0xFF);
+        public static byte GetLowerByte(this ushort value) => (byte)(value);
 
         /// <summary>
         /// Sets the high byte of a <see cref="ushort"/> value.

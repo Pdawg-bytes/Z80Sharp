@@ -1,9 +1,11 @@
-﻿using static Z80Sharp.Registers.ProcessorRegisters;
+﻿using System.Runtime.CompilerServices;
+using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80
+    public unsafe partial class Z80
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ExecuteMainInstruction()
         {
             //_logger.Log(Enums.LogSeverity.Decode, $"MAIN decoded: 0x{_currentInstruction:X2}");

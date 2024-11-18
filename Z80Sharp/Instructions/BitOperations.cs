@@ -4,7 +4,7 @@ using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80
+    public unsafe partial class Z80
     {
         private void BIT_B_R(byte bit, byte operatingRegister)
         {
@@ -54,13 +54,13 @@ namespace Z80Sharp.Processor
 
         private void RES_B_R(byte bit, byte operatingRegister)
         {
-            Registers.RegisterSet[operatingRegister] = (byte)(Registers.RegisterSet[operatingRegister] & ~(byte)(1 << bit)); // Clear bit n of R
+            Registers.RegisterSet[operatingRegister] &= (byte)~(1 << bit); // Clear bit n of R
             //LogInstructionExec($"0x{_currentInstruction:X2}: RES {bit}, {Registers.RegisterName(operatingRegister)}");
         }
         private void RES_B_RRMEM(byte bit, byte operatingRegister)
         {
-            ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
-            _memory.Write(reg, (byte)(_memory.Read(reg) & ~(byte)(1 << bit))); // Clear bit n of (RR)
+            ushort ird = (ushort)(Registers.GetR16FromHighIndexer(operatingRegister));
+            _memory.Write(ird, (byte)(_memory.Read(ird) & ~(byte)(1 << bit))); // Clear bit n of (RR)
             //LogInstructionExec($"0x{_currentInstruction:X2}: RES {bit}, ({Registers.RegisterName(operatingRegister, true)})");
         }
         private void RES_B_IRDMEM(byte bit, sbyte displacement, byte indexAddressingMode)
@@ -80,12 +80,12 @@ namespace Z80Sharp.Processor
 
         private void SET_B_R(byte bit, byte operatingRegister)
         {
-            Registers.RegisterSet[operatingRegister] = (byte)(Registers.RegisterSet[operatingRegister] | (byte)(1 << bit));
+            Registers.RegisterSet[operatingRegister] |= (byte)(1 << bit);
             //LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, {Registers.RegisterName(operatingRegister)}");
         }
         private void SET_B_RRMEM(byte bit, byte operatingRegister)
         {
-            ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
+            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(operatingRegister));
             _memory.Write(reg, (byte)(_memory.Read(reg) | (byte)(1 << bit)));
             //LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, ({Registers.RegisterName(operatingRegister, true)})");
         }

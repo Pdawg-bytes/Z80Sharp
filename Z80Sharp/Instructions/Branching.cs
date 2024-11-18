@@ -9,14 +9,13 @@ using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public partial class Z80
+    public unsafe partial class Z80
     {
         // JP: unconditional jumps to value in register or immediate in memory.
         private void JP_NN()
         {
             ushort jumpTo = FetchImmediateWord();
-            Registers.RegisterSet[PCi] = jumpTo.GetUpperByte();
-            Registers.RegisterSet[PCi + 1] = jumpTo.GetLowerByte();
+            Registers.PC = jumpTo;
             //LogInstructionExec($"0xC3: JP 0x{jumpTo:X4}");
         }
         private void JP_RR(byte operatingRegister)

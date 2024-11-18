@@ -1,11 +1,11 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using Z80Sharp.Helpers;
+﻿using Z80Sharp.Helpers;
 using Z80Sharp.Interfaces;
+using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Memory
 {
-    public unsafe class MainMemory /*: IMemory*/
+    public unsafe class MainMemory : IMemory
     {
         private GCHandle _memHandle;
         private byte* pMem;
