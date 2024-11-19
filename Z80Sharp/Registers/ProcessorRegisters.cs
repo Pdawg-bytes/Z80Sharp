@@ -17,26 +17,6 @@ namespace Z80Sharp.Registers
         public struct RegisterArray
         {
             private byte _element0;
-
-            private byte this[byte index]
-            {
-                get
-                {
-                    if (index < 0 || index >= 24) throw new ArgumentOutOfRangeException();
-                    fixed (byte* ptr = &_element0)
-                    {
-                        return *(ptr + index);
-                    }
-                }
-                set
-                {
-                    if (index < 0 || index >= 24) throw new ArgumentOutOfRangeException();
-                    fixed (byte* ptr = &_element0)
-                    {
-                        *(ptr + index) = value;
-                    }
-                }
-            }
         }
         public RegisterArray RegisterSet;
 

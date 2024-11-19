@@ -30,7 +30,7 @@ namespace Z80Sharp.TestProgram
                 0x90, 0x00, 0xC3, 0x2A
             };
 
-            Array.Copy(program, 0, mainMemory._memory, 0x0, program.Length);
+            //Array.Copy(program, 0, mainMemory._memory, 0x0, program.Length);
 
             z80 = new Z80(mainMemory, dataBus, logger, true);
             /*z80.Reset(new ProcessorRegisters
@@ -47,8 +47,8 @@ namespace Z80Sharp.TestProgram
             z80.Reset();
             Thread processorThread = new(() =>
             {
-                //RunCPMBinary("zexdoc.com");
-                z80.Run();
+                RunCPMBinary("zexdoc.com");
+                //z80.Run();
             });
             processorThread.Start();
 

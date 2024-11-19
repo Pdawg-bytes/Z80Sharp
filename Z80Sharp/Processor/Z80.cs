@@ -63,7 +63,7 @@ namespace Z80Sharp.Processor
             _cycleTimer.AutoReset = true;
             _cycleTimer.Start();
 
-            while(true)
+            while (true)
             {
                 ExecuteOnce();
             }
