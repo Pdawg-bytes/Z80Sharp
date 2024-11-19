@@ -1,6 +1,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
@@ -58,7 +59,7 @@ namespace Z80Sharp.Registers
         /// <param name="registerIndexer">The register indexer.</param>
         /// <param name="highBits">True if the register is a pair.</param>
         /// <returns>The name of the register according to the above dictionary.</returns>
-        public string RegisterName(byte registerIndexer, bool highBits = false)
+        public string RegisterName([ConstantExpected] byte registerIndexer, bool highBits = false)
         {
             if (highBits && _highBitRegisterPairs.TryGetValue(registerIndexer, out var registerName))
             {
@@ -72,22 +73,35 @@ namespace Z80Sharp.Registers
         }
 
         /// <summary>
+        /// Gets the name of the current interrupt mode.
+        /// </summary>
+        /// <param name="interruptMode">The interrupt mode the processor is currently in.</param>
+        /// <returns>The name, in string form, of the mode.</returns>
+        public string InterruptModeName(InterruptMode interruptMode) => interruptMode switch
+        {
+            InterruptMode.IM0 => "IM0",
+            InterruptMode.IM1 => "IM1",
+            InterruptMode.IM2 => "IM2",
+            _ => "UNKNOWN INTERRUPT MODE"
+        };
+
+        /// <summary>
         /// Gets the name of a jump condition given its condition operation.
         /// </summary>
         /// <param name="condition">The condition being used in the jump operation.</param>
         /// <remarks>https://www.zilog.com/docs/z80/um0080.pdf page 277 details the names and values of each condition.</remarks>
         /// <returns>The name of the <paramref name="condition"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string JumpConditionName(byte condition) => condition switch
+        public string JumpConditionName([ConstantExpected] byte condition) => condition switch
         {
-            0b000 => "NZ",
-            0b001 => "Z",
-            0b010 => "NC",
-            0b011 => "C",
-            0b100 => "PO",
-            0b101 => "PE",
-            0b110 => "P",
-            0b111 => "M",
+            NZ_C => "NZ",
+            Z_C  => "Z",
+            NC_C => "NC",
+            C_C  => "C",
+            PO_C => "PO",
+            PE_C => "PE",
+            P_C  => "P",
+            M_C  => "M",
             _ => "?"
         };
 
@@ -97,7 +111,7 @@ namespace Z80Sharp.Registers
         /// <param name="condition">The flag condition.</param>
         /// <returns>True if the flag condition matches the expected value; false if otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool EvaluateJumpFlagCondition(byte condition)
+        public bool EvaluateJumpFlagCondition([ConstantExpected] in byte condition)
         {
             switch (condition & 0xFE) // Mask out LSB to handle paired conditions.
             {
@@ -122,30 +136,24 @@ namespace Z80Sharp.Registers
         /// <param name="indexer">The indexer of the high register.</param>
         /// <returns>The value inside the 16-bit register pair.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ushort GetR16FromHighIndexer(byte indexer) => (ushort)(RegisterSet[indexer] << 8 | RegisterSet[indexer + 1]);
+        public ushort GetR16FromHighIndexer([ConstantExpected] byte indexer) => (ushort)(RegisterSet[indexer] << 8 | RegisterSet[indexer + 1]);
+
+        //private static ReadOnlySpan<byte> incrementedIndices => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void R8Exchange(byte reg1, byte reg2)
+        public void R8Exchange([ConstantExpected] byte reg1, [ConstantExpected] byte reg2)
         {
             byte reg1_old = RegisterSet[reg1];
             RegisterSet[reg1] = RegisterSet[reg2];
             RegisterSet[reg2] = reg1_old;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void R16Exchange(byte regPair1, byte regPair2)
+        public void R16Exchange([ConstantExpected] byte regPair1, [ConstantExpected] byte regPair2)
         {
             (RegisterSet[regPair1], RegisterSet[regPair2]) = (RegisterSet[regPair2], RegisterSet[regPair1]);
             (RegisterSet[regPair1 + 1], RegisterSet[regPair2 + 1]) = (RegisterSet[regPair2 + 1], RegisterSet[regPair1 + 1]);
         }
 
-
-        public string InterruptModeName(InterruptMode interruptMode) => interruptMode switch
-        {
-            InterruptMode.IM0 => "IM0",
-            InterruptMode.IM1 => "IM1",
-            InterruptMode.IM2 => "IM2",
-            _ => "UNKNOWN INTERRUPT MODE"
-        };
 
 
         #region Main register indexers
@@ -326,6 +334,43 @@ namespace Z80Sharp.Registers
             else
                 ClearFlag(flag);
         }
+        #endregion
+
+
+
+        #region Conditional constants
+        /// <summary>
+        /// The non-zero condition.
+        /// </summary>
+        public const byte NZ_C = 0b000;
+        /// <summary>
+        /// The zero condition.
+        /// </summary>
+        public const byte Z_C = 0b001;
+        /// <summary>
+        /// The non-carry condition.
+        /// </summary>
+        public const byte NC_C = 0b010;
+        /// <summary>
+        /// The carry condition.
+        /// </summary>
+        public const byte C_C = 0b011;
+        /// <summary>
+        /// The parity/overflow unset condition.
+        /// </summary>
+        public const byte PO_C = 0b100;
+        /// <summary>
+        /// The parity/overflow set condition.
+        /// </summary>
+        public const byte PE_C = 0b101;
+        /// <summary>
+        /// The sign unset condition.
+        /// </summary>
+        public const byte P_C = 0b110;
+        /// <summary>
+        /// The sign set condition.
+        /// </summary>
+        public const byte M_C = 0b111;
         #endregion
     }
 }

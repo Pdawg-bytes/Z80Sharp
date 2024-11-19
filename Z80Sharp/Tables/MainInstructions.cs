@@ -232,31 +232,31 @@ namespace Z80Sharp.Processor
                 case 0x10: DJNZ_D(); break; // DJNZ D
                 case 0xC3: JP_NN(); break;  // JP NN
                 case 0xE9: JP_RR(H); break; // JP (HL)
-                case 0xC2: JP_NN_C(0b000); break; // JP NZ, NN
-                case 0xCA: JP_NN_C(0b001); break; // JP Z, NN
-                case 0xD2: JP_NN_C(0b010); break; // JP NC, NN
-                case 0xDA: JP_NN_C(0b011); break; // JP C, NN
-                case 0xE2: JP_NN_C(0b100); break; // JP PO, NN
-                case 0xEA: JP_NN_C(0b101); break; // JP PE, NN
-                case 0xF2: JP_NN_C(0b110); break; // JP P, NN
-                case 0xFA: JP_NN_C(0b111); break; // JP M, NN
+                case 0xC2: JP_NN_C(NZ_C); break; // JP NZ, NN
+                case 0xCA: JP_NN_C(Z_C); break;  // JP Z, NN
+                case 0xD2: JP_NN_C(NC_C); break; // JP NC, NN
+                case 0xDA: JP_NN_C(C_C); break;  // JP C, NN
+                case 0xE2: JP_NN_C(PO_C); break; // JP PO, NN
+                case 0xEA: JP_NN_C(PE_C); break; // JP PE, NN
+                case 0xF2: JP_NN_C(P_C); break;  // JP P, NN
+                case 0xFA: JP_NN_C(M_C); break;  // JP M, NN
 
                 case 0x18: JR_D(); break; // JR D
-                case 0x20: JR_CC_D(0b000); break; // JR NZ, D
-                case 0x28: JR_CC_D(0b001); break; // JR Z, D
-                case 0x30: JR_CC_D(0b010); break; // JR NC, D
-                case 0x38: JR_CC_D(0b011); break; // JR C, D
+                case 0x20: JR_CC_D(NZ_C); break; // JR NZ, D
+                case 0x28: JR_CC_D(Z_C); break;  // JR Z, D
+                case 0x30: JR_CC_D(NC_C); break; // JR NC, D
+                case 0x38: JR_CC_D(C_C); break;  // JR C, D
 
                 // RET instructions: return 
                 case 0xC9: RET(); break; // RET
-                case 0xC0: RET_CC(0b000); break; // RET NZ
-                case 0xC8: RET_CC(0b001); break; // RET Z
-                case 0xD0: RET_CC(0b010); break; // RET NC
-                case 0xD8: RET_CC(0b011); break; // RET C
-                case 0xE0: RET_CC(0b100); break; // RET PO
-                case 0xE8: RET_CC(0b101); break; // RET PE
-                case 0xF0: RET_CC(0b110); break; // RET P
-                case 0xF8: RET_CC(0b111); break; // RET M
+                case 0xC0: RET_CC(NZ_C); break; // RET NZ
+                case 0xC8: RET_CC(Z_C);  break; // RET Z
+                case 0xD0: RET_CC(NC_C); break; // RET NC
+                case 0xD8: RET_CC(C_C);  break; // RET C
+                case 0xE0: RET_CC(PO_C); break; // RET PO
+                case 0xE8: RET_CC(PE_C); break; // RET PE
+                case 0xF0: RET_CC(P_C);  break; // RET P
+                case 0xF8: RET_CC(M_C);  break; // RET M
 
                 // RST instructions: restart to 0xXX
                 case 0xC7: RST_HH(0x00); break; // RST 00h
@@ -270,14 +270,14 @@ namespace Z80Sharp.Processor
 
                 // CALL instructions: push current PC to stack and jump to immediate
                 case 0xCD: CALL_NN(); break; // CALL NN
-                case 0xC4: CALL_CC_NN(0b000); break; // CALL NZ, NN
-                case 0xCC: CALL_CC_NN(0b001); break; // CALL Z, NN
-                case 0xD4: CALL_CC_NN(0b010); break; // CALL NC, NN
-                case 0xDC: CALL_CC_NN(0b011); break; // CALL C, NN
-                case 0xE4: CALL_CC_NN(0b100); break; // CALL PO, NN
-                case 0xEC: CALL_CC_NN(0b101); break; // CALL PE, NN
-                case 0xF4: CALL_CC_NN(0b110); break; // CALL P, NN
-                case 0xFC: CALL_CC_NN(0b111); break; // CALL M, NN
+                case 0xC4: CALL_CC_NN(NZ_C); break; // CALL NZ, NN
+                case 0xCC: CALL_CC_NN(Z_C); break; // CALL Z, NN
+                case 0xD4: CALL_CC_NN(NC_C); break; // CALL NC, NN
+                case 0xDC: CALL_CC_NN(C_C); break; // CALL C, NN
+                case 0xE4: CALL_CC_NN(PO_C); break; // CALL PO, NN
+                case 0xEC: CALL_CC_NN(PE_C); break; // CALL PE, NN
+                case 0xF4: CALL_CC_NN(P_C); break; // CALL P, NN
+                case 0xFC: CALL_CC_NN(M_C); break; // CALL M, NN
 
 
                 // POP instructions: pop value at SP into RR and inc. SP

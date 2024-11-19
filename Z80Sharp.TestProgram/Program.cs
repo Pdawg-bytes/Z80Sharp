@@ -52,7 +52,7 @@ namespace Z80Sharp.TestProgram
             });
             processorThread.Start();
 
-            ReadConsoleInput();
+            //ReadConsoleInput();
         }
 
         private static ConsoleKeyInfo _key;

@@ -9,59 +9,72 @@ namespace Z80Sharp.Processor
 {
     public unsafe partial class Z80
     {
+        private ushort tempSP;
         private void POP_RR(byte operatingRegister)
         {
-            Registers.RegisterSet[operatingRegister + 1] = _memory.Read(Registers.SP);
-            Registers.SP++;
-            Registers.RegisterSet[operatingRegister] = _memory.Read(Registers.SP);
-            Registers.SP++;
+            tempSP = Registers.SP;
+            Registers.RegisterSet[operatingRegister + 1] = _memory.Read(tempSP);
+            tempSP++;
+            Registers.RegisterSet[operatingRegister] = _memory.Read(tempSP);
+            tempSP++;
+            Registers.SP = tempSP;
             //LogInstructionExec($"0x{_currentInstruction:X2}: POP {Registers.RegisterName(operatingRegister, true)}");
         }
         // We can't use the generic method because the register indexers for A and F are in the opposite order.
         private void POP_AF()
         {
-            Registers.RegisterSet[F] = _memory.Read(Registers.SP);
-            Registers.SP++;
-            Registers.RegisterSet[A] = _memory.Read(Registers.SP);
-            Registers.SP++;
+            tempSP = Registers.SP;
+            Registers.RegisterSet[F] = _memory.Read(tempSP);
+            tempSP++;
+            Registers.RegisterSet[A] = _memory.Read(tempSP);
+            tempSP++;
+            Registers.SP = tempSP;
             //LogInstructionExec($"0xF1: POP AF");
         }
         private void POP_PC_SILENT()
         {
-            byte pcL = _memory.Read(Registers.SP);
-            Registers.SP++;
-            byte pcH = _memory.Read(Registers.SP);
-            Registers.SP++;
+            tempSP = Registers.SP;
+            byte pcL = _memory.Read(tempSP);
+            tempSP++;
+            byte pcH = _memory.Read(tempSP);
+            tempSP++;
 
-            Registers.PC = (ushort)((pcH << 8) + pcL);
+            Registers.SP = tempSP;
+            Registers.PC = (ushort)((pcH << 8) | pcL);
         }
 
         private void PUSH_RR(byte operatingRegister)
         {
-            Registers.SP--;
-            _memory.Write(Registers.SP, Registers.RegisterSet[operatingRegister]);
-            Registers.SP--;
-            _memory.Write(Registers.SP, Registers.RegisterSet[operatingRegister + 1]);
+            tempSP = Registers.SP;
+            tempSP--;
+            _memory.Write(tempSP, Registers.RegisterSet[operatingRegister]);
+            tempSP--;
+            _memory.Write(tempSP, Registers.RegisterSet[operatingRegister + 1]);
+            Registers.SP = tempSP;
             //LogInstructionExec($"0x{_currentInstruction:X2}: PUSH {Registers.RegisterName(operatingRegister, true)}");
         }
         // We can't use the generic method because the register indexers for A and F are in the opposite order.
         private void PUSH_AF()
         {
-            Registers.SP--;
-            _memory.Write(Registers.SP, Registers.RegisterSet[A]);
-            Registers.SP--;
-            _memory.Write(Registers.SP, Registers.RegisterSet[F]);
+            tempSP = Registers.SP;
+            tempSP--;
+            _memory.Write(tempSP, Registers.RegisterSet[A]);
+            tempSP--;
+            _memory.Write(tempSP, Registers.RegisterSet[F]);
+            Registers.SP = tempSP;
             //LogInstructionExec($"0xF5: PUSH AF");
         }
         private void PUSH_PC_SILENT()
         {
+            tempSP = Registers.SP;
             byte pcH = (byte)((Registers.PC >> 8) & 0xff);
             byte pcL = (byte)(Registers.PC & 0xff);
 
-            Registers.SP--;
-            _memory.Write(Registers.SP, pcH);
-            Registers.SP--;
-            _memory.Write(Registers.SP, pcL);
+            tempSP--;
+            _memory.Write(tempSP, pcH);
+            tempSP--;
+            _memory.Write(tempSP, pcL);
+            Registers.SP = tempSP;
         }
     }
 }

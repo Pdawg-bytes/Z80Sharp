@@ -70,7 +70,7 @@ namespace Z80Sharp.Processor
         }
         private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond} instr/s");
+            Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
             InstrsExecutedLastSecond = InstrsExecuted;
         }
 
@@ -85,9 +85,9 @@ namespace Z80Sharp.Processor
             switch (_currentInstruction)
             {
                 case 0xDD:
-                    ExecuteIndexRInstruction(AddressingMode.IndexX); break;
+                    ExecuteIndexRInstruction(IXh); break;
                 case 0xFD:
-                    ExecuteIndexRInstruction(AddressingMode.IndexY); break;
+                    ExecuteIndexRInstruction(IYh); break;
                 case 0xED:
                     ExecuteMiscInstruction(); break;
                 case 0xCB:
