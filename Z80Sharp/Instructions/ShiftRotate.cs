@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -87,7 +88,7 @@ namespace Z80Sharp.Processor
         }
 
 
-        private void SLA_R(byte operatingRegister)
+        private void SLA_R([ConstantExpected] byte operatingRegister)
         {
             byte reg = Registers.RegisterSet[operatingRegister];
             byte carry = (byte)(reg & 0x80); // Extract MSB
@@ -98,7 +99,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SLA {Registers.RegisterName(operatingRegister)}");
         }
-        private void SLA_RRMEM(byte operatingRegister)
+        private void SLA_RRMEM([ConstantExpected] byte operatingRegister)
         {
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
@@ -112,7 +113,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(operatingRegister, true)})");
         }
-        private void SLA_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        private void SLA_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
         {
             ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -126,7 +127,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
-        private void SLA_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        private void SLA_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
         {
             ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -142,7 +143,7 @@ namespace Z80Sharp.Processor
             //LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
-        private void SLL_R(byte operatingRegister) // UNDOCUMENTED
+        private void SLL_R([ConstantExpected] byte operatingRegister) // UNDOCUMENTED
         {
             byte reg = Registers.RegisterSet[operatingRegister];
             byte carry = (byte)(reg & 0x80); // Extract MSB
@@ -153,7 +154,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SLL {Registers.RegisterName(operatingRegister)}");
         }
-        private void SLL_RRMEM(byte operatingRegister) // UNDOCUMENTED
+        private void SLL_RRMEM([ConstantExpected] byte operatingRegister) // UNDOCUMENTED
         {
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
@@ -167,7 +168,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(operatingRegister, true)})");
         }
-        private void SLL_IRDMEM(sbyte displacement, byte indexAddressingMode) // UNDOCUMENTED
+        private void SLL_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode) // UNDOCUMENTED
         {
             ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -181,7 +182,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
-        private void SLL_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        private void SLL_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
         {
             ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -197,7 +198,7 @@ namespace Z80Sharp.Processor
             //LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
-        private void SRA_R(byte operatingRegister)
+        private void SRA_R([ConstantExpected] byte operatingRegister)
         {
             byte reg = Registers.RegisterSet[operatingRegister];
             byte carry = (byte)(reg & 0x01); // Extract LSB for carry
@@ -210,7 +211,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SRA {Registers.RegisterName(operatingRegister)}");
         }
-        private void SRA_RRMEM(byte operatingRegister)
+        private void SRA_RRMEM([ConstantExpected] byte operatingRegister)
         {
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
@@ -225,7 +226,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SRA {Registers.RegisterName(operatingRegister)}");
         }
-        private void SRA_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        private void SRA_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
         {
             ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -240,7 +241,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SRA ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
-        private void SRA_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        private void SRA_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
         {
             ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -257,7 +258,7 @@ namespace Z80Sharp.Processor
             //LogInstructionExec($"0x{_currentInstruction:X2}: SRA ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
-        private void SRL_R(byte operatingRegister)
+        private void SRL_R([ConstantExpected] byte operatingRegister)
         {
             byte reg = Registers.RegisterSet[operatingRegister];
             byte carry = (byte)(reg & 0x01); // Extract LSB
@@ -268,7 +269,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SRL {Registers.RegisterName(operatingRegister)}");
         }
-        private void SRL_RRMEM(byte operatingRegister)
+        private void SRL_RRMEM([ConstantExpected] byte operatingRegister)
         {
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
@@ -282,7 +283,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(operatingRegister, true)})");
         }
-        private void SRL_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        private void SRL_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
         {
             ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -296,7 +297,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
-        private void SRL_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        private void SRL_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
         {
             ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -313,7 +314,7 @@ namespace Z80Sharp.Processor
         }
 
 
-        private void RLC_R(byte operatingRegister)
+        private void RLC_R([ConstantExpected] byte operatingRegister)
         {
             byte reg = Registers.RegisterSet[operatingRegister];
             byte carry = (byte)((reg & 0x80) >> 7); // Extract last bit and rotate it
@@ -324,7 +325,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RLC {Registers.RegisterName(operatingRegister)}");
         }
-        private void RLC_RRMEM(byte operatingRegister)
+        private void RLC_RRMEM([ConstantExpected] byte operatingRegister)
         {
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
@@ -338,7 +339,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(operatingRegister, true)})");
         }
-        private void RLC_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        private void RLC_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
         {
             ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -352,7 +353,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(indexAddressingMode, true)})");
         }
-        private void RLC_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        private void RLC_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
         {
             ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -368,7 +369,7 @@ namespace Z80Sharp.Processor
             //LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(indexAddressingMode, true)})");
         }
 
-        private void RL_R(byte operatingRegister)
+        private void RL_R([ConstantExpected] byte operatingRegister)
         {
             byte reg = Registers.RegisterSet[operatingRegister];
             byte carry = (byte)((reg & 0x80) >> 7); // Extract last bit and rotate it
@@ -379,7 +380,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RL {Registers.RegisterName(operatingRegister)}");
         }
-        private void RL_RRMEM(byte operatingRegister)
+        private void RL_RRMEM([ConstantExpected] byte operatingRegister)
         {
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
@@ -393,7 +394,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(operatingRegister, true)})");
         }
-        private void RL_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        private void RL_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
         {
             ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -407,7 +408,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
-        private void RL_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        private void RL_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
         {
             ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -424,7 +425,7 @@ namespace Z80Sharp.Processor
         }
 
 
-        private void RRC_R(byte operatingRegister)
+        private void RRC_R([ConstantExpected] byte operatingRegister)
         {
             byte reg = Registers.RegisterSet[operatingRegister];
             byte carry = (byte)((reg & 0x01) << 7); // Extract first bit and rotate it
@@ -435,7 +436,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RRC {Registers.RegisterName(operatingRegister)}");
         }
-        private void RRC_RRMEM(byte operatingRegister)
+        private void RRC_RRMEM([ConstantExpected] byte operatingRegister)
         {
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
@@ -449,7 +450,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(operatingRegister, true)})");
         }
-        private void RRC_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        private void RRC_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
         {
             ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -463,7 +464,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
-        private void RRC_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        private void RRC_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
         {
             ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -479,7 +480,7 @@ namespace Z80Sharp.Processor
             //LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
         }
 
-        private void RR_R(byte operatingRegister)
+        private void RR_R([ConstantExpected] byte operatingRegister)
         {
             byte reg = Registers.RegisterSet[operatingRegister];
             byte carry = (byte)((reg & 0x01) << 7); // Extract first bit and rotate it
@@ -490,7 +491,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RR {Registers.RegisterName(operatingRegister)}");
         }
-        private void RR_RRMEM(byte operatingRegister)
+        private void RR_RRMEM([ConstantExpected] byte operatingRegister)
         {
             ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
 
@@ -504,7 +505,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(operatingRegister, true)})");
         }
-        private void RR_IRDMEM(sbyte displacement, byte indexAddressingMode)
+        private void RR_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
         {
             ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
@@ -518,7 +519,7 @@ namespace Z80Sharp.Processor
 
             //LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(indexAddressingMode, true)} + d)");
         }
-        private void RR_IRDMEM_R(sbyte displacement, byte indexAddressingMode, byte outputRegister) // UNDOCUMENTED
+        private void RR_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
         {
             ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 

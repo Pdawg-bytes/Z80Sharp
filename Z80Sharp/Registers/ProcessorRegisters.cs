@@ -17,7 +17,7 @@ namespace Z80Sharp.Registers
         [InlineArray(24)]
         public struct RegisterArray
         {
-            private byte _element0;
+            internal byte _element0;
         }
         public RegisterArray RegisterSet;
 
@@ -137,8 +137,6 @@ namespace Z80Sharp.Registers
         /// <returns>The value inside the 16-bit register pair.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort GetR16FromHighIndexer([ConstantExpected] byte indexer) => (ushort)(RegisterSet[indexer] << 8 | RegisterSet[indexer + 1]);
-
-        //private static ReadOnlySpan<byte> incrementedIndices => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void R8Exchange([ConstantExpected] byte reg1, [ConstantExpected] byte reg2)

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Z80Sharp.Enums;
 using static Z80Sharp.Registers.ProcessorRegisters;
 
@@ -7,9 +8,9 @@ namespace Z80Sharp.Processor
     public unsafe partial class Z80
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ExecuteIndexRBitInstruction(byte indexAddressingMode)
+        private void ExecuteIndexRBitInstruction([ConstantExpected] byte indexAddressingMode)
         {
-            LogInstructionDecode($"INRB decoded: 0x{_currentInstruction:X2}");
+            //LogInstructionDecode($"INRB decoded: 0x{_currentInstruction:X2}");
             sbyte displacement = (sbyte)Fetch(); // Displacement comes before opcode in index bit
             byte instruction = Fetch();          // So we fetch actual opcode after displacement
             _currentInstruction = instruction;

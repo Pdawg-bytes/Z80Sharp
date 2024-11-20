@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using static Z80Sharp.Registers.ProcessorRegisters;
@@ -10,7 +12,7 @@ namespace Z80Sharp.Processor
     public unsafe partial class Z80
     {
         private ushort tempSP;
-        private void POP_RR(byte operatingRegister)
+        private void POP_RR([ConstantExpected] byte operatingRegister)
         {
             tempSP = Registers.SP;
             Registers.RegisterSet[operatingRegister + 1] = _memory.Read(tempSP);
@@ -31,6 +33,7 @@ namespace Z80Sharp.Processor
             Registers.SP = tempSP;
             //LogInstructionExec($"0xF1: POP AF");
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void POP_PC_SILENT()
         {
             tempSP = Registers.SP;
@@ -43,7 +46,7 @@ namespace Z80Sharp.Processor
             Registers.PC = (ushort)((pcH << 8) | pcL);
         }
 
-        private void PUSH_RR(byte operatingRegister)
+        private void PUSH_RR([ConstantExpected] byte operatingRegister)
         {
             tempSP = Registers.SP;
             tempSP--;
@@ -64,6 +67,7 @@ namespace Z80Sharp.Processor
             Registers.SP = tempSP;
             //LogInstructionExec($"0xF5: PUSH AF");
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void PUSH_PC_SILENT()
         {
             tempSP = Registers.SP;

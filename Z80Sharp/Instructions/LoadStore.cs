@@ -8,13 +8,14 @@ using System.Runtime.CompilerServices;
 using static Z80Sharp.Registers.ProcessorRegisters;
 using Z80Sharp.Enums;
 using Z80Sharp.Helpers;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Z80Sharp.Processor
 {
     public unsafe partial class Z80
     {
         // Load immediate values into registers
-        private void LD_RR_NN(byte operatingRegister)
+        private void LD_RR_NN([ConstantExpected] byte operatingRegister)
         {
             Registers.RegisterSet[operatingRegister + 1] = Fetch();
             Registers.RegisterSet[operatingRegister] = Fetch();
@@ -22,14 +23,14 @@ namespace Z80Sharp.Processor
         }
 
         // Load from/to memory with register pairs
-        private void LD_RR_NNMEM(byte operatingRegister)
+        private void LD_RR_NNMEM([ConstantExpected] byte operatingRegister)
         {
             ushort addr = FetchImmediateWord();
             Registers.RegisterSet[operatingRegister + 1] = _memory.Read(addr++);
             Registers.RegisterSet[operatingRegister] = _memory.Read(addr);
             //LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(operatingRegister, true)}, (NN:0x{addr:X4})");
         }
-        private void LD_NNMEM_RR(byte operatingRegister)
+        private void LD_NNMEM_RR([ConstantExpected] byte operatingRegister)
         {
             ushort addr = FetchImmediateWord();
             _memory.Write(addr++, Registers.RegisterSet[operatingRegister + 1]);
@@ -38,17 +39,17 @@ namespace Z80Sharp.Processor
         }
 
         // Load between registers
-        private void LD_R_R(byte dest, byte source)
+        private void LD_R_R([ConstantExpected] byte dest, [ConstantExpected] byte source)
         {
             Registers.RegisterSet[dest] = Registers.RegisterSet[source];
             //LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(dest)}, {Registers.RegisterName(source)}:0x{Registers.RegisterSet[source]:X2}");
         }
-        private void LD_R_N(byte operatingRegister)
+        private void LD_R_N([ConstantExpected] byte operatingRegister)
         {
             Registers.RegisterSet[operatingRegister] = Fetch();
             //LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(operatingRegister)}, 0x{Registers.RegisterSet[operatingRegister]:X2}");
         }
-        private void LD_RR_RR(byte dest, byte source)
+        private void LD_RR_RR([ConstantExpected] byte dest, [ConstantExpected] byte source)
         {
             Registers.RegisterSet[dest + 1] = Registers.RegisterSet[source + 1];
             Registers.RegisterSet[dest] = Registers.RegisterSet[source];
@@ -56,34 +57,34 @@ namespace Z80Sharp.Processor
         }
 
         // Load from memory to register or register to memory
-        private void LD_R_RRMEM(byte dest, byte source)
+        private void LD_R_RRMEM([ConstantExpected] byte dest, [ConstantExpected] byte source)
         {
             Registers.RegisterSet[dest] = _memory.Read(Registers.GetR16FromHighIndexer(source));
             //LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(dest)}, ({Registers.RegisterName(source, true)}:0x{Registers.HL:X4})");
         }
-        private void LD_R_IRDMEM(byte dest, byte indexAddressingMode)
+        private void LD_R_IRDMEM([ConstantExpected] byte dest, [ConstantExpected] byte indexAddressingMode)
         {
             Registers.RegisterSet[dest] = _memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch()));
             //LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(dest)}, ({Registers.RegisterName(indexAddressingMode, true)}:0x{Registers.HL:X4})");
         }
-        private void LD_RRMEM_R(byte dest, byte source)
+        private void LD_RRMEM_R([ConstantExpected] byte dest, [ConstantExpected] byte source)
         {
             _memory.Write(Registers.GetR16FromHighIndexer(dest), Registers.RegisterSet[source]);
             //LogInstructionExec($"0x{_currentInstruction:X2}: LD ({Registers.RegisterName(dest, true)}:0x{Registers.GetR16FromHighIndexer(dest):X2}), {Registers.RegisterName(source)}:0x{Registers.RegisterSet[source]:X2}");
         }
-        private void LD_IRDMEM_R(byte indexAddressingMode, byte source)
+        private void LD_IRDMEM_R([ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte source)
         {
             _memory.Write((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch()), Registers.RegisterSet[source]);
             //LogInstructionExec($"0x{_currentInstruction:X2}: LD ({Registers.RegisterName(indexAddressingMode, true)}:0x{Registers.GetR16FromHighIndexer(indexAddressingMode):X2} + d), {Registers.RegisterName(source)}:0x{Registers.RegisterSet[source]:X2}");
         }
 
         // Load regs into memory
-        private void LD_NNMEM_R(byte operatingRegister)
+        private void LD_NNMEM_R([ConstantExpected] byte operatingRegister)
         {
             _memory.Write(FetchImmediateWord(), Registers.RegisterSet[operatingRegister]);
             //LogInstructionExec($"0x32: LD (NN), {Registers.RegisterName(operatingRegister)}:0x{Registers.RegisterSet[operatingRegister]:X2}");
         }
-        private void LD_R_NNMEM(byte operatingRegister)
+        private void LD_R_NNMEM([ConstantExpected] byte operatingRegister)
         {
             Registers.RegisterSet[operatingRegister] = _memory.Read(FetchImmediateWord());
             //LogInstructionExec($"0x{_currentInstruction:X2}: LD {Registers.RegisterName(operatingRegister)}, (NN)");
@@ -93,7 +94,7 @@ namespace Z80Sharp.Processor
             _memory.Write(Registers.HL, Fetch());
             //LogInstructionExec($"0x36: LD (HL:0x{Registers.HL:X4}), N");
         }
-        private void LD_IRDMEM_N(byte indexAddressingMode)
+        private void LD_IRDMEM_N([ConstantExpected] byte indexAddressingMode)
         {
             _memory.Write((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch()), Fetch());
             //LogInstructionExec($"0x{_currentInstruction:X2}: LD ({Registers.RegisterName(indexAddressingMode, true)}), N");

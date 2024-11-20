@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,14 +19,14 @@ namespace Z80Sharp.Processor
             Registers.PC = jumpTo;
             //LogInstructionExec($"0xC3: JP 0x{jumpTo:X4}");
         }
-        private void JP_RR(byte operatingRegister)
+        private void JP_RR([ConstantExpected] byte operatingRegister)
         {
             ushort jumpTo = Registers.GetR16FromHighIndexer(operatingRegister);
             Registers.PC = jumpTo;
             //LogInstructionExec($"0x{_currentInstruction:X2}: JP ({Registers.RegisterName(operatingRegister, true)}:0x{jumpTo:X4})");
         }
         // Conditional jump to immediate
-        private void JP_NN_C(byte flagCondition)
+        private void JP_NN_C([ConstantExpected] byte flagCondition)
         {
             ushort jumpTo = FetchImmediateWord();
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
@@ -50,7 +51,7 @@ namespace Z80Sharp.Processor
         // Technically, if we were doing this off of ((_currentInstruction >> 3) & 0x07), we'd need to (& 0x3) the value
         // again to get the right flag condition. However, instead of computing it on the fly, we can use our jump table
         // to pass in the correct values when we call this function from its respective opcodes.
-        private void JR_CC_D(byte flagCondition)
+        private void JR_CC_D([ConstantExpected] byte flagCondition)
         {
             sbyte displacement = (sbyte)Fetch();
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
@@ -91,7 +92,7 @@ namespace Z80Sharp.Processor
             POP_PC_SILENT();
             //LogInstructionExec("0xC9: RET");
         }
-        private void RET_CC(byte flagCondition)
+        private void RET_CC([ConstantExpected] byte flagCondition)
         {
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
             {
@@ -137,7 +138,7 @@ namespace Z80Sharp.Processor
             Registers.PC = jumpTo;
             //LogInstructionExec($"0x{_currentInstruction:X2}: CALL NN:0x{jumpTo:X4}");
         }
-        private void CALL_CC_NN(byte flagCondition)
+        private void CALL_CC_NN([ConstantExpected] byte flagCondition)
         {
             ushort jumpTo = FetchImmediateWord();
             if (Registers.EvaluateJumpFlagCondition(flagCondition))

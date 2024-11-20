@@ -18,7 +18,7 @@ namespace Z80Sharp.Processor
 
         private ulong InstrsExecuted;
         private ulong InstrsExecutedLastSecond;
-        private System.Timers.Timer _cycleTimer;
+        private System.Timers.Timer? _cycleTimer;
 
         private byte _currentInstruction;
 
@@ -50,6 +50,8 @@ namespace Z80Sharp.Processor
             _dataBus = dataBus;
             _logger = logger;
             IsDebug = isDebug;
+
+            if (_memory == null || _dataBus == null || _logger == null) throw new ArgumentNullException();
         }
 
         public void Step()

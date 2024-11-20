@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Z80Sharp.Processor
             Registers.RegisterSet[A] = _dataBus.ReadPort(port);
             //LogInstructionExec($"0xDB: IN A, (N:0x{port:X4})");
         }
-        private void IN_R_CPORT(byte operatingRegister)
+        private void IN_R_CPORT([ConstantExpected] byte operatingRegister)
         {
             byte data = _dataBus.ReadPort(Registers.BC);
             Registers.RegisterSet[operatingRegister] = data;

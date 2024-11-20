@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Z80Sharp.Enums;
 using static Z80Sharp.Registers.ProcessorRegisters;
 
@@ -7,7 +8,7 @@ namespace Z80Sharp.Processor
     public unsafe partial class Z80
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ExecuteIndexRInstruction(byte indexAddressingMode)
+        private void ExecuteIndexRInstruction([ConstantExpected] byte indexAddressingMode)
         {
             LogInstructionDecode($"INDR decoded: 0x{_currentInstruction:X2}");
             byte instruction = Fetch();
@@ -185,7 +186,6 @@ namespace Z80Sharp.Processor
                 case 0x74: LD_IRDMEM_R(indexAddressingMode, H); break;  // LD (IR + d), H
                 case 0x75: LD_IRDMEM_R(indexAddressingMode, L); break;  // LD (IR + d), L
                 case 0x77: LD_IRDMEM_R(indexAddressingMode, A); break;  // LD (IR + d), A
-
                 case 0x36: LD_IRDMEM_N(indexAddressingMode); break; // LD (IR + d), N
 
 

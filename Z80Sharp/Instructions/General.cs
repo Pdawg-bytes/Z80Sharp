@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,7 +70,7 @@ namespace Z80Sharp.Processor
             _memory.WriteWord(sp, oldHl);
             //LogInstructionExec("0xE3: EX (SP), HL");
         }
-        private void EX_SPMEM_IR(byte indexAddressingMode)
+        private void EX_SPMEM_IR([ConstantExpected] byte indexAddressingMode)
         {
             ushort sp = Registers.SP;
             ushort oldIr = Registers.GetR16FromHighIndexer(indexAddressingMode);

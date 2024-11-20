@@ -2,11 +2,11 @@
 {
     public interface IMemory
     {
-        byte Read(ushort address);
-        void Write(ushort address, byte value);
+        byte Read(int address);
+        void Write(int address, byte value);
 
-        ushort ReadWord(ushort address);
-        void WriteWord(ushort address, ushort value);
+        ushort ReadWord(int address);
+        void WriteWord(int address, ushort value);
 
         /// <remarks>
         /// This value should never exceed 65536.

@@ -8,7 +8,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ExecuteBitInstruction()
         {
-            LogInstructionDecode("BIT table");
+            //LogInstructionDecode("BIT table");
 
             byte instruction = Fetch();
             _currentInstruction = instruction;
@@ -309,12 +309,6 @@ namespace Z80Sharp.Processor
                 case 0xFC: SET_B_R(7, L); break;        // SET 7, L
                 case 0xFE: SET_B_RRMEM(7, H); break;    // SET 7, (HL)
                 case 0xFF: SET_B_R(7, A); break;        // SET 7, A
-
-
-                default:
-                    _logger.Log(Enums.LogSeverity.Fatal, $"Unrecognized BIT opcode: 0x{_currentInstruction:X2}");
-                    Halted = true;
-                    break;
             }
         }
     }
