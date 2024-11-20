@@ -21,10 +21,10 @@ namespace Z80Sharp.Registers
         }
         public RegisterArray RegisterSet;
 
-        public bool IFF1 { get; set; }
-        public bool IFF2 { get; set; }
+        public bool IFF1;
+        public bool IFF2;
 
-        public InterruptMode InterruptMode { get; set; }
+        public InterruptMode InterruptMode;
 
 
         public ProcessorRegisters()
