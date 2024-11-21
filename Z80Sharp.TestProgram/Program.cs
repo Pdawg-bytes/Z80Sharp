@@ -35,15 +35,15 @@ namespace Z80Sharp.TestProgram
             z80 = new Z80(mainMemory, dataBus, logger, true);
             /*z80.Reset(new ProcessorRegisters
             {
-                AF = 0x5555,
-                BC = 0x5555,
-                DE = 0x5555,
-                HL = 0x5555,
-                IX = 0x5555,
-                IY = 0x5555,
-                PC = 0x0000,
-                SP = 0x5555
-            });*/
+                AF = 0x1020,
+                BC = 0x3040,
+                DE = 0x5060,
+                HL = 0x7080,
+                IX = 0x9011,
+                IY = 0x1122,
+                PC = 0x3344,
+                SP = 0x5566
+            }); */
             z80.Reset();
             Thread processorThread = new(() =>
             {

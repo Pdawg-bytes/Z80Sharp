@@ -16,9 +16,9 @@ namespace Z80Sharp.Processor
 
         public bool IsDebug { get; init; }
 
-        private ulong InstrsExecuted;
-        private ulong InstrsExecutedLastSecond;
-        private System.Timers.Timer? _cycleTimer;
+        private static ulong InstrsExecuted;
+        private static ulong InstrsExecutedLastSecond;
+        private static System.Timers.Timer _cycleTimer = new System.Timers.Timer(1000);
 
         private byte _currentInstruction;
 
@@ -60,11 +60,9 @@ namespace Z80Sharp.Processor
         }
         public void Run()
         {
-            _cycleTimer = new System.Timers.Timer(1000);
             _cycleTimer.Elapsed += ReportCyclesPerSecond;
             _cycleTimer.AutoReset = true;
             _cycleTimer.Start();
-
             while (true)
             {
                 ExecuteOnce();
@@ -72,7 +70,7 @@ namespace Z80Sharp.Processor
         }
         private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
+            System.Diagnostics.Debug.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
             InstrsExecutedLastSecond = InstrsExecuted;
         }
 
@@ -80,7 +78,10 @@ namespace Z80Sharp.Processor
         private void ExecuteOnce()
         {
             HandleInterrupts();
-            if (_halted) { return; }
+            if (_halted) 
+            { 
+                return; 
+            }
 
             _currentInstruction = Fetch();
 
@@ -125,8 +126,6 @@ namespace Z80Sharp.Processor
             Registers.IFF1 = false;
             Registers.IFF2 = false;
 
-            byte[] spectrumROM = File.ReadAllBytes("48.rom");
-            Array.Copy(spectrumROM, _memory._memory, spectrumROM.Length);
 
             //_logger.Log(LogSeverity.Info, "Processor reset");
         }
@@ -189,7 +188,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LogInterrupt(string interruptName)
         {
-            //_logger.Log(LogSeverity.Interrupt, interruptName);
+            _logger.Log(LogSeverity.Interrupt, interruptName);
         }
         #endregion
 

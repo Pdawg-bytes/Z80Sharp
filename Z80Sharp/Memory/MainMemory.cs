@@ -30,7 +30,7 @@ namespace Z80Sharp.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort ReadWord(int address) => (ushort)(Read(address) | (Read((ushort)(address + 1)) << 8));
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteWord(int address, ushort value) { Write(address, value.GetLowerByte()); Write((ushort)(address + 1), value.GetUpperByte()); }
+        public void WriteWord(int address, ushort value) { Write(address, value.GetLowerByte()); Write(address + 1, value.GetUpperByte()); }
 
         public uint Length { get => (uint)_memory.Length; }
     }

@@ -10,7 +10,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ExecuteIndexRInstruction(ref ushort indexAddressingMode)
         {
-            LogInstructionDecode($"INDR decoded: 0x{_currentInstruction:X2}");
+            //LogInstructionDecode($"INDR decoded: 0x{_currentInstruction:X2}");
             byte instruction = Fetch();
             _currentInstruction = instruction;
             switch (instruction)

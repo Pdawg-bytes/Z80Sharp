@@ -18,80 +18,80 @@ namespace Z80Sharp.Processor
         private void LD_RR_NN(ref ushort operatingRegister)
         {
             operatingRegister = FetchImmediateWord();
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD RR, NN");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD RR, NN");
         }
 
         // Load from/to memory with register pairs
         private void LD_RR_NNMEM(ref ushort operatingRegister)
         {
             operatingRegister = _memory.ReadWord(FetchImmediateWord());
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD RR, (NN)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD RR, (NN)");
         }
         private void LD_NNMEM_RR(ref ushort operatingRegister)
         {
             _memory.WriteWord(FetchImmediateWord(), operatingRegister);
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD (NN), RR");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD (NN), RR");
         }
 
         // Load between registers
         private void LD_R_R(ref byte dest, ref byte source)
         {
             dest = source;
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD R, R");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD R, R");
         }
         private void LD_R_N(ref byte operatingRegister)
         {
             operatingRegister = Fetch();
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD R, N");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD R, N");
         }
         private void LD_RR_RR(ref ushort dest, ref ushort source)
         {
             dest = source;
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD RR, RR");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD RR, RR");
         }
 
         // Load from memory to register or register to memory
         private void LD_R_RRMEM(ref byte dest, ref ushort source)
         {
             dest = _memory.Read(source);
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD R, (RR)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD R, (RR)");
         }
         private void LD_R_IRDMEM(ref byte dest, ref ushort indexAddressingMode)
         {
             dest = _memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch()));
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD R, (IR + d)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD R, (IR + d)");
         }
         private void LD_RRMEM_R(ref ushort dest, ref byte source)
         {
             _memory.Write(dest, source);
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD (RR), R");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD (RR), R");
         }
         private void LD_IRDMEM_R(ref ushort indexAddressingMode, ref byte source)
         {
             _memory.Write((ushort)(indexAddressingMode + (sbyte)Fetch()), source);
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD (IR + d), R");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD (IR + d), R");
         }
 
         // Load regs into memory
         private void LD_NNMEM_R(ref byte operatingRegister)
         {
             _memory.Write(FetchImmediateWord(), operatingRegister);
-            LogInstructionExec($"0x32: LD (NN), R");
+            //LogInstructionExec($"0x32: LD (NN), R");
         }
         private void LD_R_NNMEM(ref byte operatingRegister)
         {
             operatingRegister = _memory.Read(FetchImmediateWord());
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD R, (NN)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD R, (NN)");
         }
         private void LD_HLMEM_N()
         {
             _memory.Write(Registers.HL, Fetch());
-            LogInstructionExec($"0x36: LD (HL:0x{Registers.HL:X4}), N");
+            //LogInstructionExec($"0x36: LD (HL:0x{Registers.HL:X4}), N");
         }
         private void LD_IRDMEM_N(ref ushort indexAddressingMode)
         {
             _memory.Write((ushort)(indexAddressingMode + (sbyte)Fetch()), Fetch());
-            LogInstructionExec($"0x{_currentInstruction:X2}: LD (IR + d), N");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: LD (IR + d), N");
         }
 
         // Complex load operations
@@ -110,7 +110,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x20) > 0); // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0); // (Y) (Undocumented flag)
 
-            LogInstructionExec("0xA0: LDI");
+            //LogInstructionExec("0xA0: LDI");
         }
         private void LDIR()
         {
@@ -131,10 +131,10 @@ namespace Z80Sharp.Processor
             if (Registers.BC != 0)
             {
                 Registers.PC -= 2;
-                LogInstructionExec("0xB0: LDIR (no continue)");
+                //LogInstructionExec("0xB0: LDIR (no continue)");
                 return;
             }
-            LogInstructionExec("0xB0: LDIR");
+            //LogInstructionExec("0xB0: LDIR");
         }
         private void LDD()
         {
@@ -151,7 +151,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x20) > 0);  // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
 
-            LogInstructionExec("0xA8: LDD");
+            //LogInstructionExec("0xA8: LDD");
         }
         private void LDDR()
         {
@@ -171,10 +171,10 @@ namespace Z80Sharp.Processor
             if (Registers.BC != 0)
             {
                 Registers.PC -= 2;
-                LogInstructionExec("0xB8: LDDR (no continue)");
+                //LogInstructionExec("0xB8: LDDR (no continue)");
                 return;
             }
-            LogInstructionExec("0xB8: LDDR");
+            //LogInstructionExec("0xB8: LDDR");
         }
     }
 }

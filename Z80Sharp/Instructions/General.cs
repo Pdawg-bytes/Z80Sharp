@@ -14,11 +14,11 @@ namespace Z80Sharp.Processor
     {
         private void NOP()
         {
-            LogInstructionExec("0x00: NOP");
+            //LogInstructionExec("0x00: NOP");
         }
         private void HALT()
         {
-            LogInstructionExec("0x76: HALT");
+            //LogInstructionExec("0x76: HALT");
             if (!Halted)
             {
                 Halted = true;
@@ -30,7 +30,7 @@ namespace Z80Sharp.Processor
         {
             Registers.A ^= 0b11111111;
             Registers.SetFlagBits((byte)(FlagType.N | FlagType.H));
-            LogInstructionExec("0x2F: CPL");
+            //LogInstructionExec("0x2F: CPL");
         }
 
         private void CCF()
@@ -40,26 +40,26 @@ namespace Z80Sharp.Processor
             Registers.ClearFlag(FlagType.H);
             Registers.SetFlagBits((byte)((Registers.F << 4) & 0b00010000)); // Set H to C pre-inversion
             Registers.InvertFlag(FlagType.C);
-            LogInstructionExec("0x3F: CCF");
+            //LogInstructionExec("0x3F: CCF");
         }
         private void SCF()
         {
             Registers.SetFlag(FlagType.C);
             Registers.ClearFlag(FlagType.N);
             Registers.ClearFlag(FlagType.H);
-            LogInstructionExec("0x37: SCF");
+            //LogInstructionExec("0x37: SCF");
         }
 
         private void EX_AF_AF_()
         {
             Registers.R16Exchange(ref Registers.AF, ref Registers.AF_);
-            LogInstructionExec("0x08: EX AF, AF'");
+            //LogInstructionExec("0x08: EX AF, AF'");
         }
         private void EX_DE_HL()
         {
             Registers.R8Exchange(ref Registers.D, ref Registers.H);
             Registers.R8Exchange(ref Registers.E, ref Registers.L);
-            LogInstructionExec("0xEB: EX DE, HL");
+            //LogInstructionExec("0xEB: EX DE, HL");
         }
         private void EX_SPMEM_HL()
         {
@@ -67,7 +67,7 @@ namespace Z80Sharp.Processor
             ushort oldHl = Registers.HL;
             Registers.HL = _memory.ReadWord(sp);
             _memory.WriteWord(sp, oldHl);
-            LogInstructionExec("0xE3: EX (SP), HL");
+            //LogInstructionExec("0xE3: EX (SP), HL");
         }
         private void EX_SPMEM_IR(ref ushort indexAddressingMode)
         {
@@ -75,31 +75,31 @@ namespace Z80Sharp.Processor
             ushort oldIr = indexAddressingMode;
             indexAddressingMode = _memory.Read(sp++);
             _memory.WriteWord(sp, oldIr);
-            LogInstructionExec("0xE3: EX (SP), HL");
+            //LogInstructionExec("0xE3: EX (SP), HL");
         }
         private void EXX()
         {
             Registers.R16Exchange(ref Registers.BC, ref Registers.BC);
             Registers.R16Exchange(ref Registers.DE, ref Registers.DE_);
             Registers.R16Exchange(ref Registers.HL, ref Registers.HL_);
-            LogInstructionExec("0xD9: EXX");
+            //LogInstructionExec("0xD9: EXX");
         }
 
         private void DI()
         {
             Registers.IFF1 = Registers.IFF2 = false;
-            LogInstructionExec("0xF3: DI");
+            //LogInstructionExec("0xF3: DI");
         }
         private void EI()
         {
             Registers.IFF1 = Registers.IFF2 = true;
-            LogInstructionExec("0xFB: EI");
+            //LogInstructionExec("0xFB: EI");
         }
 
         private void IM_M(InterruptMode mode)
         {
             Registers.InterruptMode = mode;
-            LogInstructionExec($"0x{_currentInstruction:X2}: {Registers.InterruptModeName(mode)}");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: {Registers.InterruptModeName(mode)}");
         }
     }
 }

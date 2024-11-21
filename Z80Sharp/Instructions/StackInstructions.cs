@@ -13,42 +13,68 @@ namespace Z80Sharp.Processor
     {
         private void POP_RR(ref ushort operatingRegister)
         {
-            operatingRegister = _memory.Read(Registers.SP);
-            Registers.SP += 2;
-            LogInstructionExec($"0x{_currentInstruction:X2}: POP RR");
+            byte rL = _memory.Read(Registers.SP);
+            Registers.SP++;
+            byte rH = _memory.Read(Registers.SP);
+            Registers.SP++;
+
+            operatingRegister = (ushort)((rH << 8) | rL);
+            //LogInstructionExec($"0x{_currentInstruction:X2}: POP RR");
         }
         // We can't use the generic method because the register indexers for A and F are in the opposite order.
         private void POP_AF()
         {
-            Registers.AF = _memory.Read(Registers.SP);
-            Registers.SP += 2;
-            LogInstructionExec($"0xF1: POP AF");
+            Registers.F = _memory.Read(Registers.SP);
+            Registers.SP++;
+            Registers.A = _memory.Read(Registers.SP);
+            Registers.SP++;
+
+            //LogInstructionExec($"0xF1: POP AF");
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void POP_PC_SILENT()
         {
-            Registers.PC = _memory.Read(Registers.SP);
-            Registers.SP += 2;
+            byte pcL = _memory.Read(Registers.SP);
+            Registers.SP++;
+            byte pcH = _memory.Read(Registers.SP);
+            Registers.SP++;
+
+            Registers.PC = (ushort)((pcH << 8) | pcL);
         }
 
         private void PUSH_RR(ref ushort operatingRegister)
         {
-            _memory.WriteWord(Registers.SP, operatingRegister);
-            Registers.SP -= 2;
-            LogInstructionExec($"0x{_currentInstruction:X2}: PUSH RR");
+            byte rH = (byte)((operatingRegister >> 8) & 0xff);
+            byte rL = (byte)(operatingRegister & 0xff);
+
+            Registers.SP--;
+            _memory.Write(Registers.SP, rH);
+            Registers.SP--;
+            _memory.Write(Registers.SP, rL);
+            //LogInstructionExec($"0x{_currentInstruction:X2}: PUSH RR");
         }
         // We can't use the generic method because the register indexers for A and F are in the opposite order.
         private void PUSH_AF()
         {
-            _memory.WriteWord(Registers.SP, Registers.AF);
-            Registers.SP -= 2;
-            LogInstructionExec($"0xF5: PUSH AF");
+            byte afH = (byte)((Registers.AF >> 8) & 0xff);
+            byte afL = (byte)(Registers.AF & 0xff);
+
+            Registers.SP--;
+            _memory.Write(Registers.SP, afH);
+            Registers.SP--;
+            _memory.Write(Registers.SP, afL);
+            //LogInstructionExec($"0xF5: PUSH AF");
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void PUSH_PC_SILENT()
         {
-            _memory.WriteWord(Registers.SP, Registers.PC);
-            Registers.SP -= 2;
+            byte pcH = (byte)((Registers.PC >> 8) & 0xff);
+            byte pcL = (byte)(Registers.PC & 0xff);
+
+            Registers.SP--;
+            _memory.Write(Registers.SP, pcH);
+            Registers.SP--;
+            _memory.Write(Registers.SP, pcL);
         }
     }
 }
