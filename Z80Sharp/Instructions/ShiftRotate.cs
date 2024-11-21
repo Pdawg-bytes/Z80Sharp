@@ -15,205 +15,211 @@ namespace Z80Sharp.Processor
     {
         private void RLCA()
         {
-            byte carry = (byte)((Registers.RegisterSet[A] >> 7) & 0x1);
-            Registers.RegisterSet[A] = (byte)((Registers.RegisterSet[A] << 1) | carry);
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
+            byte carry = (byte)((Registers.A >> 7) & 0x1);
+            Registers.A = (byte)((Registers.A << 1) | carry);
+            Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagConditionally(FlagType.C, carry != 0);
-            //LogInstructionExec("0x07: RLCA");
+            LogInstructionExec("0x07: RLCA");
         }
         private void RLA()
         {
-            byte carry = (byte)(Registers.RegisterSet[A] >> 7);
-            byte aTemp = Registers.RegisterSet[A];
+            byte carry = (byte)(Registers.A >> 7);
+            byte aTemp = Registers.A;
             aTemp <<= 1;
-            aTemp |= (byte)(Registers.RegisterSet[F] & (byte)FlagType.C);
-            Registers.RegisterSet[A] = aTemp;
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
+            aTemp |= (byte)(Registers.F & (byte)FlagType.C);
+            Registers.A = aTemp;
+            Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagBits(carry);
-            //LogInstructionExec("0x17: RLA");
+            LogInstructionExec("0x17: RLA");
         }
 
         private void RRCA()
         {
-            byte carry = (byte)(Registers.RegisterSet[A] & 0b00000001);
-            Registers.RegisterSet[A] >>= 1;
-            Registers.RegisterSet[A] |= (byte)(carry << 7);
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
+            byte carry = (byte)(Registers.A & 0b00000001);
+            Registers.A >>= 1;
+            Registers.A |= (byte)(carry << 7);
+            Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagBits(carry);
-            //LogInstructionExec("0x0F: RRCA");
+            LogInstructionExec("0x0F: RRCA");
         }
         private void RRA()
         {
-            byte carry = (byte)(Registers.RegisterSet[A] & 0b00000001);
-            byte aTemp = Registers.RegisterSet[A];
+            byte carry = (byte)(Registers.A & 0b00000001);
+            byte aTemp = Registers.A;
             aTemp >>= 1;
-            aTemp |= (byte)((Registers.RegisterSet[F] & (byte)FlagType.C) << 7);
-            Registers.RegisterSet[A] = aTemp;
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
+            aTemp |= (byte)((Registers.F & (byte)FlagType.C) << 7);
+            Registers.A = aTemp;
+            Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagBits(carry);
-            //LogInstructionExec("0x1F: RRA");
+            LogInstructionExec("0x1F: RRA");
         }
 
         private void RRD()
         {
-            byte regA = Registers.RegisterSet[A];
+            byte regA = Registers.A;
             byte memoryValue = _memory.Read(Registers.HL);
 
-            _memory.Write(Registers.HL, (byte)((memoryValue >> 4) | (Registers.RegisterSet[A] << 4)));          // Combine high of (HL) w/ low of A
-            Registers.RegisterSet[A] = regA = (byte)((Registers.RegisterSet[A] & 0xF0) | (memoryValue & 0x0F)); // Combine high of A w/ low of (HL)
+            _memory.Write(Registers.HL, (byte)((memoryValue >> 4) | (Registers.A << 4))); // Combine high of (HL) w/ low of A
+            Registers.A = regA = (byte)((Registers.A & 0xF0) | (memoryValue & 0x0F));     // Combine high of A w/ low of (HL)
 
             Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) > 0);              // (S) (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, regA == 0);                      // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(regA)); // (PV) (Set if bit parity is even)
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
+            Registers.F &= (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
             Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
-            //LogInstructionExec("0x67: RRD");
+            LogInstructionExec("0x67: RRD");
         }
         private void RLD()
         {
-            byte regA = Registers.RegisterSet[A];
+            byte regA = Registers.A;
             byte memoryValue = _memory.Read(Registers.HL);
 
             _memory.Write(Registers.HL, (byte)((memoryValue << 4) | (regA & 0x0F)));        // Combine low of (HL) w/ low of A
-            Registers.RegisterSet[A] = regA = (byte)((regA & 0xF0) | (memoryValue >> 4));   // Combine high of A w/ high of (HL)
+            Registers.A = regA = (byte)((regA & 0xF0) | (memoryValue >> 4));   // Combine high of A w/ high of (HL)
 
             Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) > 0);              // (S) (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, regA == 0);                      // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(regA));             // (PV) (Set if bit parity is even)
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
+            Registers.F &= (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
             Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
-            //LogInstructionExec("0x6F: RLD");
+            LogInstructionExec("0x6F: RLD");
         }
 
 
-        private void SLA_R([ConstantExpected] byte operatingRegister)
+        private void SLA_R(ref byte operatingRegister)
         {
-            byte reg = Registers.RegisterSet[operatingRegister];
-            byte carry = (byte)(reg & 0x80); // Extract MSB
-            Registers.RegisterSet[operatingRegister] = reg = (byte)(reg << 1);
+            byte carry = (byte)(operatingRegister & 0x80); // Extract MSB
+            operatingRegister = (byte)(operatingRegister << 1);
 
-            SetFlagsLSH(reg);
+            SetFlagsLSH(operatingRegister);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SLA {Registers.RegisterName(operatingRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLA R");
         }
-        private void SLA_RRMEM([ConstantExpected] byte operatingRegister)
+        private void SLA_RRMEM(ref ushort operatingRegister)
         {
-            ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
-
-            byte result = _memory.Read(reg);
+            byte result = _memory.Read(operatingRegister);
             byte carry = (byte)(result & 0x80); // Extract MSB
             result = (byte)(result << 1);
-            _memory.Write(reg, result);
+            _memory.Write(operatingRegister, result);
 
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(operatingRegister, true)})");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLA (RR)");
         }
-        private void SLA_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
+        private void SLA_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
-            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
+
+            byte result = _memory.Read(ird);
+            byte carry = (byte)(result & 0x80); // Extract last bit
+            result = (byte)(result << 1);
+            _memory.Write(ird, result);
+
+            SetFlagsLSH(result);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLA (IR + d)");
+        }
+        private void SLA_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
+        {
+            ushort reg = (ushort)(indexAddressingMode + displacement);
 
             byte result = _memory.Read(reg);
             byte carry = (byte)(result & 0x80); // Extract last bit
             result = (byte)(result << 1);
             _memory.Write(reg, result);
+            outputRegister = result;
 
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLA (IR + d), R");
         }
-        private void SLA_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
-        {
-            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
 
-            byte result = _memory.Read(reg);
-            byte carry = (byte)(result & 0x80); // Extract last bit
-            result = (byte)(result << 1);
-            _memory.Write(reg, result);
-            Registers.RegisterSet[outputRegister] = result;
+        private void SLL_R(ref byte operatingRegister) // UNDOCUMENTED
+        {
+            byte carry = (byte)(operatingRegister & 0x80); // Extract MSB
+            operatingRegister = (byte)((operatingRegister << 1) | 0x01); // Set LSB to 1
+
+            SetFlagsLSH(operatingRegister);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLL R");
+        }
+        private void SLL_RRMEM(ref ushort operatingRegister) // UNDOCUMENTED
+        {
+            byte result = _memory.Read(operatingRegister);
+            byte carry = (byte)(result & 0x80); // Extract MSB
+            result = (byte)((result << 1) | 0x01); // Set LSB to 1
+            _memory.Write(operatingRegister, result);
 
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SLA ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLL (RR)");
         }
-
-        private void SLL_R([ConstantExpected] byte operatingRegister) // UNDOCUMENTED
+        private void SLL_IRDMEM(sbyte displacement, ref ushort indexAddressingMode) // UNDOCUMENTED
         {
-            byte reg = Registers.RegisterSet[operatingRegister];
-            byte carry = (byte)(reg & 0x80); // Extract MSB
-            Registers.RegisterSet[operatingRegister] = reg = (byte)((reg << 1) | 0x01); // Set LSB to 1
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            SetFlagsLSH(reg);
+            byte result = _memory.Read(ird);
+            byte carry = (byte)(result & 0x80); // Extract MSB
+            result = (byte)((result << 1) | 0x01); // Set LSB to 1
+            _memory.Write(ird, result);
+
+            SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SLL {Registers.RegisterName(operatingRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLL (IR + d)");
         }
-        private void SLL_RRMEM([ConstantExpected] byte operatingRegister) // UNDOCUMENTED
+        private void SLL_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
         {
-            ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
+            ushort reg = (ushort)(indexAddressingMode + displacement);
 
             byte result = _memory.Read(reg);
             byte carry = (byte)(result & 0x80); // Extract MSB
             result = (byte)((result << 1) | 0x01); // Set LSB to 1
             _memory.Write(reg, result);
+            outputRegister = result;
 
             SetFlagsLSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(operatingRegister, true)})");
-        }
-        private void SLL_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode) // UNDOCUMENTED
-        {
-            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
-
-            byte result = _memory.Read(reg);
-            byte carry = (byte)(result & 0x80); // Extract MSB
-            result = (byte)((result << 1) | 0x01); // Set LSB to 1
-            _memory.Write(reg, result);
-
-            SetFlagsLSH(result);
-            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
-
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
-        }
-        private void SLL_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
-        {
-            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
-
-            byte result = _memory.Read(reg);
-            byte carry = (byte)(result & 0x80); // Extract MSB
-            result = (byte)((result << 1) | 0x01); // Set LSB to 1
-            _memory.Write(reg, result);
-            Registers.RegisterSet[outputRegister] = result;
-
-            SetFlagsLSH(result);
-            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried MSB is 1)
-
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SLL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SLL (IR + d), R");
         }
 
-        private void SRA_R([ConstantExpected] byte operatingRegister)
+        private void SRA_R(ref byte operatingRegister)
         {
-            byte reg = Registers.RegisterSet[operatingRegister];
-            byte carry = (byte)(reg & 0x01); // Extract LSB for carry
-            byte msb = (byte)(reg & 0x80);   // Preserve sign
+            byte carry = (byte)(operatingRegister & 0x01); // Extract LSB for carry
+            byte msb = (byte)(operatingRegister & 0x80);   // Preserve sign
 
-            Registers.RegisterSet[operatingRegister] = reg = (byte)((reg >> 1) | msb);
+            operatingRegister = (byte)((operatingRegister >> 1) | msb);
 
-            SetFlagsRSH(reg);
+            SetFlagsRSH(operatingRegister);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SRA {Registers.RegisterName(operatingRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRA R");
         }
-        private void SRA_RRMEM([ConstantExpected] byte operatingRegister)
+        private void SRA_RRMEM(ref ushort operatingRegister)
         {
-            ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
+            byte result = _memory.Read(operatingRegister);
+            byte carry = (byte)(result & 0x01); // Extract LSB for carry
+            byte msb = (byte)(result & 0x80);   // Preserve sign
+            result = (byte)((result >> 1) | msb);
+            _memory.Write(operatingRegister, result);
+
+            SetFlagsRSH(result);
+            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
+
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRA (RR)");
+        }
+        private void SRA_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
+        {
+            ushort reg = (ushort)(indexAddressingMode + displacement);
 
             byte result = _memory.Read(reg);
             byte carry = (byte)(result & 0x01); // Extract LSB for carry
@@ -224,315 +230,285 @@ namespace Z80Sharp.Processor
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SRA {Registers.RegisterName(operatingRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRA (IR + d)");
         }
-        private void SRA_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
+        private void SRA_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
         {
-            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
-
-            byte result = _memory.Read(reg);
-            byte carry = (byte)(result & 0x01); // Extract LSB for carry
-            byte msb = (byte)(result & 0x80);   // Preserve sign
-            result = (byte)((result >> 1) | msb);
-            _memory.Write(reg, result);
-
-            SetFlagsRSH(result);
-            Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
-
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SRA ({Registers.RegisterName(indexAddressingMode, true)} + d)");
-        }
-        private void SRA_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
-        {
-            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort reg = (ushort)(indexAddressingMode + displacement);
 
             byte result = _memory.Read(reg);
             byte carry = (byte)(result & 0x01);   // Extract LSB for carry
             byte msb = (byte)(result & 0x80);     // Preserve sign
             result = (byte)((result >> 1) | msb);
             _memory.Write(reg, result);
-            Registers.RegisterSet[outputRegister] = result;
+            outputRegister = result;
 
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SRA ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRA (IR + d), R");
         }
 
-        private void SRL_R([ConstantExpected] byte operatingRegister)
+        private void SRL_R(ref byte operatingRegister)
         {
-            byte reg = Registers.RegisterSet[operatingRegister];
-            byte carry = (byte)(reg & 0x01); // Extract LSB
-            Registers.RegisterSet[operatingRegister] = reg = (byte)(reg >> 1);
+            byte carry = (byte)(operatingRegister & 0x01); // Extract LSB
+            operatingRegister = (byte)(operatingRegister >> 1);
 
-            SetFlagsRSH(reg);
+            SetFlagsRSH(operatingRegister);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SRL {Registers.RegisterName(operatingRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRL R");
         }
-        private void SRL_RRMEM([ConstantExpected] byte operatingRegister)
+        private void SRL_RRMEM(ref ushort operatingRegister)
         {
-            ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
-
-            byte result = _memory.Read(reg);
+            byte result = _memory.Read(operatingRegister);
             byte carry = (byte)(result & 0x01); // Extract LSB
             result = (byte)(result >> 1);
-            _memory.Write(reg, result);
+            _memory.Write(operatingRegister, result);
 
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(operatingRegister, true)})");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRL (RR)");
         }
-        private void SRL_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
+        private void SRL_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
-            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            byte result = _memory.Read(reg);
+            byte result = _memory.Read(ird);
             byte carry = (byte)(result & 0x01); // Extract LSB
             result = (byte)(result >> 1);
-            _memory.Write(reg, result);
+            _memory.Write(ird, result);
 
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRL (IR + d)");
         }
-        private void SRL_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
+        private void SRL_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
         {
-            ushort reg = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            byte result = _memory.Read(reg);
+            byte result = _memory.Read(ird);
             byte carry = (byte)(result & 0x01); // Extract LSB
             result = (byte)(result >> 1);
-            _memory.Write(reg, result);
-            Registers.RegisterSet[outputRegister] = result;
+            _memory.Write(ird, result);
+            outputRegister = result;
 
             SetFlagsRSH(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SRL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: SRL (IR + d), R");
         }
 
 
-        private void RLC_R([ConstantExpected] byte operatingRegister)
+        private void RLC_R(ref byte operatingRegister)
         {
-            byte reg = Registers.RegisterSet[operatingRegister];
-            byte carry = (byte)((reg & 0x80) >> 7); // Extract last bit and rotate it
-            Registers.RegisterSet[operatingRegister] = reg = (byte)((reg << 1) | carry);
+            byte carry = (byte)((operatingRegister & 0x80) >> 7); // Extract last bit and rotate it
+            operatingRegister = (byte)((operatingRegister << 1) | carry);
 
-            SetFlagsRotate(reg);
+            SetFlagsRotate(operatingRegister);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RLC {Registers.RegisterName(operatingRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RLC R");
         }
-        private void RLC_RRMEM([ConstantExpected] byte operatingRegister)
+        private void RLC_RRMEM(ref ushort operatingRegister)
         {
-            ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
-
-            byte result = _memory.Read(reg);
+            byte result = _memory.Read(operatingRegister);
             byte carry = (byte)((result & 0x80) >> 7); // Extract last bit and rotate it
             result = (byte)((result << 1) | carry);
-            _memory.Write(reg, result);
+            _memory.Write(operatingRegister, result);
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(operatingRegister, true)})");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RLC (RR)");
         }
-        private void RLC_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
+        private void RLC_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
-            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            byte result = _memory.Read(irdMem);
+            byte result = _memory.Read(ird);
             byte carry = (byte)((result & 0x80) >> 7); // Extract last bit and rotate it
             result = (byte)((result << 1) | carry);
-            _memory.Write(irdMem, result);
+            _memory.Write(ird, result);
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(indexAddressingMode, true)})");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RLC (IR + d)");
         }
-        private void RLC_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
+        private void RLC_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
         {
-            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            byte result = _memory.Read(irdMem);
+            byte result = _memory.Read(ird);
             byte carry = (byte)((result & 0x80) >> 7); // Extract last bit and rotate it
             result = (byte)((result << 1) | carry);
-            _memory.Write(irdMem, result);
-            Registers.RegisterSet[outputRegister] = result;
+            _memory.Write(ird, result);
+            outputRegister = result;
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RLC ({Registers.RegisterName(indexAddressingMode, true)})");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RLC (IR + d), R");
         }
 
-        private void RL_R([ConstantExpected] byte operatingRegister)
+        private void RL_R(ref byte operatingRegister)
         {
-            byte reg = Registers.RegisterSet[operatingRegister];
-            byte carry = (byte)((reg & 0x80) >> 7); // Extract last bit and rotate it
-            Registers.RegisterSet[operatingRegister] = reg = (byte)((reg << 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
+            byte carry = (byte)((operatingRegister & 0x80) >> 7); // Extract last bit and rotate it
+            operatingRegister = (byte)((operatingRegister << 1) | (byte)(Registers.F & 0x01)); // Rotate through old carry flag
 
-            SetFlagsRotate(reg);
+            SetFlagsRotate(operatingRegister);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RL {Registers.RegisterName(operatingRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RL R");
         }
-        private void RL_RRMEM([ConstantExpected] byte operatingRegister)
+        private void RL_RRMEM(ref ushort operatingRegister)
         {
-            ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
-
-            byte result = _memory.Read(reg);
+            byte result = _memory.Read(operatingRegister);
             byte carry = (byte)((result & 0x80) >> 7); // Extract last bit and rotate it
-            result = (byte)((result << 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
-            _memory.Write(reg, result);
+            result = (byte)((result << 1) | (byte)(Registers.F & 0x01)); // Rotate through old carry flag
+            _memory.Write(operatingRegister, result);
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(operatingRegister, true)})");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RL (RR)");
         }
-        private void RL_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
+        private void RL_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
-            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            byte result = _memory.Read(irdMem);
+            byte result = _memory.Read(ird);
             byte carry = (byte)((result & 0x80) >> 7); // Extract last bit and rotate it
-            result = (byte)((result << 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
-            _memory.Write(irdMem, result);
+            result = (byte)((result << 1) | (byte)(Registers.F & 0x01)); // Rotate through old carry flag
+            _memory.Write(ird, result);
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RL (IR + d)");
         }
-        private void RL_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
+        private void RL_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
         {
-            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            byte result = _memory.Read(irdMem);
+            byte result = _memory.Read(ird);
             byte carry = (byte)((result & 0x80) >> 7); // Extract last bit and rotate it
-            result = (byte)((result << 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
-            _memory.Write(irdMem, result);
-            Registers.RegisterSet[outputRegister] = result;
+            result = (byte)((result << 1) | (byte)(Registers.F & 0x01)); // Rotate through old carry flag
+            _memory.Write(ird, result);
+            outputRegister = result;
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RL ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RL (IR + d), R");
         }
 
 
-        private void RRC_R([ConstantExpected] byte operatingRegister)
+        private void RRC_R(ref byte operatingRegister)
         {
-            byte reg = Registers.RegisterSet[operatingRegister];
-            byte carry = (byte)((reg & 0x01) << 7); // Extract first bit and rotate it
-            Registers.RegisterSet[operatingRegister] = reg = (byte)((reg >> 1) | carry);
+            byte carry = (byte)((operatingRegister & 0x01) << 7); // Extract first bit and rotate it
+            operatingRegister = (byte)((operatingRegister >> 1) | carry);
 
-            SetFlagsRotate(reg);
+            SetFlagsRotate(operatingRegister);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is not 0)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RRC {Registers.RegisterName(operatingRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RRC R");
         }
-        private void RRC_RRMEM([ConstantExpected] byte operatingRegister)
+        private void RRC_RRMEM(ref ushort operatingRegister)
         {
-            ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
-
-            byte result = _memory.Read(reg);
+            byte result = _memory.Read(operatingRegister);
             byte carry = (byte)((result & 0x01) << 7); // Extract first bit and rotate it
             result = (byte)((result >> 1) | carry);
-            _memory.Write(reg, result);
+            _memory.Write(operatingRegister, result);
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is not 0)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(operatingRegister, true)})");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RRC (RR)");
         }
-        private void RRC_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
+        private void RRC_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
-            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            byte result = _memory.Read(irdMem);
+            byte result = _memory.Read(ird);
             byte carry = (byte)((result & 0x01) << 7); // Extract first bit and rotate it
             result = (byte)((result >> 1) | carry);
-            _memory.Write(irdMem, result);
+            _memory.Write(ird, result);
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RRC (IR + d)");
         }
-        private void RRC_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
+        private void RRC_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
         {
-            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            byte result = _memory.Read(irdMem);
+            byte result = _memory.Read(ird);
             byte carry = (byte)((result & 0x01) << 7); // Extract first bit and rotate it
             result = (byte)((result >> 1) | carry);
-            _memory.Write(irdMem, result);
-            Registers.RegisterSet[outputRegister] = result;
+            _memory.Write(ird, result);
+            outputRegister = result;
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RRC ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RRC (IR + d), R");
         }
 
-        private void RR_R([ConstantExpected] byte operatingRegister)
+        private void RR_R(ref byte operatingRegister)
         {
-            byte reg = Registers.RegisterSet[operatingRegister];
-            byte carry = (byte)((reg & 0x01) << 7); // Extract first bit and rotate it
-            Registers.RegisterSet[operatingRegister] = reg = (byte)((reg >> 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
+            byte carry = (byte)((operatingRegister & 0x01) << 7); // Extract first bit and rotate it
+            operatingRegister = (byte)((operatingRegister >> 1) | (byte)(Registers.F & 0x01)); // Rotate through old carry flag
 
-            SetFlagsRotate(reg);
+            SetFlagsRotate(operatingRegister);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is not 0)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RR {Registers.RegisterName(operatingRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RR R");
         }
-        private void RR_RRMEM([ConstantExpected] byte operatingRegister)
+        private void RR_RRMEM(ref ushort operatingRegister)
         {
-            ushort reg = Registers.GetR16FromHighIndexer(operatingRegister);
-
-            byte result = _memory.Read(reg);
+            byte result = _memory.Read(operatingRegister);
             byte carry = (byte)((result & 0x01) << 7); // Extract first bit and rotate it
-            result = (byte)((result >> 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
-            _memory.Write(reg, result);
+            result = (byte)((result >> 1) | (byte)(Registers.F & 0x01)); // Rotate through old carry flag
+            _memory.Write(operatingRegister, result);
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry != 0); // (C) (Set if carried LSB is not 0)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(operatingRegister, true)})");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RR (RR)");
         }
-        private void RR_IRDMEM(sbyte displacement, [ConstantExpected] byte indexAddressingMode)
+        private void RR_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
-            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            byte result = _memory.Read(irdMem);
+            byte result = _memory.Read(ird);
             byte carry = (byte)((result & 0x01) << 7); // Extract first bit and rotate it
-            result = (byte)((result >> 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
-            _memory.Write(irdMem, result);
+            result = (byte)((result >> 1) | (byte)(Registers.F & 0x01)); // Rotate through old carry flag
+            _memory.Write(ird, result);
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry > 0); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RR (IR + d)");
         }
-        private void RR_IRDMEM_R(sbyte displacement, [ConstantExpected] byte indexAddressingMode, [ConstantExpected] byte outputRegister) // UNDOCUMENTED
+        private void RR_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
         {
-            ushort irdMem = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + displacement);
+            ushort ird = (ushort)(indexAddressingMode + displacement);
 
-            byte result = _memory.Read(irdMem);
+            byte result = _memory.Read(ird);
             byte carry = (byte)((result & 0x01) << 7); // Extract first bit and rotate it
-            result = (byte)((result >> 1) | (byte)(Registers.RegisterSet[F] & 0x01)); // Rotate through old carry flag
-            _memory.Write(irdMem, result);
-            Registers.RegisterSet[outputRegister] = result;
+            result = (byte)((result >> 1) | (byte)(Registers.F & 0x01)); // Rotate through old carry flag
+            _memory.Write(ird, result);
+            outputRegister = result;
 
             SetFlagsRotate(result);
             Registers.SetFlagConditionally(FlagType.C, carry == 1); // (C) (Set if carried MSB is 1)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RR ({Registers.RegisterName(indexAddressingMode, true)} + d), {Registers.RegisterName(outputRegister)}");
+            LogInstructionExec($"0x{_currentInstruction:X2}: RR (IR + d), R");
         }
     }
 }

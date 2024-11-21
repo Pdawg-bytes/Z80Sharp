@@ -14,26 +14,13 @@ namespace Z80Sharp.Registers
 {
     public unsafe partial struct ProcessorRegisters
     {
-        [InlineArray(24)]
-        public struct RegisterArray
-        {
-            internal byte _element0;
-        }
-        public RegisterArray RegisterSet;
-
         public bool IFF1;
         public bool IFF2;
 
         public InterruptMode InterruptMode;
 
 
-        public ProcessorRegisters()
-        {
-            RegisterSet = new RegisterArray();
-        }
-
-
-        private static readonly Dictionary<byte, string> _highBitRegisterPairs = new()
+        /*private static readonly Dictionary<ref byte, string> _highBitRegisterPairs = new()
         {
             { A, "AF" }, { F, "AF" }, { A_, "AF'" }, { F_, "AF'" },
             { B, "BC" }, { C, "BC" }, { B_, "BC'" }, { C_, "BC'" },
@@ -43,7 +30,7 @@ namespace Z80Sharp.Registers
             { SPi, "SP" }, { PCi, "PC" }
         };
 
-        private static readonly Dictionary<byte, string> _lowBitRegisters = new()
+        private static readonly Dictionary<ref byte, string> _lowBitRegisters = new()
         {
             { A, "A" }, { F, "F" }, { A_, "A'" }, { F_, "F'" },
             { B, "B" }, { C, "C" }, { B_, "B'" }, { C_, "C'" },
@@ -59,7 +46,7 @@ namespace Z80Sharp.Registers
         /// <param name="registerIndexer">The register indexer.</param>
         /// <param name="highBits">True if the register is a pair.</param>
         /// <returns>The name of the register according to the above dictionary.</returns>
-        public string RegisterName([ConstantExpected] byte registerIndexer, bool highBits = false)
+        public string RegisterName(ref byte registerIndexer, bool highBits = false)
         {
             if (highBits && _highBitRegisterPairs.TryGetValue(registerIndexer, out var registerName))
             {
@@ -70,7 +57,7 @@ namespace Z80Sharp.Registers
                 return registerName;
             }
             return highBits ? "UNKNOWN 16BIT REGISTER/PAIR" : "UNKNOWN REGISTER";
-        }
+        }*/
 
         /// <summary>
         /// Gets the name of the current interrupt mode.
@@ -135,26 +122,25 @@ namespace Z80Sharp.Registers
         /// </summary>
         /// <param name="indexer">The indexer of the high register.</param>
         /// <returns>The value inside the 16-bit register pair.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ushort GetR16FromHighIndexer([ConstantExpected] byte indexer) => (ushort)(RegisterSet[indexer] << 8 | RegisterSet[indexer + 1]);
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public ushort GetR16FromHighIndexer(ref byte register) => GetR16FromHighIndexer(register);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void R8Exchange([ConstantExpected] byte reg1, [ConstantExpected] byte reg2)
+        public void R8Exchange(ref byte reg1, ref byte reg2)
         {
-            byte reg1_old = RegisterSet[reg1];
-            RegisterSet[reg1] = RegisterSet[reg2];
-            RegisterSet[reg2] = reg1_old;
+            byte reg1_old = reg1;
+            reg1 = reg2;
+            reg2 = reg1_old;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void R16Exchange([ConstantExpected] byte regPair1, [ConstantExpected] byte regPair2)
+        public void R16Exchange(ref ushort regPair1, ref ushort regPair2)
         {
-            (RegisterSet[regPair1], RegisterSet[regPair2]) = (RegisterSet[regPair2], RegisterSet[regPair1]);
-            (RegisterSet[regPair1 + 1], RegisterSet[regPair2 + 1]) = (RegisterSet[regPair2 + 1], RegisterSet[regPair1 + 1]);
+            (regPair1, regPair2) = (regPair2, regPair1);
         }
 
 
 
-        #region Main register indexers
+        /*#region Main register indexers
         /// <summary>
         /// The B register indexer
         /// </summary>
@@ -290,38 +276,38 @@ namespace Z80Sharp.Registers
         /// </remarks>
         public const byte PCi = 24;
         public const byte PCiL = 25;
-        #endregion
+        #endregion*/
 
 
         #region Flags register operations
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetFlag(FlagType flag)
         {
-            RegisterSet[F] |= (byte)flag;
+            F |= (byte)flag;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ClearFlag(FlagType flag)
         {
-            RegisterSet[F] &= (byte)~flag;
+            F &= (byte)~flag;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsFlagSet(FlagType flag)
         {
-            return (RegisterSet[F] & (byte)flag) == (byte)flag;
+            return (F & (byte)flag) == (byte)flag;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetFlagBits(byte flagMask)
         {
-            RegisterSet[F] |= flagMask;
+            F |= flagMask;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void InvertFlag(FlagType flag)
         {
-            RegisterSet[F] ^= (byte)flag;
+            F ^= (byte)flag;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

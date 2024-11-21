@@ -49,12 +49,12 @@ namespace Z80Sharp.Processor
         /// <param name="operand">The operand which we OR A with.</param>
         private void ORAny(byte operand)
         {
-            Registers.RegisterSet[A] |= operand;
-            byte result = Registers.RegisterSet[A];
+            Registers.A |= operand;
+            byte result = Registers.A;
             Registers.SetFlagConditionally(FlagType.S, (result & 0x80) > 0);  // (S) (check 7th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, result == 0);          // (Z) (set if result is zero)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(result)); // (PV) (set if parity)
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
+            Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             // H, N, and C are unconditionally reset as per page 174 of https://www.zilog.com/docs/z80/um0080.pdf
         }
         /// <summary>
@@ -63,12 +63,12 @@ namespace Z80Sharp.Processor
         /// <param name="operand">The operand which we XOR A with.</param>
         private void XORAny(byte operand)
         {
-            Registers.RegisterSet[A] ^= operand;
-            byte result = Registers.RegisterSet[A];
+            Registers.A ^= operand;
+            byte result = Registers.A;
             Registers.SetFlagConditionally(FlagType.S, (result & 0x80) > 0);  // (S) (check 7th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, result == 0);          // (Z) (set if result is zero)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(result)); // (PV) (set if parity)
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
+            Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             // H, N, and C are unconditionally reset as per page 175 of https://www.zilog.com/docs/z80/um0080.pdf
         }
 
@@ -78,12 +78,12 @@ namespace Z80Sharp.Processor
         /// <param name="operand">The operand which we AND A with.</param>
         private void ANDAny(byte operand)
         {
-            Registers.RegisterSet[A] &= operand;
-            byte result = Registers.RegisterSet[A];
+            Registers.A &= operand;
+            byte result = Registers.A;
             Registers.SetFlagConditionally(FlagType.S, (result & 0x80) > 0);  // (S) (check 7th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, result == 0);          // (Z) (set if result is zero)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(result)); // (PV) (set if parity)
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.C);
+            Registers.F &= (byte)~(FlagType.N | FlagType.C);
             Registers.SetFlag(FlagType.H);
             // H is unconditionally set; N and C are unconditionally reset as per page 172 of https://www.zilog.com/docs/z80/um0080.pdf
         }
@@ -95,7 +95,7 @@ namespace Z80Sharp.Processor
         /// <remarks>A is not modified during this instruction.</remarks>
         private void CMPAny(byte operand)
         {
-            byte regA = Registers.RegisterSet[A];
+            byte regA = Registers.A;
             int diff = regA - operand;
 
             Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) != 0);             // (S) (check 7th bit for sign)
@@ -118,9 +118,9 @@ namespace Z80Sharp.Processor
         /// <param name="operand">The value to add to A.</param>
         private void ADDAny(byte operand)
         {
-            byte regA = Registers.RegisterSet[A];
+            byte regA = Registers.A;
             int sum = regA + operand;
-            Registers.RegisterSet[A] = (byte)sum;
+            Registers.A = (byte)sum;
 
             Registers.SetFlagConditionally(FlagType.S, ((byte)sum & 0x80) != 0);                      // (S) (check 7th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, (byte)sum == 0);                               // (Z) (Set if result is 0)
@@ -162,10 +162,10 @@ namespace Z80Sharp.Processor
         /// <param name="operand">The value to add to A.</param>
         private void ADCAny(byte operand)
         {
-            byte regA = Registers.RegisterSet[A];
-            byte carry = (byte)(Registers.RegisterSet[F] & 0b00000001);
+            byte regA = Registers.A;
+            byte carry = (byte)(Registers.F & 0b00000001);
             int sum = regA + operand + carry;
-            Registers.RegisterSet[A] = (byte)sum;
+            Registers.A = (byte)sum;
 
             Registers.SetFlagConditionally(FlagType.S, (sum & 0x80) != 0);                              // (S) (check 7th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, (byte)sum == 0);                                 // (Z) (Set if result is 0)
@@ -187,7 +187,7 @@ namespace Z80Sharp.Processor
         private void ADCHL(ushort operand)
         {
             ushort regHL = Registers.HL;
-            byte carry = (byte)(Registers.RegisterSet[F] & 0b00000001);
+            byte carry = (byte)(Registers.F & 0b00000001);
             int sum = regHL + operand + carry;
             Registers.HL = (ushort)sum;
 
@@ -213,9 +213,9 @@ namespace Z80Sharp.Processor
         /// <param name="operand">The value to subtract from A.</param>
         private void SUBAny(byte operand)
         {
-            byte regA = Registers.RegisterSet[A];
+            byte regA = Registers.A;
             int diff = regA - operand;
-            Registers.RegisterSet[A] = (byte)diff;
+            Registers.A = (byte)diff;
 
             Registers.SetFlagConditionally(FlagType.S, ((byte)diff & 0x80) != 0);                   // (S) (check 7th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, (byte)diff == 0);                            // (Z) (Set if result is 0)
@@ -236,10 +236,10 @@ namespace Z80Sharp.Processor
         /// <param name="operand">The value to subtract from A.</param>
         private void SBCAny(byte operand)
         {
-            byte regA = Registers.RegisterSet[A];
-            byte carry = (byte)(Registers.RegisterSet[F] & 0b00000001);
+            byte regA = Registers.A;
+            byte carry = (byte)(Registers.F & 0b00000001);
             int diff = regA - operand - carry;
-            Registers.RegisterSet[A] = (byte)diff;
+            Registers.A = (byte)diff;
 
             Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) != 0);                           // (S) (check 7th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, diff == 0);                                    // (Z) (Set if result is 0)
@@ -261,7 +261,7 @@ namespace Z80Sharp.Processor
         private void SBCHL(ushort operand)
         {
             ushort regHL = Registers.HL;
-            byte carry = (byte)(Registers.RegisterSet[F] & 0b00000001);
+            byte carry = (byte)(Registers.F & 0b00000001);
             int diff = Registers.HL - operand - carry;
             Registers.HL = (ushort)diff;
 

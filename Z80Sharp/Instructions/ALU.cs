@@ -45,7 +45,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
 
-            //LogInstructionExec("0x27: DAA");
+            LogInstructionExec("0x27: DAA");
         }*/
         // Reference: https://stackoverflow.com/questions/8119577/z80-daa-instruction
         private void DAA()
@@ -54,10 +54,10 @@ namespace Z80Sharp.Processor
 
             t = 0;
 
-            if (Registers.IsFlagSet(FlagType.H) || ((A & 0xF) > 9))
+            if (Registers.IsFlagSet(FlagType.H) || ((Registers.A & 0xF) > 9))
                 t++;
 
-            if (Registers.IsFlagSet(FlagType.C) || (A > 0x99))
+            if (Registers.IsFlagSet(FlagType.C) || (Registers.A > 0x99))
             {
                 t += 2;
                 Registers.SetFlag(FlagType.C);
@@ -68,39 +68,39 @@ namespace Z80Sharp.Processor
             else
             {
                 if (Registers.IsFlagSet(FlagType.N) && Registers.IsFlagSet(FlagType.H))
-                    Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) < 6);
+                    Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) < 6);
                 else
-                    Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) >= 0x0A);
+                    Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) >= 0x0A);
             }
 
             switch (t)
             {
                 case 1:
-                    Registers.RegisterSet[A] += Registers.IsFlagSet(FlagType.N) ? (byte)0xFA : (byte)0x06; // -6:6
+                    Registers.A += Registers.IsFlagSet(FlagType.N) ? (byte)0xFA : (byte)0x06; // -6:6
                     break;
                 case 2:
-                    Registers.RegisterSet[A] += Registers.IsFlagSet(FlagType.N) ? (byte)0xA0 : (byte)0x60; // -0x60:0x60
+                    Registers.A += Registers.IsFlagSet(FlagType.N) ? (byte)0xA0 : (byte)0x60; // -0x60:0x60
                     break;
                 case 3:
-                    Registers.RegisterSet[A] += Registers.IsFlagSet(FlagType.N) ? (byte)0x9A : (byte)0x66; // -0x66:0x66
+                    Registers.A += Registers.IsFlagSet(FlagType.N) ? (byte)0x9A : (byte)0x66; // -0x66:0x66
                     break;
             }
 
-            Registers.SetFlagConditionally(FlagType.S, (Registers.RegisterSet[A] & 0x80) != 0);             // (S)  (Set if negative)
-            Registers.SetFlagConditionally(FlagType.Z, Registers.RegisterSet[A] == 0);                      // (Z)  (Set if result is zero)
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity(Registers.RegisterSet[A]));             // (PV) (Set if bit parity is even)
-            Registers.SetFlagConditionally(FlagType.X, (Registers.RegisterSet[A] & 1 << 5) > 0);            // (X)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (Registers.RegisterSet[A] & 1 << 3) > 0);            // (Y)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.S, (Registers.A & 0x80) != 0);             // (S)  (Set if negative)
+            Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);                      // (Z)  (Set if result is zero)
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(Registers.A));             // (PV) (Set if bit parity is even)
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 1 << 5) > 0);            // (X)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 1 << 3) > 0);            // (Y)  (Undocumented flag)
         }
 
         private void NEG()
         {
-            byte value = Registers.RegisterSet[A];
+            byte value = Registers.A;
             int result = 0 - value;
-            Registers.RegisterSet[A] = (byte)result;
+            Registers.A = (byte)result;
 
             Registers.SetFlagConditionally(FlagType.S, (result & 0x80) != 0);           // (S)  (Set if result is negative)
-            Registers.SetFlagConditionally(FlagType.Z, Registers.RegisterSet[A] == 0);  // (Z)  (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);  // (Z)  (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.H, (value & 0x0F) != 0);            // (H)  (Set if borrow from bit 4)
             Registers.SetFlagConditionally(FlagType.PV, value == 0x80);                 // (PV) (Set if A == -128 (sbyte.Min)
             Registers.SetFlagConditionally(FlagType.C, value != 0);                     // (C)  (Set if borrow occured)
@@ -109,190 +109,187 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (result & 0x20) > 0);            // (X)  (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (result & 0x08) > 0);            // (Y)  (Undocumented flag)
 
-            //LogInstructionExec("0x44: NEG");
+            LogInstructionExec("0x44: NEG");
         }
 
         #region INC instructions (RR, R, (HL), (IR + d))
-        private void INC_RR([ConstantExpected] byte operatingRegister)
+        private void INC_RR(ref ushort operatingRegister)
         {
-            ushort value = (ushort)(Registers.GetR16FromHighIndexer(operatingRegister) + 1);
-            Registers.RegisterSet[operatingRegister] = value.GetUpperByte();
-            Registers.RegisterSet[operatingRegister + 1] = value.GetLowerByte();
-            //LogInstructionExec($"0x{_currentInstruction:X2}: INC {Registers.RegisterName(operatingRegister, true)}");
+            ushort value = (ushort)(operatingRegister + 1);
+            operatingRegister = value;
+            LogInstructionExec($"0x{_currentInstruction:X2}: INC RR");
         }
-        private void INC_R([ConstantExpected] byte operatingRegister)
+        private void INC_R(ref byte operatingRegister)
         {
-            Registers.RegisterSet[operatingRegister] = INCAny(Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: INC {Registers.RegisterName(operatingRegister)}");
+            operatingRegister = INCAny(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: INC R");
         }
         private void INC_HLMEM()
         {
             _memory.Write(Registers.HL, INCAny(_memory.Read(Registers.HL)));
-            //LogInstructionExec($"0x34: INC (HL)");
+            LogInstructionExec($"0x34: INC (HL)");
         }
-        private void INC_IRDMEM([ConstantExpected] byte indexAddressingMode)
+        private void INC_IRDMEM(ref ushort indexAddressingMode)
         {
-            ushort addr = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch());
+            ushort addr = (ushort)(indexAddressingMode + (sbyte)Fetch());
             _memory.Write(addr, INCAny(_memory.Read(addr)));
-            //LogInstructionExec($"0x34: INC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            LogInstructionExec($"0x34: INC (IR + d)");
         }
         #endregion
 
         #region DEC instructions (RR, R, (HL), (IR + d))
-        private void DEC_RR([ConstantExpected] byte operatingRegister)
+        private void DEC_RR(ref ushort operatingRegister)
         {
-            ushort value = (ushort)(Registers.GetR16FromHighIndexer(operatingRegister) - 1);
-            Registers.RegisterSet[operatingRegister] = value.GetUpperByte();
-            Registers.RegisterSet[operatingRegister + 1] = value.GetLowerByte();
-            //LogInstructionExec($"0x{_currentInstruction:X2}: DEC {Registers.RegisterName(operatingRegister, true)}");
+            operatingRegister = (ushort)(operatingRegister - 1);
+            LogInstructionExec($"0x{_currentInstruction:X2}: DEC RR");
         }
-        private void DEC_R([ConstantExpected] byte operatingRegister)
+        private void DEC_R(ref byte operatingRegister)
         {
-            Registers.RegisterSet[operatingRegister] = DECAny(Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: DEC {Registers.RegisterName(operatingRegister)}");
+            operatingRegister = DECAny(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: DEC R");
         }
         private void DEC_HLMEM()
         {
             _memory.Write(Registers.HL, DECAny(_memory.Read(Registers.HL)));
-            //LogInstructionExec($"0x35: DEC (HL)");
+            LogInstructionExec($"0x35: DEC (HL)");
         }
-        private void DEC_IRDMEM([ConstantExpected] byte indexAddressingMode)
+        private void DEC_IRDMEM(ref ushort indexAddressingMode)
         {
-            ushort addr = (ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch());
+            ushort addr = (ushort)(indexAddressingMode + (sbyte)Fetch());
             _memory.Write(addr, DECAny(_memory.Read(addr)));
-            //LogInstructionExec($"0x35: DEC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            LogInstructionExec($"0x35: DEC (IR + d)");
         }
         #endregion
 
 
         #region OR instructions (R, N, (RR), (IR + d))
-        private void OR_R([ConstantExpected] byte operatingRegister)
+        private void OR_R(ref byte operatingRegister)
         {
-            ORAny(Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: OR {Registers.RegisterName(operatingRegister)}");
+            ORAny(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: OR R");
         }
         private void OR_N()
         {
             ORAny(Fetch());
-            //LogInstructionExec($"0xF6: OR N:0x{FetchLast():X2}");
+            LogInstructionExec($"0xF6: OR N:0x{FetchLast():X2}");
         }
-        private void OR_RRMEM([ConstantExpected] byte operatingRegister)
+        private void OR_RRMEM(ref ushort operatingRegister)
         {
-            ORAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: OR ({Registers.RegisterName(operatingRegister, true)})");
+            ORAny(_memory.Read(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction:X2}: OR (RR)");
         }
-        private void OR_IRDMEM([ConstantExpected] byte indexAddressingMode)
+        private void OR_IRDMEM(ref ushort indexAddressingMode)
         {
-            ORAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: OR ({Registers.RegisterName(indexAddressingMode, true)})");
+            ORAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
+            LogInstructionExec($"0x{_currentInstruction:X2}: OR (IR + d)");
         }
         #endregion
 
         #region XOR instructions (R, N, (RR), (IR + d))
-        private void XOR_R([ConstantExpected] byte operatingRegister)
+        private void XOR_R(ref byte operatingRegister)
         {
-            XORAny(Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: XOR {Registers.RegisterName(operatingRegister)}");
+            XORAny(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: XOR R");
         }
         private void XOR_N()
         {
             XORAny(Fetch());
-            //LogInstructionExec($"0xEE: XOR N:0x{FetchLast():X2}");
+            LogInstructionExec($"0xEE: XOR N:0x{FetchLast():X2}");
         }
-        private void XOR_RRMEM([ConstantExpected] byte operatingRegister)
+        private void XOR_RRMEM(ref ushort operatingRegister)
         {
-            XORAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: XOR ({Registers.RegisterName(operatingRegister, true)})");
+            XORAny(_memory.Read(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction:X2}: XOR (RR)");
         }
-        private void XOR_IRDMEM([ConstantExpected] byte indexAddressingMode)
+        private void XOR_IRDMEM(ref ushort indexAddressingMode)
         {
-            XORAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: XOR ({Registers.RegisterName(indexAddressingMode, true)})");
+            XORAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
+            LogInstructionExec($"0x{_currentInstruction:X2}: XOR (IR + d)");
         }
         #endregion
 
 
         #region AND instructions (R, N, (RR), (IR + d))
-        private void AND_R([ConstantExpected] byte operatingRegister)
+        private void AND_R(ref byte operatingRegister)
         {
-            ANDAny(Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: AND {Registers.RegisterName(operatingRegister)}");
+            ANDAny(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: AND R");
         }
         private void AND_N()
         {
             ANDAny(Fetch());
-            //LogInstructionExec($"0xE6: XOR N:0x{FetchLast():X2}");
+            LogInstructionExec($"0xE6: XOR N:0x{FetchLast():X2}");
         }
-        private void AND_RRMEM([ConstantExpected] byte operatingRegister)
+        private void AND_RRMEM(ref ushort operatingRegister)
         {
-            ANDAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: AND ({Registers.RegisterName(operatingRegister, true)})");
+            ANDAny(_memory.Read(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction:X2}: AND (RR)");
         }
-        private void AND_IRDMEM([ConstantExpected] byte indexAddressingMode)
+        private void AND_IRDMEM(ref ushort indexAddressingMode)
         {
-            ANDAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: AND ({Registers.RegisterName(indexAddressingMode, true)})");
+            ANDAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
+            LogInstructionExec($"0x{_currentInstruction:X2}: AND (IR + d)");
         }
         #endregion
 
 
         #region CP instructions (R, N, (RR), (IR + d))
-        private void CMP_R([ConstantExpected] byte operatingRegister)
+        private void CMP_R(ref byte operatingRegister)
         {
-            CMPAny(Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: CP {Registers.RegisterName(operatingRegister)}");
+            CMPAny(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: CP R");
         }
         private void CMP_N()
         {
             CMPAny(Fetch());
-            //LogInstructionExec($"0xFE: CP N:0x{FetchLast():X2}");
+            LogInstructionExec($"0xFE: CP N:0x{FetchLast():X2}");
         }
-        private void CMP_RRMEM([ConstantExpected] byte operatingRegister)
+        private void CMP_RRMEM(ref ushort operatingRegister)
         {
-            CMPAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: CP ({Registers.RegisterName(operatingRegister, true)})");
+            CMPAny(_memory.Read(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction:X2}: CP (RR)");
         }
-        private void CMP_IRDMEM([ConstantExpected] byte indexAddressingMode)
+        private void CMP_IRDMEM(ref ushort indexAddressingMode)
         {
-            CMPAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: CP ({Registers.RegisterName(indexAddressingMode, true)})");
+            CMPAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
+            LogInstructionExec($"0x{_currentInstruction:X2}: CP (IR + d)");
         }
 
         private void CPI()
         {
             byte hlMem = _memory.Read(Registers.HL);
-            sbyte diff = (sbyte)(Registers.RegisterSet[A] - hlMem);
+            sbyte diff = (sbyte)(Registers.A - hlMem);
 
             Registers.HL++;
             Registers.BC--;
 
             Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
             Registers.SetFlagConditionally(FlagType.Z, diff == 0);
-            Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) < (hlMem & 0x0F));
+            Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) < (hlMem & 0x0F));
             Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
             Registers.SetFlag(FlagType.N);
 
-            int undoc = Registers.RegisterSet[A] - hlMem - (Registers.RegisterSet[F] & (byte)FlagType.H);
+            int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
 
-            //LogInstructionExec("0xA1: CPI");
+            LogInstructionExec("0xA1: CPI");
         }
         private void CPIR()
         {
             byte hlMem = _memory.Read(Registers.HL);
-            sbyte diff = (sbyte)(Registers.RegisterSet[A] - hlMem);
+            sbyte diff = (sbyte)(Registers.A - hlMem);
 
             Registers.HL++;
             Registers.BC--;
 
             Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
             Registers.SetFlagConditionally(FlagType.Z, diff == 0);
-            Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) < (hlMem & 0x0F));
+            Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) < (hlMem & 0x0F));
             Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
             Registers.SetFlag(FlagType.N);
 
-            int undoc = Registers.RegisterSet[A] - hlMem - (Registers.RegisterSet[F] & (byte)FlagType.H);
+            int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
 
@@ -301,43 +298,43 @@ namespace Z80Sharp.Processor
                 Registers.PC -= 2;
             }
 
-            //LogInstructionExec("0xB1: CPIR");
+            LogInstructionExec("0xB1: CPIR");
         }
         private void CPD()
         {
             byte hlMem = _memory.Read(Registers.HL);
-            sbyte diff = (sbyte)(Registers.RegisterSet[A] - hlMem);
+            sbyte diff = (sbyte)(Registers.A - hlMem);
 
             Registers.HL--;
             Registers.BC--;
 
             Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
             Registers.SetFlagConditionally(FlagType.Z, diff == 0);
-            Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) < (hlMem & 0x0F));
+            Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) < (hlMem & 0x0F));
             Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
             Registers.SetFlag(FlagType.N);
 
-            int undoc = Registers.RegisterSet[A] - hlMem - (Registers.RegisterSet[F] & (byte)FlagType.H);
+            int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
 
-            //LogInstructionExec("0xA9: CPI");
+            LogInstructionExec("0xA9: CPI");
         }
         private void CPDR()
         {
             byte hlMem = _memory.Read(Registers.HL);
-            sbyte diff = (sbyte)(Registers.RegisterSet[A] - hlMem);
+            sbyte diff = (sbyte)(Registers.A - hlMem);
 
             Registers.HL--;
             Registers.BC--;
 
             Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
             Registers.SetFlagConditionally(FlagType.Z, diff == 0);
-            Registers.SetFlagConditionally(FlagType.H, (Registers.RegisterSet[A] & 0x0F) < (hlMem & 0x0F));
+            Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) < (hlMem & 0x0F));
             Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
             Registers.SetFlag(FlagType.N);
 
-            int undoc = Registers.RegisterSet[A] - hlMem - (Registers.RegisterSet[F] & (byte)FlagType.H);
+            int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
 
@@ -346,124 +343,122 @@ namespace Z80Sharp.Processor
                 Registers.PC -= 2;
             }
 
-            //LogInstructionExec("0xB9: CPIR");
+            LogInstructionExec("0xB9: CPIR");
         }
         #endregion
 
 
         #region ADD instructions ((A, R), (A, N), (A, (RR)), (A, (IR + d)), (HL, RR), (IR, RR))
-        private void ADD_A_R([ConstantExpected] byte operatingRegister)
+        private void ADD_A_R(ref byte operatingRegister)
         {
-            ADDAny(Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: ADD {Registers.RegisterName(operatingRegister)}");
+            ADDAny(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADD R");
         }
         private void ADD_A_N()
         {
             ADDAny(Fetch());
-            //LogInstructionExec($"0xC6: ADD N:0x{FetchLast():X2}");
+            LogInstructionExec($"0xC6: ADD N:0x{FetchLast():X2}");
         }
-        private void ADD_A_RRMEM([ConstantExpected] byte operatingRegister)
+        private void ADD_A_RRMEM(ref ushort operatingRegister)
         {
-            ADDAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: ADD ({Registers.RegisterName(operatingRegister, true)})");
+            ADDAny(_memory.Read(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADD (RR)");
         }
-        private void ADD_A_IRDMEM([ConstantExpected] byte indexAddressingMode)
+        private void ADD_A_IRDMEM(ref ushort indexAddressingMode)
         {
-            ADDAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: ADD ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            ADDAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADD (IR + d)");
         }
-        private void ADD_HL_RR([ConstantExpected] byte operatingRegister)
+        private void ADD_HL_RR(ref ushort operatingRegister)
         {
-            Registers.HL = ADDWord(Registers.HL, Registers.GetR16FromHighIndexer(operatingRegister));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: ADD HL, {Registers.RegisterName(operatingRegister, true)}");
+            Registers.HL = ADDWord(Registers.HL, operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADD HL, RR");
         }
-        private void ADD_IR_RR([ConstantExpected] byte mode, [ConstantExpected] byte operatingRegister)
+        private void ADD_IR_RR(ref ushort mode, ref ushort operatingRegister)
         {
-            ushort value = ADDWord(Registers.GetR16FromHighIndexer(mode), Registers.GetR16FromHighIndexer(operatingRegister));
-            Registers.RegisterSet[mode] = value.GetUpperByte();
-            Registers.RegisterSet[mode + 1] = value.GetLowerByte();
-            //LogInstructionExec($"0x{_currentInstruction:X2}: ADD {Registers.RegisterName(mode, true)}, {Registers.RegisterName(operatingRegister, true)}");
+            mode = ADDWord(mode, operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADD IR, RR");
         }
         #endregion
 
         #region ADC instructions ((A, R), (A, N), (A, (RR)), (A, (IR + d)), (HL, RR))
-        private void ADC_A_R(byte operatingRegister)
+        private void ADC_A_R(ref byte operatingRegister)
         {
-            ADCAny(Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: ADC {Registers.RegisterName(operatingRegister)}");
+            ADCAny(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADC R");
         }
         private void ADC_A_N()
         {
             ADCAny(Fetch());
-            //LogInstructionExec($"0xCE: ADC N:0x{FetchLast():X2}");
+            LogInstructionExec($"0xCE: ADC N:0x{FetchLast():X2}");
         }
-        private void ADC_A_RRMEM([ConstantExpected] byte operatingRegister)
+        private void ADC_A_RRMEM(ref ushort operatingRegister)
         {
-            ADCAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: ADC ({Registers.RegisterName(operatingRegister, true)})");
+            ADCAny(_memory.Read(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADC (RR)");
         }
-        private void ADC_A_IRDMEM([ConstantExpected] byte indexAddressingMode)
+        private void ADC_A_IRDMEM(ref ushort indexAddressingMode)
         {
-            ADCAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: ADC ({Registers.RegisterName(indexAddressingMode, true)} + d)");
+            ADCAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADC (IR + d)");
         }
-        private void ADC_HL_RR([ConstantExpected] byte operatingRegister)
+        private void ADC_HL_RR(ref ushort operatingRegister)
         {
-            ADCHL(Registers.GetR16FromHighIndexer(operatingRegister));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: ADC HL, {Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4}");
+            ADCHL(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: ADC HL, RR");
         }
         #endregion
 
 
         #region SUB instructions (R, N, (RR), (IR + d))
-        private void SUB_R([ConstantExpected] byte operatingRegister)
+        private void SUB_R(ref byte operatingRegister)
         {
-            SUBAny(Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SUB {Registers.RegisterName(operatingRegister)}");
+            SUBAny(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: SUB R");
         }
         private void SUB_N()
         {
             SUBAny(Fetch());
-            //LogInstructionExec($"0xD6: SUB N:0x{FetchLast():X2}");
+            LogInstructionExec($"0xD6: SUB N:0x{FetchLast():X2}");
         }
-        private void SUB_RRMEM([ConstantExpected] byte operatingRegister)
+        private void SUB_RRMEM(ref ushort operatingRegister)
         {
-            SUBAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SUB ({Registers.RegisterName(operatingRegister, true)})");
+            SUBAny(_memory.Read(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction:X2}: SUB (RR)");
         }
-        private void SUB_IRDMEM([ConstantExpected] byte indexAddressingMode)
+        private void SUB_IRDMEM(ref ushort indexAddressingMode)
         {
-            SUBAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SUB ({Registers.RegisterName(indexAddressingMode, true)})");
+            SUBAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
+            LogInstructionExec($"0x{_currentInstruction:X2}: SUB (IR + d)");
         }
         #endregion
 
         #region SBC instructions (A, R), (A, N), (A, (RR)), (A, (IR + d)), (HL, RR)
-        private void SBC_A_R([ConstantExpected] byte operatingRegister)
+        private void SBC_A_R(ref byte operatingRegister)
         {
-            SBCAny(Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SBC {Registers.RegisterName(operatingRegister)}");
+            SBCAny(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: SBC R");
         }
         private void SBC_A_N()
         {
             SBCAny(Fetch());
-            //LogInstructionExec($"0xDE: SBC N:0x{FetchLast():X2}");
+            LogInstructionExec($"0xDE: SBC N:0x{FetchLast():X2}");
         }
-        private void SBC_A_RRMEM([ConstantExpected] byte operatingRegister)
+        private void SBC_A_RRMEM(ref ushort operatingRegister)
         {
-            SBCAny(_memory.Read(Registers.GetR16FromHighIndexer(operatingRegister)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SBC ({Registers.RegisterName(operatingRegister, true)})");
+            SBCAny(_memory.Read(operatingRegister));
+            LogInstructionExec($"0x{_currentInstruction:X2}: SBC (RR)");
         }
-        private void SBC_A_IRDMEM([ConstantExpected] byte indexAddressingMode)
+        private void SBC_A_IRDMEM(ref ushort indexAddressingMode)
         {
-            SBCAny(_memory.Read((ushort)(Registers.GetR16FromHighIndexer(indexAddressingMode) + (sbyte)Fetch())));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SUB ({Registers.RegisterName(indexAddressingMode, true)})");
+            SBCAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
+            LogInstructionExec($"0x{_currentInstruction:X2}: SUB (IR + d)");
         }
 
-        private void SBC_HL_RR([ConstantExpected] byte operatingRegister)
+        private void SBC_HL_RR(ref ushort operatingRegister)
         {
-            SBCHL(Registers.GetR16FromHighIndexer(operatingRegister));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SBC HL, {Registers.RegisterName(operatingRegister, true)}:0x{Registers.GetR16FromHighIndexer(operatingRegister):X4}");
+            SBCHL(operatingRegister);
+            LogInstructionExec($"0x{_currentInstruction:X2}: SBC HL, RR");
         }
         #endregion
     }

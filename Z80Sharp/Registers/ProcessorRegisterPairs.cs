@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
+﻿/*using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Z80Sharp.Interfaces;
 
 namespace Z80Sharp.Registers
 {
-    public unsafe partial struct ProcessorRegisters
+    public unsafe partial struct Registers
     {
         #region Register pairs
         /// <summary>
@@ -145,7 +145,7 @@ namespace Z80Sharp.Registers
                 RegisterSet[PCi] = (byte)(value >> 8);
                 RegisterSet[PCiL] = (byte)value;
             }
-        }*/
+        }
         public ushort PC;
         #endregion
 
@@ -177,4 +177,4 @@ namespace Z80Sharp.Registers
         }
         #endregion
     }
-}
+}*/

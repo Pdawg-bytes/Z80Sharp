@@ -38,7 +38,7 @@ namespace Z80Sharp.Logging
 
         public void Log(LogSeverity severity, object message)
         {
-            SeverityData severityData = _severityDict[severity];
+            /*SeverityData severityData = _severityDict[severity];
 
             if (_useColors)
             {
@@ -61,9 +61,9 @@ namespace Z80Sharp.Logging
                 LogGenerated?.Invoke(this, new LogGeneratedEventArgs(severity, _logMessageBuilder.ToString()));
 
                 _logMessageBuilder.Clear();
-            }
+            }*/
 
-            //LogGenerated?.Invoke(this, new LogGeneratedEventArgs(severity, (string)message));
+            LogGenerated?.Invoke(this, new LogGeneratedEventArgs(severity, (string)message));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

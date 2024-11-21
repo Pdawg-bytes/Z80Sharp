@@ -29,7 +29,7 @@ namespace Z80Sharp.Processor
         {
             Registers.SetFlagConditionally(FlagType.S, (result & 0x80) != 0); // (S) Sign flag
             Registers.SetFlagConditionally(FlagType.Z, result == 0);          // (Z) Zero flag
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);     // (N, H) Reset unconditionally
+            Registers.F &= (byte)~(FlagType.N | FlagType.H);     // (N, H) Reset unconditionally
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(result)); // (PV) Parity flag
 
             Registers.SetFlagConditionally(FlagType.X, (result & 0x20) != 0); // (X) Bit 5
@@ -40,7 +40,7 @@ namespace Z80Sharp.Processor
         {
             Registers.SetFlagConditionally(FlagType.S, (result & 0x80) != 0); // (S) Sign flag
             Registers.SetFlagConditionally(FlagType.Z, result == 0);          // (Z) Zero flag
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);     // (N, H) Reset unconditionally
+            Registers.F &= (byte)~(FlagType.N | FlagType.H);     // (N, H) Reset unconditionally
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(result)); // (PV) Parity flag
 
             Registers.SetFlagConditionally(FlagType.X, (result & 0x20) != 0); // (X) Bit 5
@@ -50,7 +50,7 @@ namespace Z80Sharp.Processor
         {
             Registers.SetFlagConditionally(FlagType.S, (result & 0x80) != 0); // (S) Sign flag
             Registers.SetFlagConditionally(FlagType.Z, result == 0);          // (Z) Zero flag
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);     // (N, H) Reset unconditionally
+            Registers.F &= (byte)~(FlagType.N | FlagType.H);     // (N, H) Reset unconditionally
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(result)); // (PV) Parity flag
 
             Registers.SetFlagConditionally(FlagType.X, (result & 0x20) != 0); // (X) Bit 5

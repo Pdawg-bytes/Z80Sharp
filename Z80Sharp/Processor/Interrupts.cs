@@ -54,7 +54,7 @@ namespace Z80Sharp.Processor
                 case InterruptMode.IM2:
                     PUSH_PC_SILENT();
                     byte interruptVector = _dataBus.Data;
-                    ushort vectorAddress = (ushort)((Registers.RegisterSet[I] << 8) + interruptVector);
+                    ushort vectorAddress = (ushort)((Registers.I << 8) + interruptVector);
                     Registers.PC = _memory.ReadWord(vectorAddress);
                     LogInterrupt("MI Mode 2");
                     break;
