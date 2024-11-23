@@ -86,14 +86,14 @@ namespace Z80Sharp.Processor
         // Return instructions
         private void RET()
         {
-            POP_PC_SILENT();
+            POP_PC();
             //LogInstructionExec("0xC9: RET");
         }
         private void RET_CC([ConstantExpected] byte flagCondition)
         {
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
             {
-                POP_PC_SILENT();
+                POP_PC();
                 //LogInstructionExec($"0x{_currentInstruction:X2}: RET {Registers.JumpConditionName(flagCondition)}");
             }
             else
@@ -103,13 +103,13 @@ namespace Z80Sharp.Processor
         }
         private void RETN()
         {
-            POP_PC_SILENT();
+            POP_PC();
             Registers.IFF1 = Registers.IFF2;
             //LogInstructionExec("0x45: RETN");
         }
         private void RETI()
         {
-            POP_PC_SILENT();
+            POP_PC();
             // signal device triggering NMI that routine has completed
             //LogInstructionExec("0x4D: RETI");
         }
@@ -117,13 +117,13 @@ namespace Z80Sharp.Processor
 
         private void RST_HH([ConstantExpected] byte pcStart)
         {
-            PUSH_PC_SILENT();
+            PUSH_PC();
             Registers.PC = pcStart;
             //LogInstructionExec($"0x{_currentInstruction:X2}: RST 0x{pcStart:X4}");
         }
         private void RST_HH_SILENT(byte pcStart)
         {
-            PUSH_PC_SILENT();
+            PUSH_PC();
             Registers.PC = pcStart;
         }
 
@@ -131,7 +131,7 @@ namespace Z80Sharp.Processor
         private void CALL_NN()
         {
             ushort jumpTo = FetchImmediateWord();
-            PUSH_PC_SILENT();
+            PUSH_PC();
             Registers.PC = jumpTo;
             //LogInstructionExec($"0x{_currentInstruction:X2}: CALL NN:0x{jumpTo:X4}");
         }
@@ -140,7 +140,7 @@ namespace Z80Sharp.Processor
             ushort jumpTo = FetchImmediateWord();
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
             {
-                PUSH_PC_SILENT();
+                PUSH_PC();
                 Registers.PC = jumpTo;
                 //LogInstructionExec($"0x{_currentInstruction:X2}: CALL {Registers.JumpConditionName(flagCondition)}, NN:{jumpTo:X4}");
             }

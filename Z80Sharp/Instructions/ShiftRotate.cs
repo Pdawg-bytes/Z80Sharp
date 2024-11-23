@@ -62,12 +62,12 @@ namespace Z80Sharp.Processor
             _memory.Write(Registers.HL, (byte)((memoryValue >> 4) | (Registers.A << 4))); // Combine high of (HL) w/ low of A
             Registers.A = regA = (byte)((Registers.A & 0xF0) | (memoryValue & 0x0F));     // Combine high of A w/ low of (HL)
 
-            Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) > 0);              // (S) (Set if negative)
-            Registers.SetFlagConditionally(FlagType.Z, regA == 0);                      // (Z) (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) > 0);  // (S) (Set if negative)
+            Registers.SetFlagConditionally(FlagType.Z, regA == 0);          // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(regA)); // (PV) (Set if bit parity is even)
             Registers.F &= (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
-            Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);  // (X)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);  // (Y)  (Undocumented flag)
             //LogInstructionExec("0x67: RRD");
         }
         private void RLD()

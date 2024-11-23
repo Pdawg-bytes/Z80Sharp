@@ -9,7 +9,6 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ExecuteMiscInstruction()
         {
-            //LogInstructionDecode("MISC table");
             byte instruction = Fetch();
             _currentInstruction = instruction;
             switch (instruction)

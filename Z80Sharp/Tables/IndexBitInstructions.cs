@@ -10,7 +10,6 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ExecuteIndexRBitInstruction(ref ushort indexAddressingMode)
         {
-            //LogInstructionDecode($"INRB decoded: 0x{_currentInstruction:X2}");
             sbyte displacement = (sbyte)Fetch(); // Displacement comes before opcode in index bit
             byte instruction = Fetch();          // So we fetch actual opcode after displacement
             _currentInstruction = instruction;

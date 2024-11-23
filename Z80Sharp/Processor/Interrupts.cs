@@ -25,7 +25,7 @@ namespace Z80Sharp.Processor
         {
             UnhaltIfHalted();
 
-            PUSH_PC_SILENT();
+            PUSH_PC();
             Registers.IFF1 = Registers.IFF2 = false;
             Registers.PC = 0x0066;
             LogInterrupt("NMI");
@@ -47,12 +47,12 @@ namespace Z80Sharp.Processor
                         break;
                     }
                 case InterruptMode.IM1:
-                    PUSH_PC_SILENT();
+                    PUSH_PC();
                     Registers.PC = 0x0038;
                     LogInterrupt("MI Mode 1");
                     break;
                 case InterruptMode.IM2:
-                    PUSH_PC_SILENT();
+                    PUSH_PC();
                     byte interruptVector = _dataBus.Data;
                     ushort vectorAddress = (ushort)((Registers.I << 8) + interruptVector);
                     Registers.PC = _memory.ReadWord(vectorAddress);

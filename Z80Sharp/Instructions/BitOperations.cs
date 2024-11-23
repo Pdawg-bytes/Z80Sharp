@@ -55,25 +55,25 @@ namespace Z80Sharp.Processor
 
         private void RES_B_R([ConstantExpected] byte bit, ref byte operatingRegister)
         {
-            operatingRegister &= (byte)~(1 << bit); // Clear bit n of R
+            operatingRegister &= (byte)~(1 << bit);
             //LogInstructionExec($"0x{_currentInstruction:X2}: RES {bit}, R");
         }
         private void RES_B_RRMEM([ConstantExpected] byte bit, ref ushort operatingRegister)
         {
-            _memory.Write(operatingRegister, (byte)(_memory.Read(operatingRegister) & (byte)~(1 << bit))); // Clear bit n of (RR)
+            _memory.Write(operatingRegister, (byte)(_memory.Read(operatingRegister) & (byte)~(1 << bit)));
             //LogInstructionExec($"0x{_currentInstruction:X2}: RES {bit}, (RR)");
         }
         private void RES_B_IRDMEM([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
-            _memory.Write(ird, (byte)(_memory.Read(ird) & (byte)~(1 << bit))); // Clear bit n of (RR)
+            _memory.Write(ird, (byte)(_memory.Read(ird) & (byte)~(1 << bit)));
             //LogInstructionExec($"0x{_currentInstruction:X2}: RES {bit}, (IR + d)");
         }
         private void RES_B_IRDMEM_R([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
             byte result = (byte)(_memory.Read(ird) & (byte)~(1 << bit));
-            _memory.Write(ird, result); // Clear bit n of (RR)
+            _memory.Write(ird, result);
             outputRegister = result;
             //LogInstructionExec($"0x{_currentInstruction:X2}: RES {bit}, (IR + d), R");
         }

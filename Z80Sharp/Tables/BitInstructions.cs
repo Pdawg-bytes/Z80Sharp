@@ -8,8 +8,6 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ExecuteBitInstruction()
         {
-            //LogInstructionDecode("BIT table");
-
             byte instruction = Fetch();
             _currentInstruction = instruction;
             switch (instruction)
@@ -139,8 +137,8 @@ namespace Z80Sharp.Processor
                 case 0x69: BIT_B_R(5, ref Registers.C); break;      // BIT 5, C
                 case 0x6A: BIT_B_R(5, ref Registers.D); break;      // BIT 5, D
                 case 0x6B: BIT_B_R(5, ref Registers.E); break;      // BIT 5, E
-                case 0x6D: BIT_B_R(5, ref Registers.H); break;      // BIT 5, H
-                case 0x6C: BIT_B_R(5, ref Registers.L); break;      // BIT 5, L
+                case 0x6C: BIT_B_R(5, ref Registers.H); break;      // BIT 5, H
+                case 0x6D: BIT_B_R(5, ref Registers.L); break;      // BIT 5, L
                 case 0x6E: BIT_B_RRMEM(5, ref Registers.HL); break; // BIT 5, (HL)
                 case 0x6F: BIT_B_R(5, ref Registers.A); break;      // BIT 5, A
 
@@ -157,8 +155,8 @@ namespace Z80Sharp.Processor
                 case 0x79: BIT_B_R(7, ref Registers.C); break;      // BIT 7, C
                 case 0x7A: BIT_B_R(7, ref Registers.D); break;      // BIT 7, D
                 case 0x7B: BIT_B_R(7, ref Registers.E); break;      // BIT 7, E
-                case 0x7D: BIT_B_R(7, ref Registers.H); break;      // BIT 7, H
-                case 0x7C: BIT_B_R(7, ref Registers.L); break;      // BIT 7, L
+                case 0x7C: BIT_B_R(7, ref Registers.H); break;      // BIT 7, H
+                case 0x7D: BIT_B_R(7, ref Registers.L); break;      // BIT 7, L
                 case 0x7E: BIT_B_RRMEM(7, ref Registers.HL); break; // BIT 7, (HL)
                 case 0x7F: BIT_B_R(7, ref Registers.A); break;      // BIT 7, A
 
@@ -213,26 +211,26 @@ namespace Z80Sharp.Processor
                 case 0xA9: RES_B_R(5, ref Registers.C); break;      // RES 5, C
                 case 0xAA: RES_B_R(5, ref Registers.D); break;      // RES 5, D
                 case 0xAB: RES_B_R(5, ref Registers.E); break;      // RES 5, E
-                case 0xAD: RES_B_R(5, ref Registers.H); break;      // RES 5, H
-                case 0xAC: RES_B_R(5, ref Registers.L); break;      // RES 5, L
+                case 0xAC: RES_B_R(5, ref Registers.H); break;      // RES 5, H
+                case 0xAD: RES_B_R(5, ref Registers.L); break;      // RES 5, L
                 case 0xAE: RES_B_RRMEM(5, ref Registers.HL); break; // RES 5, (HL)
                 case 0xAF: RES_B_R(5, ref Registers.A); break;      // RES 5, A
 
-                case 0xB0: RES_B_R(6, ref Registers.B); break;      // RES 4, B
-                case 0xB1: RES_B_R(6, ref Registers.C); break;      // RES 4, C
-                case 0xB2: RES_B_R(6, ref Registers.D); break;      // RES 4, D
-                case 0xB3: RES_B_R(6, ref Registers.E); break;      // RES 4, E
-                case 0xB4: RES_B_R(6, ref Registers.H); break;      // RES 4, H
-                case 0xB5: RES_B_R(6, ref Registers.L); break;      // RES 4, L
-                case 0xB6: RES_B_RRMEM(6, ref Registers.HL); break; // RES 4, (HL)
-                case 0xB7: RES_B_R(6, ref Registers.A); break;      // RES 4, A
+                case 0xB0: RES_B_R(6, ref Registers.B); break;      // RES 6, B
+                case 0xB1: RES_B_R(6, ref Registers.C); break;      // RES 6, C
+                case 0xB2: RES_B_R(6, ref Registers.D); break;      // RES 6, D
+                case 0xB3: RES_B_R(6, ref Registers.E); break;      // RES 6, E
+                case 0xB4: RES_B_R(6, ref Registers.H); break;      // RES 6, H
+                case 0xB5: RES_B_R(6, ref Registers.L); break;      // RES 6, L
+                case 0xB6: RES_B_RRMEM(6, ref Registers.HL); break; // RES 6, (HL)
+                case 0xB7: RES_B_R(6, ref Registers.A); break;      // RES 6, A
 
                 case 0xB8: RES_B_R(7, ref Registers.B); break;      // RES 7, B
                 case 0xB9: RES_B_R(7, ref Registers.C); break;      // RES 7, C
                 case 0xBA: RES_B_R(7, ref Registers.D); break;      // RES 7, D
                 case 0xBB: RES_B_R(7, ref Registers.E); break;      // RES 7, E
-                case 0xBD: RES_B_R(7, ref Registers.H); break;      // RES 7, H
-                case 0xBC: RES_B_R(7, ref Registers.L); break;      // RES 7, L
+                case 0xBC: RES_B_R(7, ref Registers.H); break;      // RES 7, H
+                case 0xBD: RES_B_R(7, ref Registers.L); break;      // RES 7, L
                 case 0xBE: RES_B_RRMEM(7, ref Registers.HL); break; // RES 7, (HL)
                 case 0xBF: RES_B_R(7, ref Registers.A); break;      // RES 7, A
 
@@ -287,26 +285,26 @@ namespace Z80Sharp.Processor
                 case 0xE9: SET_B_R(5, ref Registers.C); break;      // SET 5, C
                 case 0xEA: SET_B_R(5, ref Registers.D); break;      // SET 5, D
                 case 0xEB: SET_B_R(5, ref Registers.E); break;      // SET 5, E
-                case 0xED: SET_B_R(5, ref Registers.H); break;      // SET 5, H
-                case 0xEC: SET_B_R(5, ref Registers.L); break;      // SET 5, L
+                case 0xEC: SET_B_R(5, ref Registers.H); break;      // SET 5, H
+                case 0xED: SET_B_R(5, ref Registers.L); break;      // SET 5, L
                 case 0xEE: SET_B_RRMEM(5, ref Registers.HL); break; // SET 5, (HL)
                 case 0xEF: SET_B_R(5, ref Registers.A); break;      // SET 5, A
 
-                case 0xF0: SET_B_R(6, ref Registers.B); break;      // SET 4, B
-                case 0xF1: SET_B_R(6, ref Registers.C); break;      // SET 4, C
-                case 0xF2: SET_B_R(6, ref Registers.D); break;      // SET 4, D
-                case 0xF3: SET_B_R(6, ref Registers.E); break;      // SET 4, E
-                case 0xF4: SET_B_R(6, ref Registers.H); break;      // SET 4, H
-                case 0xF5: SET_B_R(6, ref Registers.L); break;      // SET 4, L
-                case 0xF6: SET_B_RRMEM(6, ref Registers.HL); break; // SET 4, (HL)
-                case 0xF7: SET_B_R(6, ref Registers.A); break;      // SET 4, A
+                case 0xF0: SET_B_R(6, ref Registers.B); break;      // SET 6, B
+                case 0xF1: SET_B_R(6, ref Registers.C); break;      // SET 6, C
+                case 0xF2: SET_B_R(6, ref Registers.D); break;      // SET 6, D
+                case 0xF3: SET_B_R(6, ref Registers.E); break;      // SET 6, E
+                case 0xF4: SET_B_R(6, ref Registers.H); break;      // SET 6, H
+                case 0xF5: SET_B_R(6, ref Registers.L); break;      // SET 6, L
+                case 0xF6: SET_B_RRMEM(6, ref Registers.HL); break; // SET 6, (HL)
+                case 0xF7: SET_B_R(6, ref Registers.A); break;      // SET 6, A
 
                 case 0xF8: SET_B_R(7, ref Registers.B); break;      // SET 7, B
                 case 0xF9: SET_B_R(7, ref Registers.C); break;      // SET 7, C
                 case 0xFA: SET_B_R(7, ref Registers.D); break;      // SET 7, D
                 case 0xFB: SET_B_R(7, ref Registers.E); break;      // SET 7, E
-                case 0xFD: SET_B_R(7, ref Registers.H); break;      // SET 7, H
-                case 0xFC: SET_B_R(7, ref Registers.L); break;      // SET 7, L
+                case 0xFC: SET_B_R(7, ref Registers.H); break;      // SET 7, H
+                case 0xFD: SET_B_R(7, ref Registers.L); break;      // SET 7, L
                 case 0xFE: SET_B_RRMEM(7, ref Registers.HL); break; // SET 7, (HL)
                 case 0xFF: SET_B_R(7, ref Registers.A); break;      // SET 7, A
             }

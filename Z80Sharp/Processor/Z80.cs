@@ -5,6 +5,7 @@ using Z80Sharp.Interfaces;
 using System.Runtime.CompilerServices;
 using static Z80Sharp.Registers.ProcessorRegisters;
 using Z80Sharp.Memory;
+using System.Diagnostics;
 
 namespace Z80Sharp.Processor
 {
@@ -70,7 +71,7 @@ namespace Z80Sharp.Processor
         }
         private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
+            //Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
             InstrsExecutedLastSecond = InstrsExecuted;
         }
 
@@ -88,9 +89,9 @@ namespace Z80Sharp.Processor
             switch (_currentInstruction)
             {
                 case 0xDD:
-                    ExecuteIndexRInstruction(ref Registers.IX); break;
+                    ExecuteIndexRInstruction(ref Registers.IX, ref Registers.IXhi, ref Registers.IXlo); break;
                 case 0xFD:
-                    ExecuteIndexRInstruction(ref Registers.IY); break;
+                    ExecuteIndexRInstruction(ref Registers.IY, ref Registers.IYhi, ref Registers.IYlo); break;
                 case 0xED:
                     ExecuteMiscInstruction(); break;
                 case 0xCB:
@@ -99,7 +100,7 @@ namespace Z80Sharp.Processor
                 default:
                     ExecuteMainInstruction(); break;
             }
-            InstrsExecuted++;
+            //InstrsExecuted++;
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)
