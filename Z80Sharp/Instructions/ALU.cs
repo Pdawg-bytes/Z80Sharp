@@ -13,40 +13,6 @@ namespace Z80Sharp.Processor
 {
     public unsafe partial class Z80
     {
-        // Reference: http://www.z80.info/zip/z80-documented.pdf (Page 18)
-        /*private void DAA()
-        {
-            byte regA = Registers.RegisterSet[A];
-            byte adjustment = 0;
-            bool flagN = Registers.IsFlagSet(FlagType.N);
-
-            // Carry over from first nibble
-            if ((!flagN && (regA & 0x0F) > 0x09) || Registers.IsFlagSet(FlagType.H))
-            {
-                adjustment |= 0x06;
-                Registers.SetFlagConditionally(FlagType.H, ((regA & 0x0F) + 0x06) > 0x0F); // If our adjustment carries over into top 4 bits
-            }
-
-            // Full carry
-            if ((regA > 0x99) && !flagN || Registers.IsFlagSet(FlagType.C))
-            {
-                adjustment |= 0x60;
-                Registers.SetFlag(FlagType.C);
-            }
-            else
-                Registers.ClearFlag(FlagType.C);
-
-            Registers.RegisterSet[A] += flagN ? (byte)-adjustment : adjustment;
-            regA = Registers.RegisterSet[A];
-
-            Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) != 0);             // (S)  (Set if negative)
-            Registers.SetFlagConditionally(FlagType.Z, regA == 0);                      // (Z)  (Set if result is zero)
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity(regA));             // (PV) (Set if bit parity is even)
-            Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);              // (X)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);              // (Y)  (Undocumented flag)
-
-            //LogInstructionExec("0x27: DAA");
-        }*/
         // Reference: https://stackoverflow.com/questions/8119577/z80-daa-instruction
         private void DAA()
         {
@@ -99,15 +65,15 @@ namespace Z80Sharp.Processor
             int result = 0 - value;
             Registers.A = (byte)result;
 
-            Registers.SetFlagConditionally(FlagType.S, (result & 0x80) != 0);           // (S)  (Set if result is negative)
-            Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);  // (Z)  (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, (value & 0x0F) != 0);            // (H)  (Set if borrow from bit 4)
-            Registers.SetFlagConditionally(FlagType.PV, value == 0x80);                 // (PV) (Set if A == -128 (sbyte.Min)
-            Registers.SetFlagConditionally(FlagType.C, value != 0);                     // (C)  (Set if borrow occured)
-            Registers.SetFlag(FlagType.N);                                              // (N)  (Unconditionally set)
+            Registers.SetFlagConditionally(FlagType.S, (result & 0x80) != 0); // (S)  (Set if result is negative)
+            Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);     // (Z)  (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.H, (value & 0x0F) != 0);  // (H)  (Set if borrow from bit 4)
+            Registers.SetFlagConditionally(FlagType.PV, value == 0x80);       // (PV) (Set if A == -128 (sbyte.Min)
+            Registers.SetFlagConditionally(FlagType.C, value != 0);           // (C)  (Set if borrow occured)
+            Registers.SetFlag(FlagType.N);                                    // (N)  (Unconditionally set)
 
-            Registers.SetFlagConditionally(FlagType.X, (result & 0x20) > 0);            // (X)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (result & 0x08) > 0);            // (Y)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.X, (result & 0x20) > 0);  // (X)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (result & 0x08) > 0);  // (Y)  (Undocumented flag)
 
             //LogInstructionExec("0x44: NEG");
         }

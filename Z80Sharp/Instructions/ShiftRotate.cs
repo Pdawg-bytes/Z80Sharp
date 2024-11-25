@@ -207,7 +207,7 @@ namespace Z80Sharp.Processor
         private void RRC_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
-            byte result = RotateCircular(_memory.Read(ird), BitDirection.Left);
+            byte result = RotateCircular(_memory.Read(ird), BitDirection.Right);
             _memory.Write(ird, result);
             outputRegister = result;
         }

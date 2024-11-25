@@ -100,7 +100,7 @@ namespace Z80Sharp.Processor
                 default:
                     ExecuteMainInstruction(); break;
             }
-            //InstrsExecuted++;
+            InstrsExecuted++;
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)

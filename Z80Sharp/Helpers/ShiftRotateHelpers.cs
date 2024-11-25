@@ -41,55 +41,46 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte ShiftLogical(byte operand, [ConstantExpected] BitDirection shiftDirection)
         {
-            int result = 0;
+            byte result = 0;
             byte carry = 0;
 
             switch (shiftDirection)
             {
                 case BitDirection.Left:
                     carry = (byte)(operand >> 7);
-                    result = (operand << 1) + 1;
+                    result = (byte)(operand << 1 | 1);
                     break;
                 case BitDirection.Right:
                     carry = (byte)(operand & 1);
-                    result = (operand >> 1);
+                    result = (byte)(operand >> 1);
                     break;
             }
 
-            Registers.SetFlagConditionally(FlagType.C, carry != 0);
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)result));
-            Registers.SetFlagConditionally(FlagType.Z, (byte)result == 0);
-            Registers.SetFlagConditionally(FlagType.S, (result & 0x80) != 0);
-            Registers.F &= (byte)~(FlagType.N | FlagType.H);
+            UpdateShiftRotateFlags(result, carry);
 
-            return (byte)result;
+            return result;
         }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte RotateCircular(byte operand, [ConstantExpected] BitDirection shiftDirection)
         {
-            int result = 0;
+            byte result = 0;
             byte carry = 0;
 
             switch (shiftDirection)
             {
                 case BitDirection.Left:
-                    carry = (byte)((operand & 0x80) >> 7);
-                    result = operand << 1;
-                    Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)(result | carry)));
+                    carry = (byte)(operand >> 7);
+                    result = (byte)(operand << 1 | carry);
                     break;
                 case BitDirection.Right:
                     carry = (byte)(operand & 1);
-                    result = (operand >> 1) | (carry << 7);
-                    Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)result));
+                    result = (byte)((operand >> 1) | (carry << 7));
                     break;
             }
 
-            Registers.SetFlagConditionally(FlagType.C, carry != 0);
-            Registers.SetFlagConditionally(FlagType.Z, (byte)result == 0);
-            Registers.SetFlagConditionally(FlagType.S, (result & 0x80) != 0);
-            Registers.F &= (byte)~(FlagType.N | FlagType.H);
+            UpdateShiftRotateFlags(result, carry);
 
             return (byte)result;
         }
@@ -97,28 +88,24 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte RotateThroughCarry(byte operand, [ConstantExpected] BitDirection shiftDirection)
         {
-            int result = 0;
+            byte result = 0;
             byte operandCarry = 0;
             byte carry = (byte)(Registers.F & 1);
 
             switch (shiftDirection)
             {
                 case BitDirection.Left:
-                    operandCarry = (byte)((operand & 0x80) >> 7);
-                    result = (operand << 1) | operandCarry;
-                    Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)(result | carry)));
+                    operandCarry = (byte)(operand >> 7);
+                    result = (byte)(operand << 1 | carry);
                     break;
                 case BitDirection.Right:
                     operandCarry = (byte)(operand & 1);
-                    result = (operand >> 1) | (operandCarry << 7);
+                    result = (byte)(operand >> 1 | carry << 7);
                     Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)result));
                     break;
             }
 
-            Registers.SetFlagConditionally(FlagType.C, operandCarry != 0);
-            Registers.SetFlagConditionally(FlagType.Z, (byte)result == 0);
-            Registers.SetFlagConditionally(FlagType.S, (result & 0x80) != 0);
-            Registers.F &= (byte)~(FlagType.N | FlagType.H);
+            UpdateShiftRotateFlags(result, operandCarry);
 
             return (byte)result;
         }

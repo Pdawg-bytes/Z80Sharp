@@ -40,7 +40,7 @@ namespace Z80Sharp.Processor
 		{
             Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & result);
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(result));
-            Registers.F |= (byte)((byte)(FlagType.C) & carry);
+            Registers.F |= (byte)((byte)FlagType.C & carry);
             Registers.SetFlagConditionally(FlagType.Z, result == 0);
         }
     }

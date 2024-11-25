@@ -15,7 +15,7 @@ namespace Z80Sharp.Processor
             _currentInstruction = instruction;
             switch (instruction)
             {
-                // RL(C) instructions: Rotate (IR + d) left through/with carry
+                // RL(C) instructions: Rotate (IR + d) left circular/through carry
                 case 0x00: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); break; // RLC (IR + d), B | UNDOCUMENTED
                 case 0x01: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); break; // RLC (IR + d), C | UNDOCUMENTED
                 case 0x02: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); break; // RLC (IR + d), D | UNDOCUMENTED
@@ -35,7 +35,7 @@ namespace Z80Sharp.Processor
                 case 0x16: RL_IRDMEM(displacement, ref indexAddressingMode); break;                    // RL (IR + d)
 
 
-                // RR(C) instructions: Rotate (IR + d) right through/with carry
+                // RR(C) instructions: Rotate (IR + d) right circular/through carry
                 case 0x08: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); break; // RRC (IR + d), B | UNDOCUMENTED
                 case 0x09: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); break; // RRC (IR + d), C | UNDOCUMENTED
                 case 0x0A: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); break; // RRC (IR + d), D | UNDOCUMENTED
@@ -55,7 +55,7 @@ namespace Z80Sharp.Processor
                 case 0x1E: RR_IRDMEM(displacement, ref indexAddressingMode); break;                    // RR (IR + d)
 
 
-                // SL(A/L) instructions: Shift (IR + d) left
+                // SL(A/L) instructions: Shift (IR + d) left arithmetic/logical
                 case 0x20: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); break; // SLA (IR + d), B | UNDOCUMENTED
                 case 0x21: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); break; // SLA (IR + d), C | UNDOCUMENTED
                 case 0x22: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); break; // SLA (IR + d), D | UNDOCUMENTED
@@ -75,15 +75,15 @@ namespace Z80Sharp.Processor
                 case 0x36: SLL_IRDMEM(displacement, ref indexAddressingMode); break;                    // SLL (IR + d)
 
 
-                // SR(A/L) instructions: Shift (IR + d) right
+                // SR(A/L) instructions: Shift (IR + d) right arithmetic/logical
                 case 0x28: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); break; // SRA (IR + d), B | UNDOCUMENTED
                 case 0x29: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); break; // SRA (IR + d), C | UNDOCUMENTED
                 case 0x2A: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); break; // SRA (IR + d), D | UNDOCUMENTED
                 case 0x2B: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E); break; // SRA (IR + d), E | UNDOCUMENTED
                 case 0x2C: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); break; // SRA (IR + d), H | UNDOCUMENTED
                 case 0x2D: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); break; // SRA (IR + d), L | UNDOCUMENTED
-                case 0x2E: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); break; // SRA (IR + d), A | UNDOCUMENTED
-                case 0x2F: SRA_IRDMEM(displacement, ref indexAddressingMode); break;                    // SRA (IR + d)
+                case 0x2F: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); break; // SRA (IR + d), A | UNDOCUMENTED
+                case 0x2E: SRA_IRDMEM(displacement, ref indexAddressingMode); break;                    // SRA (IR + d)
 
                 case 0x38: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); break; // SRL (IR + d), B | UNDOCUMENTED
                 case 0x39: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); break; // SRL (IR + d), C | UNDOCUMENTED
@@ -91,8 +91,8 @@ namespace Z80Sharp.Processor
                 case 0x3B: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E); break; // SRL (IR + d), E | UNDOCUMENTED
                 case 0x3C: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); break; // SRL (IR + d), H | UNDOCUMENTED
                 case 0x3D: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); break; // SRL (IR + d), L | UNDOCUMENTED
-                case 0x3E: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); break; // SRL (IR + d), A | UNDOCUMENTED
-                case 0x3F: SRL_IRDMEM(displacement, ref indexAddressingMode); break;                    // SRL (IR + d)
+                case 0x3F: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); break; // SRL (IR + d), A | UNDOCUMENTED
+                case 0x3E: SRL_IRDMEM(displacement, ref indexAddressingMode); break;                    // SRL (IR + d)
 
 
                 // BIT instructions: Tests bit B of register R, sets Z if tested bit is zero
