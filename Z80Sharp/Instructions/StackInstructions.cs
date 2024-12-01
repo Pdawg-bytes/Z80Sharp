@@ -17,7 +17,6 @@ namespace Z80Sharp.Processor
             operatingRegister = _memory.ReadWord(Registers.SP);
             Registers.SP += 2;
         }
-        // We can't use the generic method because the register indexers for A and F are in the opposite order.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void POP_AF()
         {
@@ -25,8 +24,6 @@ namespace Z80Sharp.Processor
             Registers.SP++;
             Registers.A = _memory.Read(Registers.SP);
             Registers.SP++;
-
-            //LogInstructionExec($"0xF1: POP AF");
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void POP_PC()
@@ -41,7 +38,6 @@ namespace Z80Sharp.Processor
             Registers.SP -= 2;
             _memory.WriteWord(Registers.SP, operatingRegister);
         }
-        // We can't use the generic method because the register indexers for A and F are in the opposite order.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void PUSH_AF()
         {
@@ -49,7 +45,6 @@ namespace Z80Sharp.Processor
             _memory.Write(Registers.SP, Registers.A);
             Registers.SP--;
             _memory.Write(Registers.SP, Registers.F);
-            //LogInstructionExec($"0xF5: PUSH AF");
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void PUSH_PC()

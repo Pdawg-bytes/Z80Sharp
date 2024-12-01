@@ -20,35 +20,16 @@ namespace Z80Sharp.TestProgram
             IDataBus dataBus = new CPMBus();
 
             mainMemory = new MainMemory(65536);
-            byte[] program = new byte[]
-            {
-                0x3E, 0xB0, 0x47, 0x4F, 0x57, 0x5F, 0x67, 0x6F,
-                0x32, 0x00, 0x90, 0xCB, 0x17, 0x32, 0x03, 0x90,
-                0xCB, 0x07, 0x32, 0x06, 0x90, 0xCB, 0x1F, 0x32,
-                0x09, 0x90, 0xCB, 0x0F, 0x32, 0x0C, 0x90, 0xCB,
-                0x3F, 0x32, 0x0F, 0x90, 0xCB, 0x2F, 0x32, 0x12,
-                0x90, 0x00, 0xC3, 0x2A
-            };
 
-            //Array.Copy(program, 0, mainMemory._memory, 0x0, program.Length);
+            byte[] program = File.ReadAllBytes("alutest.z80.bin");
+            Array.Copy(program, 0, mainMemory._memory, 0x0, program.Length);
 
             z80 = new Z80(mainMemory, dataBus, logger, true);
-            /*z80.Reset(new ProcessorRegisters
-            {
-                AF = 0x1020,
-                BC = 0x3040,
-                DE = 0x5060,
-                HL = 0x7080,
-                IX = 0x9011,
-                IY = 0x1122,
-                PC = 0x3344,
-                SP = 0x5566
-            }); */
             z80.Reset();
             Thread processorThread = new(() =>
             {
-                RunCPMBinary("zexdoc.com");
-                //z80.Run();
+                //RunCPMBinary("zexdoc.com");
+                z80.Run();
             });
             processorThread.Start();
 

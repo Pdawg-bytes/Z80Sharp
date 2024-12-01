@@ -14,6 +14,7 @@ namespace Z80Sharp.Processor
     public unsafe partial class Z80
     {
         // Reference: https://stackoverflow.com/questions/8119577/z80-daa-instruction
+        // I copied this code...I wish there was a better way to do this while keeping it 100% accurate.
         private void DAA()
         {
             int t;

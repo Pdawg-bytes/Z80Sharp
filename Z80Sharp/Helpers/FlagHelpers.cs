@@ -38,10 +38,10 @@ namespace Z80Sharp.Processor
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void UpdateShiftRotateFlags(byte result, byte carry)
 		{
-            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & result);
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity(result));
-            Registers.F |= (byte)((byte)FlagType.C & carry);
-            Registers.SetFlagConditionally(FlagType.Z, result == 0);
+            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & result); // (S, X, Y) (Set based on respective bits of result)
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(result));			 // (P/V) (Set depending on bit parity)
+            Registers.F |= (byte)((byte)FlagType.C & carry);							 // (C)   (Set if carry is true)
+            Registers.SetFlagConditionally(FlagType.Z, result == 0);					 // (Z)   (Set if result is 0)
         }
     }
 }
