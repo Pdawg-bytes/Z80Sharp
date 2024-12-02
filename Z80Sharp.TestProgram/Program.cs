@@ -29,6 +29,7 @@ namespace Z80Sharp.TestProgram
             Thread processorThread = new(() =>
             {
                 //RunCPMBinary("zexdoc.com");
+                z80.Registers.PC = 0x200;
                 z80.Run();
             });
             processorThread.Start();
