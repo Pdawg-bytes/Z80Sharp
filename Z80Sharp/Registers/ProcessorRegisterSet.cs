@@ -12,14 +12,12 @@ namespace Z80Sharp.Registers
     {
         // 16-bit general purpose register pairs
         private ushort _af;
-
         private ushort _bc;
         private ushort _de;
         private ushort _hl;
 
         // Shadow register pairs
         private ushort _af_;
-
         private ushort _bc_;
         private ushort _de_;
         private ushort _hl_;

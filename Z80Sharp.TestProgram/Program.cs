@@ -5,6 +5,7 @@ using Z80Sharp.Constants;
 using Z80Sharp.Registers;
 using Z80Sharp.Interfaces;
 using static Z80Sharp.Registers.ProcessorRegisters;
+using System.Diagnostics;
 
 namespace Z80Sharp.TestProgram
 {
@@ -21,16 +22,19 @@ namespace Z80Sharp.TestProgram
 
             mainMemory = new MainMemory(65536);
 
-            byte[] program = File.ReadAllBytes("alutest.z80.bin");
-            Array.Copy(program, 0, mainMemory._memory, 0x0, program.Length);
+            //byte[] program = File.ReadAllBytes("alutest.z80.bin");
+            //Array.Copy(program, 0, mainMemory._memory, 0x0, program.Length);
 
             z80 = new Z80(mainMemory, dataBus, logger, true);
             z80.Reset();
             Thread processorThread = new(() =>
             {
-                //RunCPMBinary("zexdoc.com");
-                z80.Registers.PC = 0x200;
-                z80.Run();
+                Stopwatch sw = Stopwatch.StartNew();
+                RunCPMBinary("zexdoc.com");
+                sw.Stop();
+                Console.WriteLine($"zexdoc completed in {sw.ElapsedMilliseconds}ms");
+                //z80.Registers.PC = 0x200;
+                //z80.Run();
             });
             processorThread.Start();
 
