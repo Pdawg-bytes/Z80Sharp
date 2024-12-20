@@ -5,6 +5,7 @@ using Z80Sharp.Interfaces;
 using System.Runtime.CompilerServices;
 using static Z80Sharp.Registers.ProcessorRegisters;
 using Z80Sharp.Memory;
+using System.Diagnostics;
 
 namespace Z80Sharp.Processor
 {
@@ -16,9 +17,9 @@ namespace Z80Sharp.Processor
 
         public bool IsDebug { get; init; }
 
-        private ulong InstrsExecuted;
-        private ulong InstrsExecutedLastSecond;
-        private System.Timers.Timer? _cycleTimer;
+        private static ulong InstrsExecuted;
+        private static ulong InstrsExecutedLastSecond;
+        private static System.Timers.Timer _cycleTimer = new System.Timers.Timer(1000);
 
         private byte _currentInstruction;
 
@@ -33,11 +34,11 @@ namespace Z80Sharp.Processor
                 _halted = value;
                 if(value)
                 {
-                    _logger.Log(LogSeverity.Info, "Processor halted");
+                    //_logger.Log(LogSeverity.Info, "Processor halted");
                 }
                 else
                 {
-                    _logger.Log(LogSeverity.Info, "Processor unhalted");
+                    //_logger.Log(LogSeverity.Info, "Processor unhalted");
                 }
             }
         }
@@ -60,11 +61,9 @@ namespace Z80Sharp.Processor
         }
         public void Run()
         {
-            _cycleTimer = new System.Timers.Timer(1000);
             _cycleTimer.Elapsed += ReportCyclesPerSecond;
             _cycleTimer.AutoReset = true;
             _cycleTimer.Start();
-
             while (true)
             {
                 ExecuteOnce();
@@ -72,7 +71,7 @@ namespace Z80Sharp.Processor
         }
         private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
+            //Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
             InstrsExecutedLastSecond = InstrsExecuted;
         }
 
@@ -80,16 +79,19 @@ namespace Z80Sharp.Processor
         private void ExecuteOnce()
         {
             HandleInterrupts();
-            if (_halted) { return; }
+            if (_halted) 
+            { 
+                return; 
+            }
 
             _currentInstruction = Fetch();
 
             switch (_currentInstruction)
             {
                 case 0xDD:
-                    ExecuteIndexRInstruction(IXh); break;
+                    ExecuteIndexRInstruction(ref Registers.IX, ref Registers.IXhi, ref Registers.IXlo); break;
                 case 0xFD:
-                    ExecuteIndexRInstruction(IYh); break;
+                    ExecuteIndexRInstruction(ref Registers.IY, ref Registers.IYhi, ref Registers.IYlo); break;
                 case 0xED:
                     ExecuteMiscInstruction(); break;
                 case 0xCB:
@@ -98,7 +100,7 @@ namespace Z80Sharp.Processor
                 default:
                     ExecuteMainInstruction(); break;
             }
-            InstrsExecuted++;
+            //InstrsExecuted++;
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)
@@ -106,17 +108,16 @@ namespace Z80Sharp.Processor
         {
             Halted = false;
 
-            Registers.RegisterSet[A] = 0x00;
-            Registers.RegisterSet[F] = 0x00;
-            Registers.RegisterSet[A_] = 0x00;
-            Registers.RegisterSet[F_] = 0x00;
+            Registers.A = 0x00;
+            Registers.F = 0x00;
+            Registers.AF_ = 0x0000;
 
             Registers.BC = Registers.BC_ = 0x0000;
             Registers.DE = Registers.DE_ = 0x0000;
             Registers.HL = Registers.HL_ = 0x0000;
 
-            Registers.RegisterSet[I] = 0x00;
-            Registers.RegisterSet[R] = 0x00;
+            Registers.I = 0x00;
+            Registers.R = 0x00;
 
             Registers.PC = 0x0000;
             Registers.SP = 0x0000;
@@ -126,7 +127,8 @@ namespace Z80Sharp.Processor
             Registers.IFF1 = false;
             Registers.IFF2 = false;
 
-            _logger.Log(LogSeverity.Info, "Processor reset");
+
+            //_logger.Log(LogSeverity.Info, "Processor reset");
         }
         public void Reset(ProcessorRegisters state)
         {
@@ -154,8 +156,8 @@ namespace Z80Sharp.Processor
             Registers.IFF1 = state.IFF1;
             Registers.IFF2 = state.IFF2;
             Registers.InterruptMode = state.InterruptMode;
-            Registers.RegisterSet[I] = state.RegisterSet[I];
-            Registers.RegisterSet[R] = state.RegisterSet[R];
+            Registers.I = state.I;
+            Registers.R = state.R;
         }
 
 
@@ -187,7 +189,7 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LogInterrupt(string interruptName)
         {
-            //_logger.Log(LogSeverity.Interrupt, interruptName);
+            _logger.Log(LogSeverity.Interrupt, interruptName);
         }
         #endregion
 
@@ -208,7 +210,7 @@ namespace Z80Sharp.Processor
         private byte FetchLast() => _memory.Read((ushort)(Registers.PC - 1));
 
         /// <summary>
-        /// Fetches the value at the <see cref="IRegisterSet.PC", and the value at the next address ahead to create a word./>
+        /// Fetches the value at the <see cref="IPC", and the value at the next address ahead to create a word./>
         /// </summary>
         /// <returns>The word (<see cref="ushort")./></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

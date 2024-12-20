@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Z80Sharp.Enums;
@@ -14,14 +15,14 @@ namespace Z80Sharp.Processor
     {
         private void IN_A_NPORT()
         {
-            ushort port = (ushort)(Fetch() + (Registers.RegisterSet[A] << 8));
-            Registers.RegisterSet[A] = _dataBus.ReadPort(port);
+            ushort port = (ushort)(Fetch() + (Registers.A << 8));
+            Registers.A = _dataBus.ReadPort(port);
             //LogInstructionExec($"0xDB: IN A, (N:0x{port:X4})");
         }
-        private void IN_R_CPORT([ConstantExpected] byte operatingRegister)
+        private void IN_R_CPORT(ref byte operatingRegister)
         {
             byte data = _dataBus.ReadPort(Registers.BC);
-            Registers.RegisterSet[operatingRegister] = data;
+            operatingRegister = data;
 
             Registers.SetFlagConditionally(FlagType.S, (data & 0x80) != 0);             // (S) (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, data == 0);                      // (Z) (Set if result is zero)
@@ -29,12 +30,12 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (data & 0x20) != 0);             // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (data & 0x08) != 0);             // (Y) (Undocumented flag)
 
-            //LogInstructionExec($"0x{_currentInstruction:X2}: IN {Registers.RegisterName(operatingRegister)}, (C)");
+            //LogInstructionExec($"0x{_currentInstruction:X2}: IN R, (C)");
         }
         private void IN_CPORT() // UNDOCUMENTED
         {
             byte data = _dataBus.ReadPort(Registers.BC);
-            Registers.RegisterSet[F] &= (byte)~(FlagType.N | FlagType.H);
+            Registers.F &= (byte)~(FlagType.N | FlagType.H);
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(data));
             //LogInstructionExec("0x70: IN (C)");
         }
@@ -43,7 +44,7 @@ namespace Z80Sharp.Processor
         {
             byte data = _dataBus.ReadPort(Registers.BC);
             _memory.Write(Registers.HL++, data);
-            byte regB = Registers.RegisterSet[B]--;
+            byte regB = Registers.B--;
 
             Registers.SetFlag(FlagType.N);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
@@ -53,7 +54,7 @@ namespace Z80Sharp.Processor
         {
             INIR();
 
-            if (Registers.RegisterSet[B] != 0)
+            if (Registers.B != 0)
             {
                 Registers.PC -= 2;
             }
@@ -64,7 +65,7 @@ namespace Z80Sharp.Processor
         {
             byte data = _dataBus.ReadPort(Registers.BC);
             _memory.Write(Registers.HL--, data);
-            byte regB = Registers.RegisterSet[B]--;
+            byte regB = Registers.B--;
 
             Registers.SetFlag(FlagType.N);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
@@ -74,7 +75,7 @@ namespace Z80Sharp.Processor
         {
             IND();
 
-            if (Registers.RegisterSet[B] != 0)
+            if (Registers.B != 0)
             {
                 Registers.PC -= 2;
             }
@@ -84,18 +85,18 @@ namespace Z80Sharp.Processor
 
         private void OUT_NPORT_A()
         {
-            ushort port = (ushort)((Registers.RegisterSet[A] << 8) | Fetch());
-            _dataBus.WritePort(port, Registers.RegisterSet[A]);
+            ushort port = (ushort)((Registers.A << 8) | Fetch());
+            _dataBus.WritePort(port, Registers.A);
             //LogInstructionExec($"0xD3: OUT (N:0x{(port & 0x00FF):X2}), A");
         }
-        private void OUT_CPORT_R(byte operatingRegister)
+        private void OUT_CPORT_R(ref byte operatingRegister)
         {
-            _dataBus.WritePort(Registers.BC, Registers.RegisterSet[operatingRegister]);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: OUT (C), {Registers.RegisterName(operatingRegister)}");
+            _dataBus.WritePort(Registers.BC, operatingRegister);
+            //LogInstructionExec($"0x{_currentInstruction:X2}: OUT (C), R");
         }
         private void OUT_CPORT_0()
         {
-            _dataBus.WritePort(Registers.BC, 0); // Should be 255 on a CMOS Z80, 0 on NMOS
+            _dataBus.WritePort(Registers.BC, 0xFF); // Should be 255 on a CMOS Z80, 0 on NMOS
             //LogInstructionExec("0x71: OUT (C), 0");
         }
 
@@ -103,7 +104,7 @@ namespace Z80Sharp.Processor
         {
             byte hlMem = _memory.Read(Registers.HL++);
             _dataBus.WritePort(Registers.BC, hlMem);
-            byte regB = Registers.RegisterSet[B]--;
+            byte regB = Registers.B--;
 
             Registers.SetFlag(FlagType.N);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
@@ -113,7 +114,7 @@ namespace Z80Sharp.Processor
         {
             OUTI();
 
-            if (Registers.RegisterSet[B] != 0)
+            if (Registers.B != 0)
             {
                 Registers.PC -= 2;
             }
@@ -124,7 +125,7 @@ namespace Z80Sharp.Processor
         {
             byte hlMem = _memory.Read(Registers.HL--);
             _dataBus.WritePort(Registers.BC, hlMem);
-            byte regB = Registers.RegisterSet[B]--;
+            byte regB = Registers.B--;
 
             Registers.SetFlag(FlagType.N);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
@@ -134,7 +135,7 @@ namespace Z80Sharp.Processor
         {
             OUTD();
 
-            if (Registers.RegisterSet[B] != 0)
+            if (Registers.B != 0)
             {
                 Registers.PC -= 2;
             }

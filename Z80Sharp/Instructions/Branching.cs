@@ -19,11 +19,10 @@ namespace Z80Sharp.Processor
             Registers.PC = jumpTo;
             //LogInstructionExec($"0xC3: JP 0x{jumpTo:X4}");
         }
-        private void JP_RR([ConstantExpected] byte operatingRegister)
+        private void JP_RR(ref ushort operatingRegister)
         {
-            ushort jumpTo = Registers.GetR16FromHighIndexer(operatingRegister);
-            Registers.PC = jumpTo;
-            //LogInstructionExec($"0x{_currentInstruction:X2}: JP ({Registers.RegisterName(operatingRegister, true)}:0x{jumpTo:X4})");
+            Registers.PC = operatingRegister;
+            //LogInstructionExec($"0x{_currentInstruction:X2}: JP RR");
         }
         // Conditional jump to immediate
         private void JP_NN_C([ConstantExpected] byte flagCondition)
@@ -70,9 +69,7 @@ namespace Z80Sharp.Processor
         {
             sbyte displacement = (sbyte)Fetch();
 
-            byte b = Registers.RegisterSet[B];
-
-            Registers.RegisterSet[B] = DECAny(b);
+            Registers.B = DECAny(Registers.B);
 
             if (!Registers.IsFlagSet(FlagType.Z))
             {
@@ -89,14 +86,14 @@ namespace Z80Sharp.Processor
         // Return instructions
         private void RET()
         {
-            POP_PC_SILENT();
+            POP_PC();
             //LogInstructionExec("0xC9: RET");
         }
         private void RET_CC([ConstantExpected] byte flagCondition)
         {
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
             {
-                POP_PC_SILENT();
+                POP_PC();
                 //LogInstructionExec($"0x{_currentInstruction:X2}: RET {Registers.JumpConditionName(flagCondition)}");
             }
             else
@@ -106,27 +103,27 @@ namespace Z80Sharp.Processor
         }
         private void RETN()
         {
-            POP_PC_SILENT();
+            POP_PC();
             Registers.IFF1 = Registers.IFF2;
             //LogInstructionExec("0x45: RETN");
         }
         private void RETI()
         {
-            POP_PC_SILENT();
+            POP_PC();
             // signal device triggering NMI that routine has completed
             //LogInstructionExec("0x4D: RETI");
         }
 
 
-        private void RST_HH(byte pcStart)
+        private void RST_HH([ConstantExpected] byte pcStart)
         {
-            PUSH_PC_SILENT();
+            PUSH_PC();
             Registers.PC = pcStart;
             //LogInstructionExec($"0x{_currentInstruction:X2}: RST 0x{pcStart:X4}");
         }
         private void RST_HH_SILENT(byte pcStart)
         {
-            PUSH_PC_SILENT();
+            PUSH_PC();
             Registers.PC = pcStart;
         }
 
@@ -134,7 +131,7 @@ namespace Z80Sharp.Processor
         private void CALL_NN()
         {
             ushort jumpTo = FetchImmediateWord();
-            PUSH_PC_SILENT();
+            PUSH_PC();
             Registers.PC = jumpTo;
             //LogInstructionExec($"0x{_currentInstruction:X2}: CALL NN:0x{jumpTo:X4}");
         }
@@ -143,7 +140,7 @@ namespace Z80Sharp.Processor
             ushort jumpTo = FetchImmediateWord();
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
             {
-                PUSH_PC_SILENT();
+                PUSH_PC();
                 Registers.PC = jumpTo;
                 //LogInstructionExec($"0x{_currentInstruction:X2}: CALL {Registers.JumpConditionName(flagCondition)}, NN:{jumpTo:X4}");
             }

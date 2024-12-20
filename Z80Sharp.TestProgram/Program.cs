@@ -5,6 +5,7 @@ using Z80Sharp.Constants;
 using Z80Sharp.Registers;
 using Z80Sharp.Interfaces;
 using static Z80Sharp.Registers.ProcessorRegisters;
+using System.Diagnostics;
 
 namespace Z80Sharp.TestProgram
 {
@@ -20,39 +21,24 @@ namespace Z80Sharp.TestProgram
             IDataBus dataBus = new CPMBus();
 
             mainMemory = new MainMemory(65536);
-            byte[] program = new byte[]
-            {
-                0x3E, 0xB0, 0x47, 0x4F, 0x57, 0x5F, 0x67, 0x6F,
-                0x32, 0x00, 0x90, 0xCB, 0x17, 0x32, 0x03, 0x90,
-                0xCB, 0x07, 0x32, 0x06, 0x90, 0xCB, 0x1F, 0x32,
-                0x09, 0x90, 0xCB, 0x0F, 0x32, 0x0C, 0x90, 0xCB,
-                0x3F, 0x32, 0x0F, 0x90, 0xCB, 0x2F, 0x32, 0x12,
-                0x90, 0x00, 0xC3, 0x2A
-            };
 
+            //byte[] program = File.ReadAllBytes("alutest.z80.bin");
             //Array.Copy(program, 0, mainMemory._memory, 0x0, program.Length);
 
             z80 = new Z80(mainMemory, dataBus, logger, true);
-            /*z80.Reset(new ProcessorRegisters
-            {
-                AF = 0x5555,
-                BC = 0x5555,
-                DE = 0x5555,
-                HL = 0x5555,
-                IX = 0x5555,
-                IY = 0x5555,
-                PC = 0x0000,
-                SP = 0x5555
-            });*/
             z80.Reset();
             Thread processorThread = new(() =>
             {
+                Stopwatch sw = Stopwatch.StartNew();
                 RunCPMBinary("zexdoc.com");
+                sw.Stop();
+                Console.WriteLine($"zexdoc completed in {sw.ElapsedMilliseconds}ms");
+                //z80.Registers.PC = 0x200;
                 //z80.Run();
             });
             processorThread.Start();
 
-            //ReadConsoleInput();
+            ReadConsoleInput();
         }
 
         private static ConsoleKeyInfo _key;
@@ -90,21 +76,21 @@ namespace Z80Sharp.TestProgram
             z80.Halted = true;
 
             Console.WriteLine($"\n{Colors.LIGHT_BLUE}General-purpose registers{Colors.ANSI_RESET}");
-            Console.WriteLine($"{Colors.LIGHT_YELLOW}B:{Colors.ANSI_RESET} 0x{registers.RegisterSet[B].ToString("X").PadLeft(2, '0')}    {Colors.LIGHT_YELLOW}C:{Colors.ANSI_RESET} 0x{registers.RegisterSet[C].ToString("X").PadLeft(2, '0')}");
-            Console.WriteLine($"{Colors.LIGHT_YELLOW}D:{Colors.ANSI_RESET} 0x{registers.RegisterSet[D].ToString("X").PadLeft(2, '0')}    {Colors.LIGHT_YELLOW}E:{Colors.ANSI_RESET} 0x{registers.RegisterSet[E].ToString("X").PadLeft(2, '0')}");
-            Console.WriteLine($"{Colors.LIGHT_YELLOW}H:{Colors.ANSI_RESET} 0x{registers.RegisterSet[H].ToString("X").PadLeft(2, '0')}    {Colors.LIGHT_YELLOW}L:{Colors.ANSI_RESET} 0x{registers.RegisterSet[L].ToString("X").PadLeft(2, '0')}");
+            Console.WriteLine($"{Colors.LIGHT_YELLOW}B:{Colors.ANSI_RESET} 0x{registers.B.ToString("X").PadLeft(2, '0')}    {Colors.LIGHT_YELLOW}C:{Colors.ANSI_RESET} 0x{registers.C.ToString("X").PadLeft(2, '0')}");
+            Console.WriteLine($"{Colors.LIGHT_YELLOW}D:{Colors.ANSI_RESET} 0x{registers.D.ToString("X").PadLeft(2, '0')}    {Colors.LIGHT_YELLOW}E:{Colors.ANSI_RESET} 0x{registers.E.ToString("X").PadLeft(2, '0')}");
+            Console.WriteLine($"{Colors.LIGHT_YELLOW}H:{Colors.ANSI_RESET} 0x{registers.H.ToString("X").PadLeft(2, '0')}    {Colors.LIGHT_YELLOW}L:{Colors.ANSI_RESET} 0x{registers.L.ToString("X").PadLeft(2, '0')}");
 
             Console.WriteLine($"\n{Colors.LIGHT_BLUE}Data registers{Colors.ANSI_RESET}");
-            Console.WriteLine($"{Colors.LIGHT_YELLOW}A:{Colors.ANSI_RESET} 0x{registers.RegisterSet[A].ToString("X").PadLeft(2, '0')}\n");
+            Console.WriteLine($"{Colors.LIGHT_YELLOW}A:{Colors.ANSI_RESET} 0x{registers.A.ToString("X").PadLeft(2, '0')}\n");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}F:{Colors.LIGHT_ORANGE} 0fSZYHXPNC{Colors.ANSI_RESET}");
-            Console.WriteLine($"{Colors.LIGHT_YELLOW}F:{Colors.ANSI_RESET} 0b{Convert.ToString(registers.RegisterSet[F], 2).PadLeft(8, '0')}");
+            Console.WriteLine($"{Colors.LIGHT_YELLOW}F:{Colors.ANSI_RESET} 0b{Convert.ToString(registers.F, 2).PadLeft(8, '0')}");
 
             Console.WriteLine($"\n{Colors.LIGHT_BLUE}Index registers{Colors.ANSI_RESET}");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}IX:{Colors.ANSI_RESET} 0x{registers.IX.ToString("X").PadLeft(4, '0')}  {Colors.LIGHT_YELLOW}IY:{Colors.ANSI_RESET} 0x{registers.IY.ToString("X").PadLeft(4, '0')}");
 
             Console.WriteLine($"\n{Colors.LIGHT_BLUE}Special registers{Colors.ANSI_RESET}");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}IFF1:{Colors.ANSI_RESET} 0b{(registers.IFF1 ? "1" : "0")}  {Colors.LIGHT_YELLOW}IFF2:{Colors.ANSI_RESET} 0b{(registers.IFF2 ? "1" : "0")}");
-            Console.WriteLine($"{Colors.LIGHT_YELLOW}I:{Colors.ANSI_RESET} 0x{registers.RegisterSet[I].ToString("X").PadLeft(2, '0').PadRight(4)}  {Colors.LIGHT_YELLOW}R:{Colors.ANSI_RESET} 0x{registers.RegisterSet[R].ToString("X").PadLeft(2, '0')}");
+            Console.WriteLine($"{Colors.LIGHT_YELLOW}I:{Colors.ANSI_RESET} 0x{registers.I.ToString("X").PadLeft(2, '0').PadRight(4)}  {Colors.LIGHT_YELLOW}R:{Colors.ANSI_RESET} 0x{registers.R.ToString("X").PadLeft(2, '0')}");
 
             Console.WriteLine($"\n{Colors.LIGHT_BLUE}Operating registers{Colors.ANSI_RESET}");
             Console.WriteLine($"{Colors.LIGHT_YELLOW}PC:{Colors.ANSI_RESET} 0x{registers.PC.ToString("X").PadLeft(4, '0')}");

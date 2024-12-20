@@ -28,7 +28,7 @@ namespace Z80Sharp.Processor
 
         private void CPL()
         {
-            Registers.RegisterSet[A] ^= 0b11111111;
+            Registers.A ^= 0b11111111;
             Registers.SetFlagBits((byte)(FlagType.N | FlagType.H));
             //LogInstructionExec("0x2F: CPL");
         }
@@ -38,7 +38,7 @@ namespace Z80Sharp.Processor
             Registers.ClearFlag(FlagType.N);
             // H is cleared to allow it to be 0. SetFlagBits uses |= which won't overwrite any 1s.
             Registers.ClearFlag(FlagType.H);
-            Registers.SetFlagBits((byte)((Registers.RegisterSet[F] << 4) & 0b00010000)); // Set H to C pre-inversion
+            Registers.SetFlagBits((byte)((Registers.F << 4) & 0b00010000)); // Set H to C pre-inversion
             Registers.InvertFlag(FlagType.C);
             //LogInstructionExec("0x3F: CCF");
         }
@@ -52,38 +52,36 @@ namespace Z80Sharp.Processor
 
         private void EX_AF_AF_()
         {
-            Registers.R8Exchange(A_, A);
-            Registers.R8Exchange(F_, F);
+            Registers.R16Exchange(ref Registers.AF, ref Registers.AF_);
             //LogInstructionExec("0x08: EX AF, AF'");
         }
         private void EX_DE_HL()
         {
-            Registers.R8Exchange(D, H);
-            Registers.R8Exchange(E, L);
+            Registers.R8Exchange(ref Registers.D, ref Registers.H);
+            Registers.R8Exchange(ref Registers.E, ref Registers.L);
             //LogInstructionExec("0xEB: EX DE, HL");
         }
         private void EX_SPMEM_HL()
         {
             ushort sp = Registers.SP;
-            ushort oldHl = Registers.GetR16FromHighIndexer(H);
+            ushort oldHl = Registers.HL;
             Registers.HL = _memory.ReadWord(sp);
             _memory.WriteWord(sp, oldHl);
             //LogInstructionExec("0xE3: EX (SP), HL");
         }
-        private void EX_SPMEM_IR([ConstantExpected] byte indexAddressingMode)
+        private void EX_SPMEM_IR(ref ushort indexAddressingMode)
         {
             ushort sp = Registers.SP;
-            ushort oldIr = Registers.GetR16FromHighIndexer(indexAddressingMode);
-            Registers.RegisterSet[indexAddressingMode] = _memory.Read(sp++);
-            Registers.RegisterSet[indexAddressingMode + 1] = _memory.Read(sp);
+            ushort oldIr = indexAddressingMode;
+            indexAddressingMode = _memory.Read(sp++);
             _memory.WriteWord(sp, oldIr);
             //LogInstructionExec("0xE3: EX (SP), HL");
         }
         private void EXX()
         {
-            Registers.R16Exchange(B, B_);
-            Registers.R16Exchange(D, D_);
-            Registers.R16Exchange(H, H_);
+            Registers.R16Exchange(ref Registers.BC, ref Registers.BC);
+            Registers.R16Exchange(ref Registers.DE, ref Registers.DE_);
+            Registers.R16Exchange(ref Registers.HL, ref Registers.HL_);
             //LogInstructionExec("0xD9: EXX");
         }
 
