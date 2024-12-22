@@ -143,7 +143,6 @@ namespace Z80Sharp.Processor
             int sum = augend + addend;
             ushort result = (ushort)sum;
 
-
             Registers.F &= (byte)(FlagType.S | FlagType.Z | FlagType.PV);
 
             Registers.SetFlagConditionally(FlagType.H,

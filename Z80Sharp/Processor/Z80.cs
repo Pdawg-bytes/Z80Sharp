@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace Z80Sharp.Processor
 {
-    public unsafe partial class Z80 /*: IProcessor*/
+    public unsafe partial class Z80
     {
         private static MainMemory _memory;
         private readonly IZ80Logger _logger;
@@ -34,11 +34,11 @@ namespace Z80Sharp.Processor
                 _halted = value;
                 if(value)
                 {
-                    //_logger.Log(LogSeverity.Info, "Processor halted");
+                    _logger.Log(LogSeverity.Info, "Processor halted");
                 }
                 else
                 {
-                    //_logger.Log(LogSeverity.Info, "Processor unhalted");
+                    _logger.Log(LogSeverity.Info, "Processor unhalted");
                 }
             }
         }

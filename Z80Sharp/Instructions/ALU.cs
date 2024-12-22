@@ -17,21 +17,12 @@ namespace Z80Sharp.Processor
         // I copied this code...I wish there was a better way to do this while keeping it 100% accurate.
         private void DAA()
         {
-            int t;
+            int t = 0;
 
-            t = 0;
+            if (Registers.IsFlagSet(FlagType.H) || ((Registers.A & 0xF) > 9)) t++;
+            if (Registers.IsFlagSet(FlagType.C) || (Registers.A > 0x99)) { t += 2; Registers.SetFlag(FlagType.C); }
 
-            if (Registers.IsFlagSet(FlagType.H) || ((Registers.A & 0xF) > 9))
-                t++;
-
-            if (Registers.IsFlagSet(FlagType.C) || (Registers.A > 0x99))
-            {
-                t += 2;
-                Registers.SetFlag(FlagType.C);
-            }
-
-            if (Registers.IsFlagSet(FlagType.N) && !Registers.IsFlagSet(FlagType.H))
-                Registers.ClearFlag(FlagType.H);
+            if (Registers.IsFlagSet(FlagType.N) && !Registers.IsFlagSet(FlagType.H)) Registers.ClearFlag(FlagType.H);
             else
             {
                 if (Registers.IsFlagSet(FlagType.N) && Registers.IsFlagSet(FlagType.H))
@@ -53,11 +44,11 @@ namespace Z80Sharp.Processor
                     break;
             }
 
-            Registers.SetFlagConditionally(FlagType.S, (Registers.A & 0x80) != 0);             // (S)  (Set if negative)
-            Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);                      // (Z)  (Set if result is zero)
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity(Registers.A));             // (PV) (Set if bit parity is even)
-            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 1 << 5) > 0);            // (X)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 1 << 3) > 0);            // (Y)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.S, (Registers.A & 0x80) != 0);  // (S)  (Set if negative)
+            Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);           // (Z)  (Set if result is zero)
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(Registers.A));  // (PV) (Set if bit parity is even)
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 1 << 5) > 0); // (X)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 1 << 3) > 0); // (Y)  (Undocumented flag)
         }
 
         private void NEG()
