@@ -7,7 +7,7 @@ using Z80Sharp.Interfaces;
 using Z80Sharp.Memory;
 using Z80Sharp.Processor;
 
-namespace Z80Sharp.TestProgram
+namespace Z80Sharp.ExampleProgram
 {
     public static partial class Program
     {
