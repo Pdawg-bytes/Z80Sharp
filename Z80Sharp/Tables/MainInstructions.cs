@@ -271,13 +271,13 @@ namespace Z80Sharp.Processor
                 // CALL instructions: push current PC to stack and jump to immediate
                 case 0xCD: CALL_NN(); break; // CALL NN
                 case 0xC4: CALL_CC_NN(NZ_C); break; // CALL NZ, NN
-                case 0xCC: CALL_CC_NN(Z_C); break; // CALL Z, NN
+                case 0xCC: CALL_CC_NN(Z_C); break;  // CALL Z, NN
                 case 0xD4: CALL_CC_NN(NC_C); break; // CALL NC, NN
-                case 0xDC: CALL_CC_NN(C_C); break; // CALL C, NN
+                case 0xDC: CALL_CC_NN(C_C); break;  // CALL C, NN
                 case 0xE4: CALL_CC_NN(PO_C); break; // CALL PO, NN
                 case 0xEC: CALL_CC_NN(PE_C); break; // CALL PE, NN
-                case 0xF4: CALL_CC_NN(P_C); break; // CALL P, NN
-                case 0xFC: CALL_CC_NN(M_C); break; // CALL M, NN
+                case 0xF4: CALL_CC_NN(P_C); break;  // CALL P, NN
+                case 0xFC: CALL_CC_NN(M_C); break;  // CALL M, NN
 
 
                 // POP instructions: pop value at SP into RR and inc. SP

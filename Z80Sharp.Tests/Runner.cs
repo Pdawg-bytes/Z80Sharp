@@ -19,7 +19,7 @@ namespace Z80Sharp.Tests
         private readonly MainMemory memory;
         static ProcessorRegisters state = new ProcessorRegisters();
 
-        internal Runner(Z80 z80, MainMemory memory)
+        internal Runner(Z80 z80, MainMemory memory, bool undoc)
         {
             this.z80 = z80;
             this.memory = memory;
@@ -30,21 +30,26 @@ namespace Z80Sharp.Tests
             string expectedOutput = File.ReadAllText(@"tests.expected.json");
             var expectedStates = JsonSerializer.Deserialize<List<ExpectedState>>(expectedOutput);
 
+            if (!undoc) machineStates.RemoveAll(state => Constants.UndocumentedInstructions.Contains(state.name));
+
+            int passed = 0;
             foreach (var machineState in machineStates)
             {
-                ExecuteTest(machineState);
-                var (pass, badRegisters) = EvaluateResult(expectedStates.First(e => e.name == machineState.name));
+                ExpectedState expected = expectedStates.First(e => e.name == machineState.name);
+                ExecuteTest(machineState, expected.state.pc);
+                var (pass, badRegisters) = EvaluateResult(expected);
 
                 string status = pass ? "PASS" : "FAIL";
                 string color = pass ? Colors.GREEN : Colors.RED;
                 string failedRegs = pass ? "" : $", bad registers: {string.Join(", ", badRegisters)}";
+                passed += pass ? 1 : 0;
 
                 Console.WriteLine($"{color}{status}{Colors.ANSI_RESET}: Test {machineState.name}{failedRegs}");
             }
-
+            Console.WriteLine($"{Colors.GREEN}{passed}{Colors.ANSI_RESET} tests passed, {Colors.RED}{machineStates.Count - passed}{Colors.ANSI_RESET} tests failed.");
         }
 
-        private void ExecuteTest(MachineState emulatorState)
+        private void ExecuteTest(MachineState emulatorState, int endPC)
         {
             state.AF = (ushort)emulatorState.state.af;
             state.BC = (ushort)emulatorState.state.bc;
@@ -90,13 +95,10 @@ namespace Z80Sharp.Tests
                 }
             }
 
-            z80.Step();
-            z80.Step();
-            z80.Step();
-            z80.Step();
-            z80.Step();
-            z80.Step();
-            z80.Step();
+            for (int i = endPC; i > 0; i--)
+            {
+                z80.Step();
+            }
         }
 
         private (bool passed, string[] badRegisters) EvaluateResult(ExpectedState expectedState)

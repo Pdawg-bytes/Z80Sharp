@@ -10,28 +10,18 @@ namespace Z80Sharp.Registers
 {
     public unsafe partial struct ProcessorRegisters
     {
-        // 16-bit general purpose register pairs
-        private ushort _af;
-        private ushort _bc;
-        private ushort _de;
-        private ushort _hl;
-
-        // Shadow register pairs
-        private ushort _af_;
-        private ushort _bc_;
-        private ushort _de_;
-        private ushort _hl_;
+        // General-purpose registers
+        private ushort _af, _bc, _de, _hl;
+        private ushort _af_, _bc_, _de_, _hl_;
 
         // System registers
-        private ushort _sp;
-        private ushort _pc;
+        private ushort _sp, _pc;
 
         // Index registers
-        private ushort _ix;
-        private ushort _iy;
+        private ushort _ix, _iy;
 
-        private byte _i;
-        private byte _r;
+        // Interrupt and refresh registers
+        private byte _i, _r;
 
 
         [UnscopedRef] public ref byte I => ref _i;

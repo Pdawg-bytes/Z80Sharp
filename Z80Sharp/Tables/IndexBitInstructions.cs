@@ -178,151 +178,151 @@ namespace Z80Sharp.Processor
 
 
                 // RES instructions: Reset bit B of (IR + d)
-                case 0x80: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 0, (IX + d), B | UNDOCUMENTED
-                case 0x81: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 0, (IX + d), C | UNDOCUMENTED
-                case 0x82: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 0, (IX + d), D | UNDOCUMENTED
-                case 0x83: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 0, (IX + d), E | UNDOCUMENTED
-                case 0x84: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 0, (IX + d), H | UNDOCUMENTED
-                case 0x85: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 0, (IX + d), L | UNDOCUMENTED
-                case 0x87: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 0, (IX + d), A | UNDOCUMENTED
-                case 0x86: RES_B_IRDMEM(0, displacement, ref indexAddressingMode); break;      // RES 0, (IX + d)
+                case 0x80: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 0, (IR + d), B | UNDOCUMENTED
+                case 0x81: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 0, (IR + d), C | UNDOCUMENTED
+                case 0x82: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 0, (IR + d), D | UNDOCUMENTED
+                case 0x83: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 0, (IR + d), E | UNDOCUMENTED
+                case 0x84: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 0, (IR + d), H | UNDOCUMENTED
+                case 0x85: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 0, (IR + d), L | UNDOCUMENTED
+                case 0x87: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 0, (IR + d), A | UNDOCUMENTED
+                case 0x86: RES_B_IRDMEM(0, displacement, ref indexAddressingMode); break;      // RES 0, (IR + d)
 
-                case 0x88: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 1, (IX + d), B | UNDOCUMENTED
-                case 0x89: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 1, (IX + d), C | UNDOCUMENTED
-                case 0x8A: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 1, (IX + d), D | UNDOCUMENTED
-                case 0x8B: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 1, (IX + d), E | UNDOCUMENTED
-                case 0x8C: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 1, (IX + d), H | UNDOCUMENTED
-                case 0x8D: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 1, (IX + d), L | UNDOCUMENTED
-                case 0x8F: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 1, (IX + d), A | UNDOCUMENTED
-                case 0x8E: RES_B_IRDMEM(1, displacement, ref indexAddressingMode); break;      // RES 1, (IX + d)
+                case 0x88: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 1, (IR + d), B | UNDOCUMENTED
+                case 0x89: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 1, (IR + d), C | UNDOCUMENTED
+                case 0x8A: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 1, (IR + d), D | UNDOCUMENTED
+                case 0x8B: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 1, (IR + d), E | UNDOCUMENTED
+                case 0x8C: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 1, (IR + d), H | UNDOCUMENTED
+                case 0x8D: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 1, (IR + d), L | UNDOCUMENTED
+                case 0x8F: RES_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 1, (IR + d), A | UNDOCUMENTED
+                case 0x8E: RES_B_IRDMEM(1, displacement, ref indexAddressingMode); break;      // RES 1, (IR + d)
 
-                case 0x90: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 2, (IX + d), B | UNDOCUMENTED
-                case 0x91: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 2, (IX + d), C | UNDOCUMENTED
-                case 0x92: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 2, (IX + d), D | UNDOCUMENTED
-                case 0x93: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 2, (IX + d), E | UNDOCUMENTED
-                case 0x94: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 2, (IX + d), H | UNDOCUMENTED
-                case 0x95: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 2, (IX + d), L | UNDOCUMENTED
-                case 0x97: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 2, (IX + d), A | UNDOCUMENTED
-                case 0x96: RES_B_IRDMEM(2, displacement, ref indexAddressingMode); break;      // RES 2, (IX + d)
+                case 0x90: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 2, (IR + d), B | UNDOCUMENTED
+                case 0x91: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 2, (IR + d), C | UNDOCUMENTED
+                case 0x92: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 2, (IR + d), D | UNDOCUMENTED
+                case 0x93: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 2, (IR + d), E | UNDOCUMENTED
+                case 0x94: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 2, (IR + d), H | UNDOCUMENTED
+                case 0x95: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 2, (IR + d), L | UNDOCUMENTED
+                case 0x97: RES_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 2, (IR + d), A | UNDOCUMENTED
+                case 0x96: RES_B_IRDMEM(2, displacement, ref indexAddressingMode); break;      // RES 2, (IR + d)
 
-                case 0x98: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 3, (IX + d), B | UNDOCUMENTED
-                case 0x99: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 3, (IX + d), C | UNDOCUMENTED
-                case 0x9A: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 3, (IX + d), D | UNDOCUMENTED
-                case 0x9B: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 3, (IX + d), E | UNDOCUMENTED
-                case 0x9C: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 3, (IX + d), H | UNDOCUMENTED
-                case 0x9D: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 3, (IX + d), L | UNDOCUMENTED
-                case 0x9F: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 3, (IX + d), A | UNDOCUMENTED
-                case 0x9E: RES_B_IRDMEM(3, displacement, ref indexAddressingMode); break;      // RES 3, (IX + d)
+                case 0x98: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 3, (IR + d), B | UNDOCUMENTED
+                case 0x99: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 3, (IR + d), C | UNDOCUMENTED
+                case 0x9A: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 3, (IR + d), D | UNDOCUMENTED
+                case 0x9B: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 3, (IR + d), E | UNDOCUMENTED
+                case 0x9C: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 3, (IR + d), H | UNDOCUMENTED
+                case 0x9D: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 3, (IR + d), L | UNDOCUMENTED
+                case 0x9F: RES_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 3, (IR + d), A | UNDOCUMENTED
+                case 0x9E: RES_B_IRDMEM(3, displacement, ref indexAddressingMode); break;      // RES 3, (IR + d)
 
-                case 0xA0: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 4, (IX + d), B | UNDOCUMENTED
-                case 0xA1: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 4, (IX + d), C | UNDOCUMENTED
-                case 0xA2: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 4, (IX + d), D | UNDOCUMENTED
-                case 0xA3: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 4, (IX + d), E | UNDOCUMENTED
-                case 0xA4: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 4, (IX + d), H | UNDOCUMENTED
-                case 0xA5: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 4, (IX + d), L | UNDOCUMENTED
-                case 0xA7: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 4, (IX + d), A | UNDOCUMENTED
-                case 0xA6: RES_B_IRDMEM(4, displacement, ref indexAddressingMode); break;      // RES 4, (IX + d)
+                case 0xA0: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 4, (IR + d), B | UNDOCUMENTED
+                case 0xA1: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 4, (IR + d), C | UNDOCUMENTED
+                case 0xA2: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 4, (IR + d), D | UNDOCUMENTED
+                case 0xA3: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 4, (IR + d), E | UNDOCUMENTED
+                case 0xA4: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 4, (IR + d), H | UNDOCUMENTED
+                case 0xA5: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 4, (IR + d), L | UNDOCUMENTED
+                case 0xA7: RES_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 4, (IR + d), A | UNDOCUMENTED
+                case 0xA6: RES_B_IRDMEM(4, displacement, ref indexAddressingMode); break;      // RES 4, (IR + d)
 
-                case 0xA8: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 5, (IX + d), B | UNDOCUMENTED
-                case 0xA9: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 5, (IX + d), C | UNDOCUMENTED
-                case 0xAA: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 5, (IX + d), D | UNDOCUMENTED
-                case 0xAB: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 5, (IX + d), E | UNDOCUMENTED
-                case 0xAC: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 5, (IX + d), H | UNDOCUMENTED
-                case 0xAD: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 5, (IX + d), L | UNDOCUMENTED
-                case 0xAF: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 5, (IX + d), A | UNDOCUMENTED
-                case 0xAE: RES_B_IRDMEM(5, displacement, ref indexAddressingMode); break;      // RES 5, (IX + d)
+                case 0xA8: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 5, (IR + d), B | UNDOCUMENTED
+                case 0xA9: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 5, (IR + d), C | UNDOCUMENTED
+                case 0xAA: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 5, (IR + d), D | UNDOCUMENTED
+                case 0xAB: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 5, (IR + d), E | UNDOCUMENTED
+                case 0xAC: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 5, (IR + d), H | UNDOCUMENTED
+                case 0xAD: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 5, (IR + d), L | UNDOCUMENTED
+                case 0xAF: RES_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 5, (IR + d), A | UNDOCUMENTED
+                case 0xAE: RES_B_IRDMEM(5, displacement, ref indexAddressingMode); break;      // RES 5, (IR + d)
 
-                case 0xB0: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 6, (IX + d), B | UNDOCUMENTED
-                case 0xB1: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 6, (IX + d), C | UNDOCUMENTED
-                case 0xB2: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 6, (IX + d), D | UNDOCUMENTED
-                case 0xB3: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 6, (IX + d), E | UNDOCUMENTED
-                case 0xB4: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 6, (IX + d), H | UNDOCUMENTED
-                case 0xB5: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 6, (IX + d), L | UNDOCUMENTED
-                case 0xB7: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 6, (IX + d), A | UNDOCUMENTED
-                case 0xB6: RES_B_IRDMEM(6, displacement, ref indexAddressingMode); break;      // RES 6, (IX + d)
+                case 0xB0: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 6, (IR + d), B | UNDOCUMENTED
+                case 0xB1: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 6, (IR + d), C | UNDOCUMENTED
+                case 0xB2: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 6, (IR + d), D | UNDOCUMENTED
+                case 0xB3: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 6, (IR + d), E | UNDOCUMENTED
+                case 0xB4: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 6, (IR + d), H | UNDOCUMENTED
+                case 0xB5: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 6, (IR + d), L | UNDOCUMENTED
+                case 0xB7: RES_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 6, (IR + d), A | UNDOCUMENTED
+                case 0xB6: RES_B_IRDMEM(6, displacement, ref indexAddressingMode); break;      // RES 6, (IR + d)
 
-                case 0xB8: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 7, (IX + d), B | UNDOCUMENTED
-                case 0xB9: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 7, (IX + d), C | UNDOCUMENTED
-                case 0xBA: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 7, (IX + d), D | UNDOCUMENTED
-                case 0xBB: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 7, (IX + d), E | UNDOCUMENTED
-                case 0xBC: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 7, (IX + d), H | UNDOCUMENTED
-                case 0xBD: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 7, (IX + d), L | UNDOCUMENTED
-                case 0xBF: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 7, (IX + d), A | UNDOCUMENTED
-                case 0xBE: RES_B_IRDMEM(7, displacement, ref indexAddressingMode); break;      // RES 7, (IX + d)
+                case 0xB8: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.B); break; // RES 7, (IR + d), B | UNDOCUMENTED
+                case 0xB9: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.C); break; // RES 7, (IR + d), C | UNDOCUMENTED
+                case 0xBA: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.D); break; // RES 7, (IR + d), D | UNDOCUMENTED
+                case 0xBB: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.E); break; // RES 7, (IR + d), E | UNDOCUMENTED
+                case 0xBC: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.H); break; // RES 7, (IR + d), H | UNDOCUMENTED
+                case 0xBD: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.L); break; // RES 7, (IR + d), L | UNDOCUMENTED
+                case 0xBF: RES_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.A); break; // RES 7, (IR + d), A | UNDOCUMENTED
+                case 0xBE: RES_B_IRDMEM(7, displacement, ref indexAddressingMode); break;      // RES 7, (IR + d)
 
 
                 // SET instructions: Set bit B of (IR + d)
-                case 0xC0: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 0, (IX + d), B | UNDOCUMENTED
-                case 0xC1: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 0, (IX + d), C | UNDOCUMENTED
-                case 0xC2: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 0, (IX + d), D | UNDOCUMENTED
-                case 0xC3: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 0, (IX + d), E | UNDOCUMENTED
-                case 0xC4: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 0, (IX + d), H | UNDOCUMENTED
-                case 0xC5: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 0, (IX + d), L | UNDOCUMENTED
-                case 0xC7: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 0, (IX + d), A | UNDOCUMENTED
-                case 0xC6: SET_B_IRDMEM(0, displacement, ref indexAddressingMode); break;      // SET 0, (IX + d)
+                case 0xC0: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 0, (IR + d), B | UNDOCUMENTED
+                case 0xC1: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 0, (IR + d), C | UNDOCUMENTED
+                case 0xC2: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 0, (IR + d), D | UNDOCUMENTED
+                case 0xC3: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 0, (IR + d), E | UNDOCUMENTED
+                case 0xC4: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 0, (IR + d), H | UNDOCUMENTED
+                case 0xC5: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 0, (IR + d), L | UNDOCUMENTED
+                case 0xC7: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 0, (IR + d), A | UNDOCUMENTED
+                case 0xC6: SET_B_IRDMEM(0, displacement, ref indexAddressingMode); break;      // SET 0, (IR + d)
 
-                case 0xC8: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 1, (IX + d), B | UNDOCUMENTED
-                case 0xC9: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 1, (IX + d), C | UNDOCUMENTED
-                case 0xCA: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 1, (IX + d), D | UNDOCUMENTED
-                case 0xCB: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 1, (IX + d), E | UNDOCUMENTED
-                case 0xCC: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 1, (IX + d), H | UNDOCUMENTED
-                case 0xCD: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 1, (IX + d), L | UNDOCUMENTED
-                case 0xCF: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 1, (IX + d), A | UNDOCUMENTED
-                case 0xCE: SET_B_IRDMEM(1, displacement, ref indexAddressingMode); break;      // SET 1, (IX + d)
+                case 0xC8: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 1, (IR + d), B | UNDOCUMENTED
+                case 0xC9: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 1, (IR + d), C | UNDOCUMENTED
+                case 0xCA: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 1, (IR + d), D | UNDOCUMENTED
+                case 0xCB: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 1, (IR + d), E | UNDOCUMENTED
+                case 0xCC: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 1, (IR + d), H | UNDOCUMENTED
+                case 0xCD: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 1, (IR + d), L | UNDOCUMENTED
+                case 0xCF: SET_B_IRDMEM_R(1, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 1, (IR + d), A | UNDOCUMENTED
+                case 0xCE: SET_B_IRDMEM(1, displacement, ref indexAddressingMode); break;      // SET 1, (IR + d)
 
-                case 0xD0: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 2, (IX + d), B | UNDOCUMENTED
-                case 0xD1: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 2, (IX + d), C | UNDOCUMENTED
-                case 0xD2: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 2, (IX + d), D | UNDOCUMENTED
-                case 0xD3: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 2, (IX + d), E | UNDOCUMENTED
-                case 0xD4: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 2, (IX + d), H | UNDOCUMENTED
-                case 0xD5: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 2, (IX + d), L | UNDOCUMENTED
-                case 0xD7: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 2, (IX + d), A | UNDOCUMENTED
-                case 0xD6: SET_B_IRDMEM(2, displacement, ref indexAddressingMode); break;      // SET 2, (IX + d)
+                case 0xD0: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 2, (IR + d), B | UNDOCUMENTED
+                case 0xD1: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 2, (IR + d), C | UNDOCUMENTED
+                case 0xD2: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 2, (IR + d), D | UNDOCUMENTED
+                case 0xD3: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 2, (IR + d), E | UNDOCUMENTED
+                case 0xD4: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 2, (IR + d), H | UNDOCUMENTED
+                case 0xD5: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 2, (IR + d), L | UNDOCUMENTED
+                case 0xD7: SET_B_IRDMEM_R(2, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 2, (IR + d), A | UNDOCUMENTED
+                case 0xD6: SET_B_IRDMEM(2, displacement, ref indexAddressingMode); break;      // SET 2, (IR + d)
 
-                case 0xD8: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 3, (IX + d), B | UNDOCUMENTED
-                case 0xD9: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 3, (IX + d), C | UNDOCUMENTED
-                case 0xDA: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 3, (IX + d), D | UNDOCUMENTED
-                case 0xDB: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 3, (IX + d), E | UNDOCUMENTED
-                case 0xDC: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 3, (IX + d), H | UNDOCUMENTED
-                case 0xDD: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 3, (IX + d), L | UNDOCUMENTED
-                case 0xDF: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 3, (IX + d), A | UNDOCUMENTED
-                case 0xDE: SET_B_IRDMEM(3, displacement, ref indexAddressingMode); break;      // SET 3, (IX + d)
+                case 0xD8: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 3, (IR + d), B | UNDOCUMENTED
+                case 0xD9: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 3, (IR + d), C | UNDOCUMENTED
+                case 0xDA: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 3, (IR + d), D | UNDOCUMENTED
+                case 0xDB: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 3, (IR + d), E | UNDOCUMENTED
+                case 0xDC: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 3, (IR + d), H | UNDOCUMENTED
+                case 0xDD: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 3, (IR + d), L | UNDOCUMENTED
+                case 0xDF: SET_B_IRDMEM_R(3, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 3, (IR + d), A | UNDOCUMENTED
+                case 0xDE: SET_B_IRDMEM(3, displacement, ref indexAddressingMode); break;      // SET 3, (IR + d)
 
-                case 0xE0: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 4, (IX + d), B | UNDOCUMENTED
-                case 0xE1: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 4, (IX + d), C | UNDOCUMENTED
-                case 0xE2: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 4, (IX + d), D | UNDOCUMENTED
-                case 0xE3: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 4, (IX + d), E | UNDOCUMENTED
-                case 0xE4: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 4, (IX + d), H | UNDOCUMENTED
-                case 0xE5: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 4, (IX + d), L | UNDOCUMENTED
-                case 0xE7: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 4, (IX + d), A | UNDOCUMENTED
-                case 0xE6: SET_B_IRDMEM(4, displacement, ref indexAddressingMode); break;      // SET 4, (IX + d)
+                case 0xE0: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 4, (IR + d), B | UNDOCUMENTED
+                case 0xE1: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 4, (IR + d), C | UNDOCUMENTED
+                case 0xE2: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 4, (IR + d), D | UNDOCUMENTED
+                case 0xE3: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 4, (IR + d), E | UNDOCUMENTED
+                case 0xE4: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 4, (IR + d), H | UNDOCUMENTED
+                case 0xE5: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 4, (IR + d), L | UNDOCUMENTED
+                case 0xE7: SET_B_IRDMEM_R(4, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 4, (IR + d), A | UNDOCUMENTED
+                case 0xE6: SET_B_IRDMEM(4, displacement, ref indexAddressingMode); break;      // SET 4, (IR + d)
 
-                case 0xE8: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 5, (IX + d), B | UNDOCUMENTED
-                case 0xE9: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 5, (IX + d), C | UNDOCUMENTED
-                case 0xEA: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 5, (IX + d), D | UNDOCUMENTED
-                case 0xEB: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 5, (IX + d), E | UNDOCUMENTED
-                case 0xEC: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 5, (IX + d), H | UNDOCUMENTED
-                case 0xED: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 5, (IX + d), L | UNDOCUMENTED
-                case 0xEF: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 5, (IX + d), A | UNDOCUMENTED
-                case 0xEE: SET_B_IRDMEM(5, displacement, ref indexAddressingMode); break;      // SET 5, (IX + d)
+                case 0xE8: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 5, (IR + d), B | UNDOCUMENTED
+                case 0xE9: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 5, (IR + d), C | UNDOCUMENTED
+                case 0xEA: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 5, (IR + d), D | UNDOCUMENTED
+                case 0xEB: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 5, (IR + d), E | UNDOCUMENTED
+                case 0xEC: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 5, (IR + d), H | UNDOCUMENTED
+                case 0xED: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 5, (IR + d), L | UNDOCUMENTED
+                case 0xEF: SET_B_IRDMEM_R(5, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 5, (IR + d), A | UNDOCUMENTED
+                case 0xEE: SET_B_IRDMEM(5, displacement, ref indexAddressingMode); break;      // SET 5, (IR + d)
 
-                case 0xF0: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 6, (IX + d), B | UNDOCUMENTED
-                case 0xF1: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 6, (IX + d), C | UNDOCUMENTED
-                case 0xF2: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 6, (IX + d), D | UNDOCUMENTED
-                case 0xF3: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 6, (IX + d), E | UNDOCUMENTED
-                case 0xF4: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 6, (IX + d), H | UNDOCUMENTED
-                case 0xF5: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 6, (IX + d), L | UNDOCUMENTED
-                case 0xF7: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 6, (IX + d), A | UNDOCUMENTED
-                case 0xF6: SET_B_IRDMEM(6, displacement, ref indexAddressingMode); break;      // SET 6, (IX + d)
+                case 0xF0: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 6, (IR + d), B | UNDOCUMENTED
+                case 0xF1: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 6, (IR + d), C | UNDOCUMENTED
+                case 0xF2: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 6, (IR + d), D | UNDOCUMENTED
+                case 0xF3: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 6, (IR + d), E | UNDOCUMENTED
+                case 0xF4: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 6, (IR + d), H | UNDOCUMENTED
+                case 0xF5: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 6, (IR + d), L | UNDOCUMENTED
+                case 0xF7: SET_B_IRDMEM_R(6, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 6, (IR + d), A | UNDOCUMENTED
+                case 0xF6: SET_B_IRDMEM(6, displacement, ref indexAddressingMode); break;      // SET 6, (IR + d)
 
-                case 0xF8: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 7, (IX + d), B | UNDOCUMENTED
-                case 0xF9: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 7, (IX + d), C | UNDOCUMENTED
-                case 0xFA: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 7, (IX + d), D | UNDOCUMENTED
-                case 0xFB: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 7, (IX + d), E | UNDOCUMENTED
-                case 0xFC: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 7, (IX + d), H | UNDOCUMENTED
-                case 0xFD: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 7, (IX + d), L | UNDOCUMENTED
-                case 0xFF: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 7, (IX + d), A | UNDOCUMENTED
-                case 0xFE: SET_B_IRDMEM(7, displacement, ref indexAddressingMode); break;      // SET 7, (IX + d)
+                case 0xF8: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.B); break; // SET 7, (IR + d), B | UNDOCUMENTED
+                case 0xF9: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.C); break; // SET 7, (IR + d), C | UNDOCUMENTED
+                case 0xFA: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.D); break; // SET 7, (IR + d), D | UNDOCUMENTED
+                case 0xFB: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.E); break; // SET 7, (IR + d), E | UNDOCUMENTED
+                case 0xFC: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.H); break; // SET 7, (IR + d), H | UNDOCUMENTED
+                case 0xFD: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.L); break; // SET 7, (IR + d), L | UNDOCUMENTED
+                case 0xFF: SET_B_IRDMEM_R(7, displacement, ref indexAddressingMode, ref Registers.A); break; // SET 7, (IR + d), A | UNDOCUMENTED
+                case 0xFE: SET_B_IRDMEM(7, displacement, ref indexAddressingMode); break;      // SET 7, (IR + d)
             }
         }
     }

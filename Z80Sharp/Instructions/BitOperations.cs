@@ -71,6 +71,7 @@ namespace Z80Sharp.Processor
         }
         private void RES_B_IRDMEM_R([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
         {
+            Console.WriteLine(outputRegister);
             ushort ird = (ushort)(indexAddressingMode + displacement);
             byte result = (byte)(_memory.Read(ird) & (byte)~(1 << bit));
             _memory.Write(ird, result);

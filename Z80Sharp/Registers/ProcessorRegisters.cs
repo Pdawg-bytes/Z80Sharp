@@ -35,7 +35,7 @@ namespace Z80Sharp.Registers
         /// <param name="condition">The flag condition.</param>
         /// <returns>True if the flag condition matches the expected value; false if otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool EvaluateJumpFlagCondition([ConstantExpected] in byte condition)
+        public bool EvaluateJumpFlagCondition([ConstantExpected] byte condition)
         {
             switch (condition & 0xFE) // Mask out LSB to handle paired conditions.
             {
