@@ -23,13 +23,11 @@ namespace Z80Sharp.ExampleProgram
             //byte[] program = File.ReadAllBytes("../../new_alutest.z80.bin");
             //Array.Copy(program, 0, mainMemory._memory, 0x0, program.Length);
 
-            z80 = new Z80(mainMemory, dataBus, logger, true);
+            z80 = new Z80(mainMemory, dataBus, logger, 0, true);
             z80.Reset();
             Thread processorThread = new(() =>
             {
-                RunCPMBinary("zexdoc-reloaded.rom");
-                //z80.Registers.PC = 0x200;
-                //z80.Run();
+                RunCPMBinary("zexdoc.com");
             });
             processorThread.Start();
 

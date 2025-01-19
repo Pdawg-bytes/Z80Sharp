@@ -18,7 +18,7 @@ namespace Z80Sharp.Tests
 
         static void Main(string[] args)
         {
-            z80 = new(memory, new DefaultBus(), logger, true);
+            z80 = new(memory, new DefaultBus(), logger, 0, true);
             Runner runner = new(z80, memory, false);
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Z80Sharp.Enums;
@@ -12,7 +13,6 @@ namespace Z80Sharp.Processor
 {
     public unsafe partial class Z80
     {
-        // JP: unconditional jumps to value in register or immediate in memory.
         private void JP_NN()
         {
             ushort jumpTo = FetchImmediateWord();
@@ -24,7 +24,6 @@ namespace Z80Sharp.Processor
             Registers.PC = operatingRegister;
             //LogInstructionExec($"0x{_currentInstruction:X2}: JP RR");
         }
-        // Conditional jump to immediate
         private void JP_NN_C([ConstantExpected] byte flagCondition)
         {
             ushort jumpTo = FetchImmediateWord();
@@ -39,12 +38,10 @@ namespace Z80Sharp.Processor
             }
         }
 
-        // No generic instruction here as JR D is the only (JR n) format instruction.
         private void JR_D()
         {
-            sbyte displacement = (sbyte)Fetch();
-            ushort jumpTo = (ushort)(Registers.PC + displacement);
-            Registers.PC = jumpTo;
+            byte offset = Fetch();
+            Registers.PC += (ushort)(sbyte)offset;
             //LogInstructionExec($"0x{_currentInstruction:X2}: JR D:0x{displacement:X2} -> 0x{Registers.PC:X4}");
         }
         // Technically, if we were doing this off of ((_currentInstruction >> 3) & 0x07), we'd need to (& 0x3) the value
@@ -52,38 +49,27 @@ namespace Z80Sharp.Processor
         // to pass in the correct values when we call this function from its respective opcodes.
         private void JR_CC_D([ConstantExpected] byte flagCondition)
         {
-            sbyte displacement = (sbyte)Fetch();
-            if (Registers.EvaluateJumpFlagCondition(flagCondition))
+            if (!Registers.EvaluateJumpFlagCondition(flagCondition))
             {
-                ushort jumpTo = (ushort)(Registers.PC + displacement);
-                Registers.PC = jumpTo;
+                Registers.PC += 1;
+                return;
                 //LogInstructionExec($"0x{_currentInstruction:X2}: JR {Registers.JumpConditionName(flagCondition)} D:0x{((byte)displacement).ToString("X2")} -> 0x{jumpTo:X4}");
             }
-            else
-            {
-                //LogInstructionExec($"0x{_currentInstruction:X2}: JR (no jump), {Registers.JumpConditionName(flagCondition)} not set.");
-            }
+            byte offset = Fetch();
+            Registers.PC += (ushort)(sbyte)offset;
         }
 
         private void DJNZ_D()
         {
-            sbyte displacement = (sbyte)Fetch();
+            Registers.B--;
 
-            Registers.B = DECAny(Registers.B);
+            if (Registers.B == 0) { Registers.PC += 1; return; }
 
-            if (!Registers.IsFlagSet(FlagType.Z))
-            {
-                Registers.PC = (ushort)(Registers.PC + displacement);
-                //LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ D:0x{displacement.ToString()} -> 0x{Registers.PC:X4}");
-            }
-            else
-            {
-                //LogInstructionExec($"0x{_currentInstruction:X2}: DJNZ (no jump), B not 0 after decrement.");
-            }
+            var offset = Fetch();
+            Registers.PC += (ushort)(sbyte)offset;
         }
 
 
-        // Return instructions
         private void RET()
         {
             POP_PC();

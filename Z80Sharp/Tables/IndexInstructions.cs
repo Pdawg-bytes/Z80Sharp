@@ -42,14 +42,14 @@ namespace Z80Sharp.Processor
                 case 0x8F: ADC_A_R(ref Registers.A); break;     // ADC A, A | UNDOCUMENTED
 
                 // SUB/SBC instructions: SUB operand from register (- carry if SBC).
-                case 0x90: SUB_R(ref Registers.B); break;     // SUB B | UNDOCUMENTED
-                case 0x91: SUB_R(ref Registers.C); break;     // SUB C | UNDOCUMENTED
-                case 0x92: SUB_R(ref Registers.D); break;     // SUB D | UNDOCUMENTED
-                case 0x93: SUB_R(ref Registers.E); break;     // SUB E | UNDOCUMENTED
-                case 0x94: SUB_R(ref irH); break;             // SUB IRh | UNDOCUMENTED
-                case 0x95: SUB_R(ref irL); break;             // SUB IRl | UNDOCUMENTED
-                case 0x96: SUB_IRDMEM(ref indexAddressingMode); break;  // SUB (IR + d)
-                case 0x97: SUB_R(ref Registers.A); break;     // SUB A | UNDOCUMENTED
+                case 0x90: SUB_A_R(ref Registers.B); break;     // SUB B | UNDOCUMENTED
+                case 0x91: SUB_A_R(ref Registers.C); break;     // SUB C | UNDOCUMENTED
+                case 0x92: SUB_A_R(ref Registers.D); break;     // SUB D | UNDOCUMENTED
+                case 0x93: SUB_A_R(ref Registers.E); break;     // SUB E | UNDOCUMENTED
+                case 0x94: SUB_A_R(ref irH); break;             // SUB IRh | UNDOCUMENTED
+                case 0x95: SUB_A_R(ref irL); break;             // SUB IRl | UNDOCUMENTED
+                case 0x96: SUB_A_IRDMEM(ref indexAddressingMode); break;  // SUB (IR + d)
+                case 0x97: SUB_A_R(ref Registers.A); break;     // SUB A | UNDOCUMENTED
 
                 case 0x98: SBC_A_R(ref Registers.B); break;     // SBC A, B | UNDOCUMENTED
                 case 0x99: SBC_A_R(ref Registers.C); break;     // SBC A, C | UNDOCUMENTED

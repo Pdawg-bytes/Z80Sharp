@@ -369,22 +369,22 @@ namespace Z80Sharp.Processor
 
 
         #region SUB instructions (R, N, (RR), (IR + d))
-        private void SUB_R(ref byte operatingRegister)
+        private void SUB_A_R(ref byte operatingRegister)
         {
             SUBAny(operatingRegister);
             //LogInstructionExec($"0x{_currentInstruction:X2}: SUB R");
         }
-        private void SUB_N()
+        private void SUB_A_N()
         {
             SUBAny(Fetch());
             //LogInstructionExec($"0xD6: SUB N:0x{FetchLast():X2}");
         }
-        private void SUB_RRMEM(ref ushort operatingRegister)
+        private void SUB_A_RRMEM(ref ushort operatingRegister)
         {
             SUBAny(_memory.Read(operatingRegister));
             //LogInstructionExec($"0x{_currentInstruction:X2}: SUB (RR)");
         }
-        private void SUB_IRDMEM(ref ushort indexAddressingMode)
+        private void SUB_A_IRDMEM(ref ushort indexAddressingMode)
         {
             SUBAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
             //LogInstructionExec($"0x{_currentInstruction:X2}: SUB (IR + d)");

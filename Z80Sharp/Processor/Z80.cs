@@ -11,9 +11,10 @@ namespace Z80Sharp.Processor
 {
     public unsafe partial class Z80
     {
-        private static MainMemory _memory;
+        private readonly MainMemory _memory;
+        private readonly Clock _clock;
         private readonly IZ80Logger _logger;
-        private static IDataBus _dataBus;
+        private readonly IDataBus _dataBus;
 
         public bool IsDebug { get; init; }
 
@@ -45,11 +46,12 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void UnhaltIfHalted() { if(_halted) Halted = false; }
 
-        public Z80(MainMemory memory, IDataBus dataBus, IZ80Logger logger, bool isDebug)
+        public Z80(MainMemory memory, IDataBus dataBus, IZ80Logger logger, double clockSpeed, bool isDebug)
         {
             _memory = memory;
             _dataBus = dataBus;
             _logger = logger;
+            _clock = new Clock(clockSpeed);
             IsDebug = isDebug;
 
             if (_memory == null || _dataBus == null || _logger == null) throw new ArgumentNullException();
@@ -71,7 +73,7 @@ namespace Z80Sharp.Processor
         }
         private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
         {
-            //Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
+            Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
             InstrsExecutedLastSecond = InstrsExecuted;
         }
 
@@ -79,10 +81,8 @@ namespace Z80Sharp.Processor
         private void ExecuteOnce()
         {
             HandleInterrupts();
-            if (_halted) 
-            { 
-                return; 
-            }
+
+            if (_halted) return; 
 
             _currentInstruction = Fetch();
 
@@ -100,7 +100,7 @@ namespace Z80Sharp.Processor
                 default:
                     ExecuteMainInstruction(); break;
             }
-            //InstrsExecuted++;
+            InstrsExecuted++;
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)

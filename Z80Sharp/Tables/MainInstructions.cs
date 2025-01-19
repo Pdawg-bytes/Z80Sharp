@@ -55,15 +55,15 @@ namespace Z80Sharp.Processor
                 case 0xCE: ADC_A_N(); break;      // ADC A, N
 
                 // SUB/SBC instructions: SUB operand from register (- carry if SBC).
-                case 0x90: SUB_R(ref Registers.B); break;      // SUB B
-                case 0x91: SUB_R(ref Registers.C); break;      // SUB C
-                case 0x92: SUB_R(ref Registers.D); break;      // SUB D
-                case 0x93: SUB_R(ref Registers.E); break;      // SUB E
-                case 0x94: SUB_R(ref Registers.H); break;      // SUB H
-                case 0x95: SUB_R(ref Registers.L); break;      // SUB L
-                case 0x96: SUB_RRMEM(ref Registers.HL); break; // SUB (HL)
-                case 0x97: SUB_R(ref Registers.A); break;      // SUB A
-                case 0xD6: SUB_N(); break;      // SUB N
+                case 0x90: SUB_A_R(ref Registers.B); break;      // SUB B
+                case 0x91: SUB_A_R(ref Registers.C); break;      // SUB C
+                case 0x92: SUB_A_R(ref Registers.D); break;      // SUB D
+                case 0x93: SUB_A_R(ref Registers.E); break;      // SUB E
+                case 0x94: SUB_A_R(ref Registers.H); break;      // SUB H
+                case 0x95: SUB_A_R(ref Registers.L); break;      // SUB L
+                case 0x96: SUB_A_RRMEM(ref Registers.HL); break; // SUB (HL)
+                case 0x97: SUB_A_R(ref Registers.A); break;      // SUB A
+                case 0xD6: SUB_A_N(); break;      // SUB N
 
                 case 0x98: SBC_A_R(ref Registers.B); break;      // SBC A, B
                 case 0x99: SBC_A_R(ref Registers.C); break;      // SBC A, C
