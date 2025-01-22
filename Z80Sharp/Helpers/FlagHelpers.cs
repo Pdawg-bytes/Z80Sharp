@@ -30,10 +30,7 @@ namespace Z80Sharp.Processor
 		/// <param name="value">The value to check.</param>
 		/// <returns>False if the amount of 1s is even, false otherwise.</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool CheckParity(byte value)
-        {
-			return parityBit[value] == 1;
-        }
+        private bool CheckParity(byte value) => parityBit[value] == 1;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void UpdateShiftRotateFlags(byte result, byte carry)

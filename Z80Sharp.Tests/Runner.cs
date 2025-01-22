@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using Z80Sharp.Constants;
 using Z80Sharp.Enums;
-using Z80Sharp.Interfaces;
 using Z80Sharp.Memory;
 using Z80Sharp.Processor;
 using Z80Sharp.Registers;
@@ -30,13 +24,13 @@ namespace Z80Sharp.Tests
             string expectedOutput = File.ReadAllText(@"tests.expected.json");
             var expectedStates = JsonSerializer.Deserialize<List<ExpectedState>>(expectedOutput);
 
-            if (!undoc) machineStates.RemoveAll(state => Constants.UndocumentedInstructions.Contains(state.name));
+            if (!undoc) machineStates.RemoveAll(state => Constants.UndocumentedInstructions.Contains(state.name.Split("_")[0]));
 
             int passed = 0;
             foreach (var machineState in machineStates)
             {
                 ExpectedState expected = expectedStates.First(e => e.name == machineState.name);
-                ExecuteTest(machineState, expected.state.pc);
+                ExecuteTest(machineState, expected.state.tStates);
                 var (pass, badRegisters) = EvaluateResult(expected);
 
                 string status = pass ? "PASS" : "FAIL";
@@ -49,7 +43,7 @@ namespace Z80Sharp.Tests
             Console.WriteLine($"{Colors.GREEN}{passed}{Colors.ANSI_RESET} tests passed, {Colors.RED}{machineStates.Count - passed}{Colors.ANSI_RESET} tests failed.");
         }
 
-        private void ExecuteTest(MachineState emulatorState, int endPC)
+        private void ExecuteTest(MachineState emulatorState, long tStates)
         {
             state.AF = (ushort)emulatorState.state.af;
             state.BC = (ushort)emulatorState.state.bc;
@@ -95,10 +89,7 @@ namespace Z80Sharp.Tests
                 }
             }
 
-            for (int i = endPC; i > 0; i--)
-            {
-                z80.Step();
-            }
+            z80.RunUntil(tStates);
         }
 
         private (bool passed, string[] badRegisters) EvaluateResult(ExpectedState expectedState)

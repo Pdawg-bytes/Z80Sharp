@@ -1,11 +1,9 @@
 ﻿using System.Timers;
 using Z80Sharp.Enums;
+using Z80Sharp.Memory;
 using Z80Sharp.Registers;
 using Z80Sharp.Interfaces;
 using System.Runtime.CompilerServices;
-using static Z80Sharp.Registers.ProcessorRegisters;
-using Z80Sharp.Memory;
-using System.Diagnostics;
 
 namespace Z80Sharp.Processor
 {
@@ -16,11 +14,9 @@ namespace Z80Sharp.Processor
         private readonly IZ80Logger _logger;
         private readonly IDataBus _dataBus;
 
-        public bool IsDebug { get; init; }
-
-        private static ulong InstrsExecuted;
-        private static ulong InstrsExecutedLastSecond;
-        private static System.Timers.Timer _cycleTimer = new System.Timers.Timer(1000);
+        private ulong InstrsExecuted;
+        private ulong InstrsExecutedLastSecond;
+        private System.Timers.Timer _cycleTimer = new System.Timers.Timer(1000);
 
         private byte _currentInstruction;
 
@@ -44,15 +40,14 @@ namespace Z80Sharp.Processor
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void UnhaltIfHalted() { if(_halted) Halted = false; }
+        private void UnhaltIfHalted() { if(_halted) Halted = false; Registers.PC++; }
 
-        public Z80(MainMemory memory, IDataBus dataBus, IZ80Logger logger, double clockSpeed, bool isDebug)
+        public Z80(MainMemory memory, IDataBus dataBus, IZ80Logger logger, double clockSpeed)
         {
             _memory = memory;
             _dataBus = dataBus;
             _logger = logger;
             _clock = new Clock(clockSpeed);
-            IsDebug = isDebug;
 
             if (_memory == null || _dataBus == null || _logger == null) throw new ArgumentNullException();
         }
@@ -61,6 +56,7 @@ namespace Z80Sharp.Processor
         {
             ExecuteOnce();
         }
+
         public void Run()
         {
             _cycleTimer.Elapsed += ReportCyclesPerSecond;
@@ -69,6 +65,14 @@ namespace Z80Sharp.Processor
             while (true)
             {
                 ExecuteOnce();
+            }
+        }
+        public void RunUntil(long tStates)
+        {
+            while (_clock.TotalTStates < tStates)
+            {
+                ExecuteOnce();
+                if (_halted) return;
             }
         }
         private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
@@ -82,25 +86,19 @@ namespace Z80Sharp.Processor
         {
             HandleInterrupts();
 
-            if (_halted) return; 
+            if (_halted) return;
 
             _currentInstruction = Fetch();
-
             switch (_currentInstruction)
             {
-                case 0xDD:
-                    ExecuteIndexRInstruction(ref Registers.IX, ref Registers.IXhi, ref Registers.IXlo); break;
-                case 0xFD:
-                    ExecuteIndexRInstruction(ref Registers.IY, ref Registers.IYhi, ref Registers.IYlo); break;
-                case 0xED:
-                    ExecuteMiscInstruction(); break;
-                case 0xCB:
-                    ExecuteBitInstruction(); break;
-
-                default:
-                    ExecuteMainInstruction(); break;
+                case 0xDD: ExecuteIndexRInstruction(ref Registers.IX, ref Registers.IXhi, ref Registers.IXlo); break;
+                case 0xFD: ExecuteIndexRInstruction(ref Registers.IY, ref Registers.IYhi, ref Registers.IYlo); break;
+                case 0xED: ExecuteMiscInstruction(); break;
+                case 0xCB: ExecuteBitInstruction(); break;
+                default: ExecuteMainInstruction(); break;
             }
             InstrsExecuted++;
+            _clock.Wait();
         }
 
         // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)
@@ -127,7 +125,7 @@ namespace Z80Sharp.Processor
             Registers.IFF1 = false;
             Registers.IFF2 = false;
 
-
+            _clock.Reset();
             //_logger.Log(LogSeverity.Info, "Processor reset");
         }
         public void Reset(ProcessorRegisters state)
@@ -158,6 +156,8 @@ namespace Z80Sharp.Processor
             Registers.InterruptMode = state.InterruptMode;
             Registers.I = state.I;
             Registers.R = state.R;
+
+            _clock.Reset();
         }
 
 

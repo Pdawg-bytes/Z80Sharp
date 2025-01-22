@@ -4,11 +4,15 @@
     {
         internal static string[] UndocumentedInstructions = 
         {
+            "76", // exclude HALT
+            "db", // IN a, (n)
+            "ed40", "ed50", "ed60", "ed48", "ed58", "ed68", "ed78", // IN misc
+
             "ed63", "ed6b", "ed70", "ed71", // MISC table
 
             "cb30", "cb31", "cb32", "cb33", "cb34", "cb35", "cb36", "cb37", // BIT table
 
-            "dd4", "dd5", "dd6", "ddc", "ddd", "dde",                   // INDEX X table
+            "dd00", "dd4", "dd5", "dd6", "ddc", "ddd", "dde",                   // INDEX X table
             "dd14", "dd15", "dd16", "dd1c", "dd1d", "dd1e",
             "dd24", "dd25", "dd26", "dd2c", "dd2d", "dd2e",
             "dd3c", "dd3d", "dd3e",
@@ -28,7 +32,7 @@
             "ddb0", "ddb1", "ddb2", "ddb3", "ddb4", "ddb5", "ddb7",
             "ddb8", "ddb9", "ddba", "ddbb", "ddbc", "ddbd", "ddbf",
 
-            "fd4", "fd5", "fd6", "fdc", "fdd", "fde",                   // INDEX Y table
+            "fd00", "fd4", "fd5", "fd6", "fdc", "fdd", "fde",                   // INDEX Y table
             "fd14", "fd15", "fd16", "fd1c", "fd1d", "fd1e",
             "fd24", "fd25", "fd26", "fd2c", "fd2d", "fd2e",
             "fd3c", "fd3d", "fd3e",

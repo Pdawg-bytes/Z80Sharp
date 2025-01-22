@@ -1,7 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using Z80Sharp.Enums;
-using Z80Sharp.Helpers;
-using static Z80Sharp.Registers.ProcessorRegisters;
+﻿using Z80Sharp.Enums;
+using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Processor
 {
@@ -21,7 +19,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Z, sum == 0);                                 // (Z) (set if result is zero)
             Registers.SetFlagConditionally(FlagType.H, (increment & 0x0F) + (0x01 & 0x0F) > 0xF); // (H) (set if carry from bit 3 to bit 4)
             Registers.SetFlagConditionally(FlagType.PV, increment == 0x7F);                       // (P/V) (set on signed overflow)
-            Registers.ClearFlag(FlagType.N); // Clear the N flag (as INC is not a subtraction)
+            Registers.ClearFlag(FlagType.N);
 
             return sum;
         }
@@ -39,7 +37,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) > 0);                  // (S) (check 7th bit for sign)
             Registers.SetFlagConditionally(FlagType.Z, diff == 0);                          // (Z) (set if result is zero)
             Registers.SetFlagConditionally(FlagType.H, (decrement & 0x0F) < (0x01 & 0x0F)); // (H) (borrow from bit 4)
-            Registers.SetFlag(FlagType.N); // Set the N flag (subtract flag)
+            Registers.SetFlag(FlagType.N);
 
             return diff;
         }
@@ -102,8 +100,8 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < (operand & 0xF)); // (H) (Set if borrow occurs from bit 4)
 
             Registers.SetFlagConditionally(FlagType.PV,
-                ((regA ^ operand) & 0x80) != 0 &&      // regA and operand have different signs
-                ((operand ^ (byte)diff) & 0x80) == 0); // operand and result have same signs
+                ((regA ^ operand) & 0x80) != 0 &&
+                ((operand ^ (byte)diff) & 0x80) == 0);
 
             Registers.SetFlagConditionally(FlagType.C, operand > regA);
             Registers.SetFlag(FlagType.N);
@@ -126,35 +124,11 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.H, ((regA & 0xF) + (operand & 0xF)) > 0xF); // (H) (Set if borrow occurs from bit 4)
 
             Registers.SetFlagConditionally(FlagType.PV,
-                (((regA ^ operand) & 0x80) == 0) && // Check if regA and operand have the same sign
-                (((regA ^ sum) & 0x80) != 0));      // Check if sum has a different sign from regA
+                (((regA ^ operand) & 0x80) == 0) &&
+                (((regA ^ sum) & 0x80) != 0));
 
-            Registers.SetFlagConditionally(FlagType.C, sum > 0xFF); // (C) (Set if borrow occurs from bit 8)
+            Registers.SetFlagConditionally(FlagType.C, sum > 0xFF);
             Registers.ClearFlag(FlagType.N);
-        }
-        /// <summary>
-        /// Adds two 16-bit addends together and sets flags accordingly.
-        /// </summary>
-        /// <param name="augend">The first addend.</param>
-        /// <param name="addend">The second addend.</param>
-        /// <returns>The sum of the addends.</returns>
-        private ushort ADDWord(ushort augend, ushort addend)
-        {
-            int sum = augend + addend;
-            ushort result = (ushort)sum;
-
-            Registers.F &= (byte)(FlagType.S | FlagType.Z | FlagType.PV);
-
-            Registers.SetFlagConditionally(FlagType.H,
-                ((augend & 0x0FFF) + (addend & 0x0FFF))  // Add lower 12 bits of each addend together.
-                > 0x0FFF);                               // Check if add overflowed into top 4 bits.
-
-            Registers.SetFlagConditionally(FlagType.C, sum > 0xFFFF); // (C) (Set if sum exceeds 16 bits)
-            Registers.ClearFlag(FlagType.N);
-
-            Registers.F |= (byte)((result >> 8) & (byte)(FlagType.Y | FlagType.X));
-
-            return result;
         }
         /// <summary>
         /// Adds <paramref name="operand"/> and <see cref="FlagType.C"/> to A and sets flags accordingly.
@@ -172,12 +146,13 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.H, ((regA & 0xF) + (operand & 0xF) + carry) > 0xF); // (H) (Set if borrow occurs from bit 4)
 
             Registers.SetFlagConditionally(FlagType.PV,
-                (((regA ^ operand) & 0x80) == 0) && // Check if regA and operand have the same sign
-                (((regA ^ sum) & 0x80) != 0));      // Check if sum has a different sign from regA  
+                (((regA ^ operand) & 0x80) == 0) &&
+                (((regA ^ sum) & 0x80) != 0));
 
-            Registers.SetFlagConditionally(FlagType.C, sum > 0xFF); // (C) (Carry if sum exceeds 8 bits)
+            Registers.SetFlagConditionally(FlagType.C, sum > 0xFF);
             Registers.ClearFlag(FlagType.N);
         }
+
         /// <summary>
         /// Adds <paramref name="operand"/> and <see cref="FlagType.C"/> to HL and sets flags accordingly.
         /// </summary>
@@ -195,11 +170,36 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.H, (regHL & 0x0FFF) + (operand & 0x0FFF) + carry > 0x0FFF); // (H) (Set if borrow occurs from bit 11)
 
             Registers.SetFlagConditionally(FlagType.PV,
-                (((regHL ^ operand) & 0x8000) == 0) && // Check if regHL and operand have the same sign
-                (((regHL ^ sum) & 0x8000) != 0));      // Check if the sum has a different sign from regHL
+                (((regHL ^ operand) & 0x8000) == 0) &&
+                (((regHL ^ sum) & 0x8000) != 0));
 
-            Registers.SetFlagConditionally(FlagType.C, sum > 0xFFFF); // (C) (Set if carry from bit 15)
+            Registers.SetFlagConditionally(FlagType.C, sum > 0xFFFF);
             Registers.ClearFlag(FlagType.N);
+        }
+
+        /// <summary>
+        /// Adds two 16-bit addends together and sets flags accordingly.
+        /// </summary>
+        /// <param name="augend">The first addend.</param>
+        /// <param name="addend">The second addend.</param>
+        /// <returns>The sum of the addends.</returns>
+        private ushort ADDWord(ushort augend, ushort addend)
+        {
+            int sum = augend + addend;
+            ushort result = (ushort)sum;
+
+            Registers.F &= (byte)(FlagType.S | FlagType.Z | FlagType.PV);
+
+            Registers.SetFlagConditionally(FlagType.H,
+                ((augend & 0x0FFF) + (addend & 0x0FFF))
+                > 0x0FFF);
+
+            Registers.SetFlagConditionally(FlagType.C, sum > 0xFFFF);
+            Registers.ClearFlag(FlagType.N);
+
+            Registers.F |= (byte)((result >> 8) & (byte)(FlagType.Y | FlagType.X));
+
+            return result;
         }
 
 
@@ -219,10 +219,10 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < (operand & 0xF));      // (H) (Set if borrow occurs from bit 4)
 
             Registers.SetFlagConditionally(FlagType.PV,
-                (((regA ^ operand) & 0x80) != 0) &&   // Check if regA and operand have different signs
-                (((regA ^ (byte)diff) & 0x80) != 0)); // Check if diff. has a different sign from regA 
+                (((regA ^ operand) & 0x80) != 0) &&
+                (((regA ^ (byte)diff) & 0x80) != 0));
 
-            Registers.SetFlagConditionally(FlagType.C, regA < operand); // (C) (Set if borrow from bit 8)
+            Registers.SetFlagConditionally(FlagType.C, regA < operand);
             Registers.SetFlag(FlagType.N);
         }
         /// <summary>
@@ -241,12 +241,13 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < ((operand + carry) & 0xF)); // (H) (Set if borrow occurs from bit 4)
 
             Registers.SetFlagConditionally(FlagType.PV,
-                (((regA ^ (operand + carry)) & 0x80) != 0) && // Check if regA and operand have different signs
-                ((((operand + carry) ^ diff) & 0x80) == 0));  // Check if diff. has a different sign from regA
+                (((regA ^ (operand + carry)) & 0x80) != 0) &&
+                ((((operand + carry) ^ diff) & 0x80) == 0));
 
-            Registers.SetFlagConditionally(FlagType.C, diff < 0); // (C) (Set if borrow from bit 8)
+            Registers.SetFlagConditionally(FlagType.C, diff < 0);
             Registers.SetFlag(FlagType.N);
         }
+
         /// <summary>
         /// Subtracts <paramref name="operand"/> and Carry flag from HL and sets flags accordingly.
         /// </summary>
@@ -267,7 +268,7 @@ namespace Z80Sharp.Processor
                 (((regHL ^ (operand + carry)) & 0x8000) != 0) &&
                 ((((operand + carry) ^ (ushort)diff) & 0x8000) == 0));
 
-            Registers.SetFlagConditionally(FlagType.C, diff < 0); // (C) (Set if borrow from bit 15)
+            Registers.SetFlagConditionally(FlagType.C, diff < 0);
             Registers.SetFlag(FlagType.N);
         }
     }

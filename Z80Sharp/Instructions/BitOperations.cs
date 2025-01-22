@@ -1,7 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Z80Sharp.Enums;
-using Z80Sharp.Helpers;
-using static Z80Sharp.Registers.ProcessorRegisters;
+﻿using Z80Sharp.Enums;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Processor
 {
@@ -19,8 +18,6 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Y, (result & 0x20) != 0);       // (Y)  (Copy of bit 5)
             Registers.SetFlagConditionally(FlagType.PV, result == 0);               // (PV) (Set if tested bit is 0)
             Registers.SetFlagConditionally(FlagType.S, bit == 7 && result != 0);    // (S)  (Set if sign bit is not zero)
-
-            //LogInstructionExec($"0x{_currentInstruction:X2}: BIT {bit}, R");
         }
         private void BIT_B_RRMEM([ConstantExpected] byte bit, ref ushort operatingRegister)
         {
@@ -34,8 +31,6 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Y, (result & 0x20) != 0);       // (Y)  (Copy of bit 5)
             Registers.SetFlagConditionally(FlagType.PV, result == 0);               // (PV) (Set if tested bit is 0)
             Registers.SetFlagConditionally(FlagType.S, bit == 7 && result != 0);    // (S)  (Set if sign bit is not zero)
-
-            //LogInstructionExec($"0x{_currentInstruction:X2}: BIT {bit}, (RR)");
         }
         private void BIT_B_IRDMEM([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode)
         {
@@ -49,59 +44,46 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Y, (result & 0x20) != 0);       // (Y)  (Copy of bit 5)
             Registers.SetFlagConditionally(FlagType.PV, result == 0);               // (PV) (Set if tested bit is 0)
             Registers.SetFlagConditionally(FlagType.S, bit == 7 && result != 0);    // (S)  (Set if sign bit is not zero)
-
-            //LogInstructionExec($"0x{_currentInstruction:X2}: BIT {bit}, (IR + d)");
         }
 
-        private void RES_B_R([ConstantExpected] byte bit, ref byte operatingRegister)
-        {
-            operatingRegister &= (byte)~(1 << bit);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RES {bit}, R");
-        }
-        private void RES_B_RRMEM([ConstantExpected] byte bit, ref ushort operatingRegister)
-        {
-            _memory.Write(operatingRegister, (byte)(_memory.Read(operatingRegister) & (byte)~(1 << bit)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RES {bit}, (RR)");
-        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void RES_B_R([ConstantExpected] byte bit, ref byte operatingRegister) => operatingRegister &= (byte)~(1 << bit);
+
+        private void RES_B_RRMEM([ConstantExpected] byte bit, ref ushort operatingRegister) => _memory.Write(operatingRegister, (byte)(_memory.Read(operatingRegister) & (byte)~(1 << bit)));
+
         private void RES_B_IRDMEM([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
             _memory.Write(ird, (byte)(_memory.Read(ird) & (byte)~(1 << bit)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RES {bit}, (IR + d)");
         }
-        private void RES_B_IRDMEM_R([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
+
+        private void RES_B_IRDMEM_R([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister)
         {
-            Console.WriteLine(outputRegister);
             ushort ird = (ushort)(indexAddressingMode + displacement);
             byte result = (byte)(_memory.Read(ird) & (byte)~(1 << bit));
             _memory.Write(ird, result);
             outputRegister = result;
-            //LogInstructionExec($"0x{_currentInstruction:X2}: RES {bit}, (IR + d), R");
         }
 
-        private void SET_B_R([ConstantExpected] byte bit, ref byte operatingRegister)
-        {
-            operatingRegister |= (byte)(1 << bit);
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, R");
-        }
-        private void SET_B_RRMEM([ConstantExpected] byte bit, ref ushort operatingRegister)
-        {
-            _memory.Write(operatingRegister, (byte)(_memory.Read(operatingRegister) | (byte)(1 << bit)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, (RR)");
-        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void SET_B_R([ConstantExpected] byte bit, ref byte operatingRegister) => operatingRegister |= (byte)(1 << bit);
+
+        private void SET_B_RRMEM([ConstantExpected] byte bit, ref ushort operatingRegister) => _memory.Write(operatingRegister, (byte)(_memory.Read(operatingRegister) | (byte)(1 << bit)));
+
         private void SET_B_IRDMEM([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
             _memory.Write(ird, (byte)(_memory.Read(ird) | (byte)(1 << bit)));
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, (IR + d)");
         }
-        private void SET_B_IRDMEM_R([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister) // UNDOCUMENTED
+
+        private void SET_B_IRDMEM_R([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
             byte result = (byte)(_memory.Read(ird) | (byte)(1 << bit));
             _memory.Write(ird, result);
             outputRegister = result;
-            //LogInstructionExec($"0x{_currentInstruction:X2}: SET {bit}, (IR + d), R");
         }
     }
 }

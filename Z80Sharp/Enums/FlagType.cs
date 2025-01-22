@@ -1,10 +1,8 @@
 namespace Z80Sharp.Enums
 {
-    /*
-     * Reference: https://area51.dev/asm/z80/about/flags/
-     * 
-     * SZYHXPNC
-     */
+    /// <summary>
+    /// The bit field (SZYHXPNC) that represents the flags register.
+    /// </summary>
     [Flags]
     public enum FlagType : byte
     {

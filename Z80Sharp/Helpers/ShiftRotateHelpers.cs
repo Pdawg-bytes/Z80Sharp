@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Z80Sharp.Enums;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Z80Sharp.Enums;
-using Z80Sharp.Helpers;
-using static Z80Sharp.Registers.ProcessorRegisters;
-using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Processor
 {
     public unsafe partial class Z80
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte ShiftArith(byte operand, [ConstantExpected] BitDirection shiftDirection)
         {
             byte result = 0;
@@ -38,7 +27,6 @@ namespace Z80Sharp.Processor
             return result;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte ShiftLogical(byte operand, [ConstantExpected] BitDirection shiftDirection)
         {
             byte result = 0;
@@ -62,7 +50,6 @@ namespace Z80Sharp.Processor
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte RotateCircular(byte operand, [ConstantExpected] BitDirection shiftDirection)
         {
             byte result = 0;
@@ -82,10 +69,9 @@ namespace Z80Sharp.Processor
 
             UpdateShiftRotateFlags(result, carry);
 
-            return (byte)result;
+            return result;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte RotateThroughCarry(byte operand, [ConstantExpected] BitDirection shiftDirection)
         {
             byte result = 0;
@@ -101,13 +87,13 @@ namespace Z80Sharp.Processor
                 case BitDirection.Right:
                     operandCarry = (byte)(operand & 1);
                     result = (byte)(operand >> 1 | carry << 7);
-                    Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)result));
+                    Registers.SetFlagConditionally(FlagType.PV, CheckParity(result));
                     break;
             }
 
             UpdateShiftRotateFlags(result, operandCarry);
 
-            return (byte)result;
+            return result;
         }
     }
 }

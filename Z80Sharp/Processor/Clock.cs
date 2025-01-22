@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Z80Sharp.Processor
 {
@@ -15,7 +9,10 @@ namespace Z80Sharp.Processor
         private readonly long _ticksPerTState;
         private long _nextTickTarget;
 
+        private readonly long[] _precomputedTimes;
+
         internal long TotalTStates;
+        internal bool LastOperationStatus;
 
         internal Clock(double clockSpeedMHz)
         {
@@ -24,14 +21,33 @@ namespace Z80Sharp.Processor
             _nextTickTarget = 0;
 
             if (clockSpeedMHz == 0) { _ticksPerTState = 0; }
+
+            _precomputedTimes = new long[256];
+            for (int i = 0; i < 256; i++)
+            {
+                _precomputedTimes[i] = i * _ticksPerTState;
+            }
         }
 
-        internal void Add([ConstantExpected] long tStates)
+        internal void Add([ConstantExpected] int tStates)
         {
             if (_ticksPerTState == 0) return;
 
-            _nextTickTarget += tStates * _ticksPerTState;
-            TotalTStates += tStates;
+            unchecked
+            {
+                _nextTickTarget += _precomputedTimes[tStates];
+                TotalTStates += tStates;
+            }
+        }
+        internal void Add([ConstantExpected] int tStatesIfConditionMet, [ConstantExpected] int tStatesIfConditionNotMet)
+        {
+            if (_ticksPerTState == 0) return;
+            int tStates = LastOperationStatus ? tStatesIfConditionMet : tStatesIfConditionNotMet;
+            unchecked
+            {
+                _nextTickTarget += _precomputedTimes[tStates];
+                TotalTStates += tStates;
+            }
         }
 
         internal void Wait()

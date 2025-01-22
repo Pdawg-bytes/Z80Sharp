@@ -1,12 +1,7 @@
-﻿using Microsoft.Win32;
-using System.Text.Json;
-using Z80Sharp.Constants;
-using Z80Sharp.Enums;
-using Z80Sharp.Interfaces;
+﻿using Z80Sharp.Interfaces;
 using Z80Sharp.Logging;
 using Z80Sharp.Memory;
 using Z80Sharp.Processor;
-using Z80Sharp.Registers;
 
 namespace Z80Sharp.Tests
 {
@@ -18,7 +13,7 @@ namespace Z80Sharp.Tests
 
         static void Main(string[] args)
         {
-            z80 = new(memory, new DefaultBus(), logger, 0, true);
+            z80 = new(memory, new DefaultBus(), logger, 2.5);
             Runner runner = new(z80, memory, false);
         }
     }
@@ -33,7 +28,6 @@ namespace Z80Sharp.Tests
 
         public byte ReadPort(ushort port)
         {
-            //Console.Write($"IN 0x{port:X4}");
             return 0;
         }
         public void WritePort(ushort port, byte data)

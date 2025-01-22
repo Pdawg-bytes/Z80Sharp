@@ -16,7 +16,7 @@
         IM1 = 1,
 
         /// <summary>
-        /// Interrupt Mode 2 (IM 2): The most flexible and powerful interrupt mode, allowing for a vectorized interrupt handling mechanism. The Z80 uses the I register and an 8-bit vector provided by the interrupting device to form a pointer to the interrupt service routine address.
+        /// Interrupt Mode 2 (IM 2): The most flexible and powerful interrupt mode, allowing for a vectorized interrupt handling mechanism. The Z80 uses the I register and an 8-bit vector provided by the interrupting device to form a pointer to the base of interrupt service routine.
         /// </summary>
         IM2 = 2,
     }
