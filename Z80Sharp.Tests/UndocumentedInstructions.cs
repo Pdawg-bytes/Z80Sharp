@@ -8,9 +8,9 @@
             "db", // IN a, (n)
             "ed40", "ed50", "ed60", "ed48", "ed58", "ed68", "ed78", // IN misc
 
-            "ed63", "ed6b", "ed70", "ed71", // MISC table
+            "ed63", "ed6b", "ed70", "ed71", // MISC table undocumneted
 
-            "cb30", "cb31", "cb32", "cb33", "cb34", "cb35", "cb36", "cb37", // BIT table
+            "cb30", "cb31", "cb32", "cb33", "cb34", "cb35", "cb36", "cb37", // BIT table undocumented
 
             "dd00", "dd4", "dd5", "dd6", "ddc", "ddd", "dde",                   // INDEX X table
             "dd14", "dd15", "dd16", "dd1c", "dd1d", "dd1e",
@@ -83,7 +83,7 @@
             "ddcbe0", "ddcbe1", "ddcbe2", "ddcbe3", "ddcbe4", "ddcbe5", "ddcbe7",
             "ddcbe8", "ddcbe9", "ddcbea", "ddcbeb", "ddcbec", "ddcbed", "ddcbef",
             "ddcbf0", "ddcbf1", "ddcbf2", "ddcbf3", "ddcbf4", "ddcbf5", "ddcbf7",
-            "ddcbf8", "ddcbf9", "ddcbfa", "ddcbfb", "ddcbfc", "ddcbdd", "ddcbff",
+            "ddcbf8", "ddcbf9", "ddcbfa", "ddcbfb", "ddcbfc", "ddcbfd", "ddcbff",
             "ddcb36",
 
             "fdcb00", "fdcb01", "fdcb02", "fdcb03", "fdcb04", "fdcb05", "fdcb07", // INDEX Y BIT table

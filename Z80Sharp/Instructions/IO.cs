@@ -35,7 +35,7 @@ namespace Z80Sharp.Processor
         }
         private void INIR()
         {
-            INIR();
+            INI();
             if (Registers.B != 0)
             {
                 Registers.PC -= 2;

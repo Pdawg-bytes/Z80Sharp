@@ -253,14 +253,14 @@ namespace Z80Sharp.Processor
                 case 0xF8: RET_CC(M_C); _clock.Add(7, 1);  break; // RET M
 
 
-                case 0xC7: RST_HH(0x00); _clock.Add(7); break; // RST 00h
-                case 0xD7: RST_HH(0x10); _clock.Add(7); break; // RST 10h
-                case 0xE7: RST_HH(0x20); _clock.Add(7); break; // RST 20h
-                case 0xF7: RST_HH(0x30); _clock.Add(7); break; // RST 30h
-                case 0xCF: RST_HH(0x08); _clock.Add(7); break; // RST 08h
-                case 0xDF: RST_HH(0x18); _clock.Add(7); break; // RST 18h
-                case 0xEF: RST_HH(0x28); _clock.Add(7); break; // RST 28h
-                case 0xFF: RST_HH(0x38); _clock.Add(7); break; // RST 38h
+                case 0xC7: RST_H(0x00); _clock.Add(7); break; // RST 00h
+                case 0xD7: RST_H(0x10); _clock.Add(7); break; // RST 10h
+                case 0xE7: RST_H(0x20); _clock.Add(7); break; // RST 20h
+                case 0xF7: RST_H(0x30); _clock.Add(7); break; // RST 30h
+                case 0xCF: RST_H(0x08); _clock.Add(7); break; // RST 08h
+                case 0xDF: RST_H(0x18); _clock.Add(7); break; // RST 18h
+                case 0xEF: RST_H(0x28); _clock.Add(7); break; // RST 28h
+                case 0xFF: RST_H(0x38); _clock.Add(7); break; // RST 38h
 
 
                 case 0xCD: CALL_NN(); _clock.Add(13); break;           // CALL NN

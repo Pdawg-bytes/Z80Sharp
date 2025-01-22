@@ -23,14 +23,14 @@ namespace Z80Sharp.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte Read(int address) => pMem[address];
+        public byte Read(ushort address) => pMem[address];
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write(int address, byte value) => pMem[address] = value;
+        public void Write(ushort address, byte value) => pMem[address] = value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ushort ReadWord(int address) => (ushort)(Read(address) | (Read((ushort)(address + 1)) << 8));
+        public ushort ReadWord(ushort address) => (ushort)(Read(address) | (Read((ushort)(address + 1)) << 8));
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteWord(int address, ushort value) { Write(address, value.GetLowerByte()); Write(address + 1, value.GetUpperByte()); }
+        public void WriteWord(ushort address, ushort value) { Write(address, value.GetLowerByte()); Write((ushort)(address + 1), value.GetUpperByte()); }
 
         public uint Length { get => (uint)_memory.Length; }
     }

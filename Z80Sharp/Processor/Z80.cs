@@ -77,7 +77,7 @@ namespace Z80Sharp.Processor
         }
         private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
+            //Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
             InstrsExecutedLastSecond = InstrsExecuted;
         }
 
@@ -130,6 +130,8 @@ namespace Z80Sharp.Processor
         }
         public void Reset(ProcessorRegisters state)
         {
+            Halted = false;
+
             // General registers
             Registers.AF = state.AF;
             Registers.BC = state.BC;

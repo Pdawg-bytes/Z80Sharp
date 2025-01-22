@@ -62,7 +62,7 @@ namespace Z80Sharp.Processor
 
         #region INC instructions (RR, R, (HL), (IR + d))
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void INC_RR(ref ushort operatingRegister) => operatingRegister = (ushort)(operatingRegister + 1);
+        private void INC_RR(ref ushort operatingRegister) => operatingRegister++;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void INC_R(ref byte operatingRegister) => operatingRegister = INCAny(operatingRegister);
@@ -148,7 +148,7 @@ namespace Z80Sharp.Processor
 
         private void CMP_IRDMEM(ref ushort indexAddressingMode) => CMPAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
 
-        private void CPI()
+        private sbyte CPI()
         {
             byte hlMem = _memory.Read(Registers.HL);
             sbyte diff = (sbyte)(Registers.A - hlMem);
@@ -165,34 +165,23 @@ namespace Z80Sharp.Processor
             int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
+
+            return diff;
         }
         private void CPIR()
         {
-            byte hlMem = _memory.Read(Registers.HL);
-            sbyte diff = (sbyte)(Registers.A - hlMem);
+            sbyte diff = CPI();
 
-            Registers.HL++;
-            Registers.BC--;
-
-            Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
-            Registers.SetFlagConditionally(FlagType.Z, diff == 0);
-            Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) < (hlMem & 0x0F));
-            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
-            Registers.SetFlag(FlagType.N);
-
-            int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
-            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
-
-            if (Registers.BC != 0 && diff != 0)
+            if (Registers.BC == 0 || diff == 0)
             {
-                Registers.PC -= 2;
-                _clock.LastOperationStatus = false;
+                _clock.LastOperationStatus = true;
                 return;
             }
-            _clock.LastOperationStatus = true;
+
+            Registers.PC -= 2;
+            _clock.LastOperationStatus = false;
         }
-        private void CPD()
+        private sbyte CPD()
         {
             byte hlMem = _memory.Read(Registers.HL);
             sbyte diff = (sbyte)(Registers.A - hlMem);
@@ -209,32 +198,21 @@ namespace Z80Sharp.Processor
             int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
             Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
             Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
+
+            return diff;
         }
         private void CPDR()
         {
-            byte hlMem = _memory.Read(Registers.HL);
-            sbyte diff = (sbyte)(Registers.A - hlMem);
+            sbyte diff = CPD();
 
-            Registers.HL--;
-            Registers.BC--;
-
-            Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
-            Registers.SetFlagConditionally(FlagType.Z, diff == 0);
-            Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) < (hlMem & 0x0F));
-            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
-            Registers.SetFlag(FlagType.N);
-
-            int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
-            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
-
-            if (Registers.BC != 0 && diff != 0)
+            if (Registers.BC == 0 || diff == 0)
             {
-                Registers.PC -= 2;
-                _clock.LastOperationStatus = false;
+                _clock.LastOperationStatus = true;
                 return;
             }
-            _clock.LastOperationStatus = true;
+
+            Registers.PC -= 2;
+            _clock.LastOperationStatus = false;
         }
         #endregion
 

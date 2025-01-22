@@ -25,6 +25,10 @@ namespace Z80Sharp.Tests
             var expectedStates = JsonSerializer.Deserialize<List<ExpectedState>>(expectedOutput);
 
             if (!undoc) machineStates.RemoveAll(state => Constants.UndocumentedInstructions.Contains(state.name.Split("_")[0]));
+            /*machineStates.RemoveAll(state =>
+            {
+                return state.name.Contains("ed") && !state.name.Contains("fd") && !state.name.Contains("dd") && !state.name.Contains("cb") && state.name.Length > 2;
+            });*/
 
             int passed = 0;
             foreach (var machineState in machineStates)
@@ -78,14 +82,14 @@ namespace Z80Sharp.Tests
 
             for (int i = 0; i < memory.Length; i++)
             {
-                memory.Write(i, 0);
+                memory.Write((ushort)i, 0);
             }
 
             foreach (var list in emulatorState.memory)
             {
                 for (int i = list.address; i < list.address + list.data.Count; i++)
                 {
-                    memory.Write(i, (byte)list.data[i - list.address]);
+                    memory.Write((ushort)i, (byte)list.data[i - list.address]);
                 }
             }
 

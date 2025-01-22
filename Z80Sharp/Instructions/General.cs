@@ -57,7 +57,7 @@ namespace Z80Sharp.Processor
         {
             ushort sp = Registers.SP;
             ushort oldIr = indexAddressingMode;
-            indexAddressingMode = _memory.Read(sp++);
+            indexAddressingMode = _memory.ReadWord(sp);
             _memory.WriteWord(sp, oldIr);
         }
 

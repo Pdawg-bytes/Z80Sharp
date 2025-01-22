@@ -53,7 +53,7 @@ namespace Z80Sharp.Processor
                 return; 
             }
 
-            var offset = Fetch();
+            byte offset = Fetch();
             Registers.PC += (ushort)(sbyte)offset;
             _clock.LastOperationStatus = true;
         }
@@ -87,7 +87,7 @@ namespace Z80Sharp.Processor
         }
 
 
-        private void RST_HH([ConstantExpected] byte pcStart)
+        private void RST_H([ConstantExpected] byte pcStart)
         {
             PUSH_PC();
             Registers.PC = pcStart;
