@@ -10,6 +10,8 @@
 
             "ed63", "ed6b", "ed70", "ed71", // MISC table undocumneted
 
+            "ed4c", "ed54", "ed55", "ed5c", "ed5d", "ed64", "ed65", "ed66", "ed6c", "ed6d", "ed74", "ed75", "ed76", "ed7c", "ed7d", // MISC table z180/unimplemented
+
             "cb30", "cb31", "cb32", "cb33", "cb34", "cb35", "cb36", "cb37", // BIT table undocumented
 
             "dd00", "dd4", "dd5", "dd6", "ddc", "ddd", "dde",                   // INDEX X table

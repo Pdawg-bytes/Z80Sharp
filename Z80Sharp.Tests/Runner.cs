@@ -25,10 +25,6 @@ namespace Z80Sharp.Tests
             var expectedStates = JsonSerializer.Deserialize<List<ExpectedState>>(expectedOutput);
 
             if (!undoc) machineStates.RemoveAll(state => Constants.UndocumentedInstructions.Contains(state.name.Split("_")[0]));
-            /*machineStates.RemoveAll(state =>
-            {
-                return state.name.Contains("ed") && !state.name.Contains("fd") && !state.name.Contains("dd") && !state.name.Contains("cb") && state.name.Length > 2;
-            });*/
 
             int passed = 0;
             foreach (var machineState in machineStates)

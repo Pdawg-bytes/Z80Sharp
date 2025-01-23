@@ -32,7 +32,7 @@ namespace Z80Sharp.Tests
         }
         public void WritePort(ushort port, byte data)
         {
-            Console.Write((char)data);
+            //Console.Write((char)data);
         }
     }
 }
