@@ -16,11 +16,7 @@ namespace Z80Sharp.Registers
         /// <param name="steps">The number of steps to increment the refresh register by.</param>
         /// <remarks>Only the lower 7 bits (bits 0-6) are incremented, while the MSB (bit 7) is preserved.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void IncrementRefresh(int steps)
-        {
-            R = (byte)((R & 0x7F) + steps);
-            R |= (byte)(R & 0x80);
-        }
+        public void IncrementRefresh(int steps) => R = (byte)(((R & 0x7F) + steps) | (R & 0x80));
 
         /// <summary>
         /// Gets the name of the current interrupt mode.

@@ -9,8 +9,10 @@ namespace Z80Sharp.Processor
         private void HandleInterrupts()
         {
             byte status = _dataBus.InterruptStatus;
-            if ((status & 0x2) > 0) HandleNMI();
-            if ((status & 0x1) > 0) HandleMI();
+            if (status == 0) return;
+
+            if ((status & 0x2) != 0) HandleNMI();
+            if ((status & 0x1) != 0) HandleMI();
         }
 
         private void HandleNMI()
