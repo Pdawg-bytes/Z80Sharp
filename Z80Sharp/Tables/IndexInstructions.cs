@@ -12,6 +12,8 @@ namespace Z80Sharp.Processor
             byte instruction = Fetch();
             _currentInstruction = instruction;
 
+            Registers.IncrementRefresh();
+
             if (instruction == 0xCB) { ExecuteIndexRBitInstruction(ref indexAddressingMode); return; }
 
             _clock.Add(8);
@@ -106,8 +108,8 @@ namespace Z80Sharp.Processor
                 case 0x2E: LD_R_N(ref irL); break;            // LD IRl, N | UNDOCUMENTED
                 case 0x3E: LD_R_N(ref Registers.A); break;    // LD A, N | UNDOCUMENTED
 
-                case 0x22: LD_NNMEM_RR(ref indexAddressingMode); break;   // LD (NN), IR
-                case 0x2A: LD_RR_NNMEM(ref indexAddressingMode); break;   // LD IR, (NN)
+                case 0x22: LD_NNMEM_RR(ref indexAddressingMode); _clock.Add(12); break;   // LD (NN), IR
+                case 0x2A: LD_RR_NNMEM(ref indexAddressingMode); _clock.Add(12); break;   // LD IR, (NN)
 
                 case 0x40: LD_R_R(ref Registers.B, ref Registers.B); break;                               // LD B, B | UNDOCUMENTED
                 case 0x41: LD_R_R(ref Registers.B, ref Registers.C); break;                               // LD B, C | UNDOCUMENTED

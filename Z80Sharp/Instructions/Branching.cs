@@ -49,13 +49,13 @@ namespace Z80Sharp.Processor
             if (Registers.B == 0) 
             { 
                 Registers.PC += 1;
-                _clock.LastOperationStatus = false;
+                _clock.LastOperationStatus = true;
                 return; 
             }
 
             byte offset = Fetch();
             Registers.PC += (ushort)(sbyte)offset;
-            _clock.LastOperationStatus = true;
+            _clock.LastOperationStatus = false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

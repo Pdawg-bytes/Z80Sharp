@@ -8,6 +8,8 @@ namespace Z80Sharp.Processor
         private void ExecuteBitInstruction()
         {
             _clock.Add(8);
+            Registers.IncrementRefresh();
+
             byte instruction = Fetch();
             _currentInstruction = instruction;
             switch (instruction)

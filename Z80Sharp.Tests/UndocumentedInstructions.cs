@@ -12,6 +12,8 @@
 
             "ed4c", "ed54", "ed55", "ed5c", "ed5d", "ed64", "ed65", "ed66", "ed6c", "ed6d", "ed74", "ed75", "ed76", "ed7c", "ed7d", // MISC table z180/unimplemented
 
+            "eda2", "eda3", "edaa", "edab", "edb2", "edb3", "edba", "edbb", // MISC table with UB in flags
+
             "cb30", "cb31", "cb32", "cb33", "cb34", "cb35", "cb36", "cb37", // BIT table undocumented
 
             "dd00", "dd4", "dd5", "dd6", "ddc", "ddd", "dde",                   // INDEX X table
@@ -33,6 +35,7 @@
             "dda8", "dda9", "ddaa", "ddab", "ddac", "ddad", "ddaf",
             "ddb0", "ddb1", "ddb2", "ddb3", "ddb4", "ddb5", "ddb7",
             "ddb8", "ddb9", "ddba", "ddbb", "ddbc", "ddbd", "ddbf",
+            "ddfd00",
 
             "fd00", "fd4", "fd5", "fd6", "fdc", "fdd", "fde",                   // INDEX Y table
             "fd14", "fd15", "fd16", "fd1c", "fd1d", "fd1e",

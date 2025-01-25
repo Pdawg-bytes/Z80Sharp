@@ -18,6 +18,18 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LD_R_R(ref byte dest, ref byte source) => dest = source;
 
+        private void LD_A_R(ref byte source)
+        {
+            Registers.A = source;
+            Registers.F &= (byte)~(FlagType.N | FlagType.H);
+            Registers.SetFlagConditionally(FlagType.Z, source == 0);
+            Registers.SetFlagConditionally(FlagType.S, (source & 0x80) != 0);
+            Registers.SetFlagConditionally(FlagType.PV, Registers.IFF2);
+
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0); 
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LD_R_N(ref byte operatingRegister) => operatingRegister = Fetch();
 
@@ -48,61 +60,38 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LD_RRMEM_R(ref ushort dest, ref byte source) => _memory.Write(dest, source);
 
-
-        private void LDI()
+        private void LDBlock(bool increment, bool repeat)
         {
             byte hlMem = _memory.Read(Registers.HL);
             _memory.Write(Registers.DE, hlMem);
-            Registers.HL++;
-            Registers.DE++;
+
+            Registers.HL += (ushort)(increment ? 1 : -1);
+            Registers.DE += (ushort)(increment ? 1 : -1);
             Registers.BC--;
 
             Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
             Registers.F &= (byte)~(FlagType.N | FlagType.H);
 
-            byte undoc = (byte)(Registers.A + hlMem);
-            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x20) > 0);
-            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LDIR()
-        {
-            LDI();
-            if (Registers.BC != 0)
+            byte undoc = (byte)(hlMem + Registers.A);
+            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x02) != 0);
+
+            if (repeat && Registers.BC != 0)
             {
                 Registers.PC -= 2;
-                _clock.LastOperationStatus = false;
+                _clock.LastOperationStatus = true;
                 return;
             }
-            _clock.LastOperationStatus = true;
+            _clock.LastOperationStatus = false;
         }
 
-        private void LDD()
-        {
-            byte hlMem = _memory.Read(Registers.HL);
-            _memory.Write(Registers.DE, hlMem);
-            Registers.HL--;
-            Registers.DE--;
-            Registers.BC--;
-
-            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
-            Registers.F &= (byte)~(FlagType.N | FlagType.H);
-
-            byte undoc = (byte)(Registers.A + hlMem);
-            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x20) > 0);
-            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);
-        }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LDDR()
-        {
-            LDD();
-            if (Registers.BC != 0)
-            {
-                Registers.PC -= 2;
-                _clock.LastOperationStatus = false;
-                return;
-            }
-            _clock.LastOperationStatus = true;
-        }
+        private void LDI() => LDBlock(true, false);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void LDIR() => LDBlock(true, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void LDD() => LDBlock(false, false);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void LDDR() => LDBlock(false, true);
     }
 }

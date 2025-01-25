@@ -39,8 +39,9 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.S, (Registers.A & 0x80) != 0);  // (S)  (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);           // (Z)  (Set if result is zero)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(Registers.A));  // (PV) (Set if bit parity is even)
-            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 1 << 5) > 0); // (X)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 1 << 3) > 0); // (Y)  (Undocumented flag)
+
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0); // (X) (copy of bit 3)
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0); // (Y) (copy of bit 5)
         }
 
         private void NEG()
@@ -56,8 +57,8 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.C, value != 0);           // (C)  (Set if borrow occured)
             Registers.SetFlag(FlagType.N);                                    // (N)  (Unconditionally set)
 
-            Registers.SetFlagConditionally(FlagType.X, (result & 0x20) > 0);  // (X)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (result & 0x08) > 0);  // (Y)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0); // (X) (copy of bit 3)
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0); // (Y) (copy of bit 5)
         }
 
         #region INC instructions (RR, R, (HL), (IR + d))
@@ -148,72 +149,41 @@ namespace Z80Sharp.Processor
 
         private void CMP_IRDMEM(ref ushort indexAddressingMode) => CMPAny(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
 
-        private sbyte CPI()
+        private void CMPBlock(bool increment, bool repeat)
         {
             byte hlMem = _memory.Read(Registers.HL);
             sbyte diff = (sbyte)(Registers.A - hlMem);
 
-            Registers.HL++;
+            Registers.HL += (ushort)(increment ? 1 : -1);
             Registers.BC--;
 
-            Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
+            Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7F);
             Registers.SetFlagConditionally(FlagType.Z, diff == 0);
             Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) < (hlMem & 0x0F));
             Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
             Registers.SetFlag(FlagType.N);
 
             int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
-            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x02) != 0);
+            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x08) != 0);
 
-            return diff;
-        }
-        private void CPIR()
-        {
-            sbyte diff = CPI();
-
-            if (Registers.BC == 0 || diff == 0)
+            if (repeat && Registers.BC != 0 && diff != 0)
             {
+                Registers.PC -= 2;
                 _clock.LastOperationStatus = true;
                 return;
             }
-
-            Registers.PC -= 2;
             _clock.LastOperationStatus = false;
         }
-        private sbyte CPD()
-        {
-            byte hlMem = _memory.Read(Registers.HL);
-            sbyte diff = (sbyte)(Registers.A - hlMem);
 
-            Registers.HL--;
-            Registers.BC--;
-
-            Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7f);
-            Registers.SetFlagConditionally(FlagType.Z, diff == 0);
-            Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) < (hlMem & 0x0F));
-            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
-            Registers.SetFlag(FlagType.N);
-
-            int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
-            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x02) > 0);  // (X) (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x08) > 0);  // (Y) (Undocumented flag)
-
-            return diff;
-        }
-        private void CPDR()
-        {
-            sbyte diff = CPD();
-
-            if (Registers.BC == 0 || diff == 0)
-            {
-                _clock.LastOperationStatus = true;
-                return;
-            }
-
-            Registers.PC -= 2;
-            _clock.LastOperationStatus = false;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CPIR() => CMPBlock(true, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CPDR() => CMPBlock(false, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CPI() => CMPBlock(true, false);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CPD() => CMPBlock(false, false);
         #endregion
 
 

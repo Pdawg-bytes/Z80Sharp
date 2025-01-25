@@ -18,9 +18,11 @@ namespace Z80Sharp.Processor
         private void HandleNMI()
         {
             UnhaltIfHalted();
+            Registers.IFF1 = false;
+            Registers.IncrementRefresh();
 
+            _clock.Add(11);
             PUSH_PC();
-            Registers.IFF1 = Registers.IFF2 = false;
             Registers.PC = 0x0066;
             //LogInterrupt("NMI");
         }
@@ -31,9 +33,12 @@ namespace Z80Sharp.Processor
             if (!Registers.IFF1) { return; }
             
             Registers.IFF1 = Registers.IFF2 = false;
+            Registers.IncrementRefresh();
+
             switch (Registers.InterruptMode)
             {
                 case InterruptMode.IM0:
+                    _clock.Add(11);
                     _currentInstruction = _dataBus.Data;
                     switch (_currentInstruction)
                     {
@@ -46,6 +51,7 @@ namespace Z80Sharp.Processor
                     //LogInterrupt("MI Mode 0");
                     break;
                 case InterruptMode.IM1:
+                    _clock.Add(13);
                     PUSH_PC();
                     Registers.PC = 0x0038;
                     //LogInterrupt("MI Mode 1");
@@ -54,6 +60,7 @@ namespace Z80Sharp.Processor
                     PUSH_PC();
                     byte interruptVector = _dataBus.Data;
                     ushort vectorAddress = (ushort)((Registers.I << 8) | interruptVector);
+                    _clock.Add(19);
                     Registers.PC = _memory.ReadWord(vectorAddress);
                     //LogInterrupt("MI Mode 2");
                     break;

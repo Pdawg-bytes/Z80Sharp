@@ -23,6 +23,9 @@ namespace Z80Sharp.Processor
         {
             Registers.A ^= 0b11111111;
             Registers.SetFlagBits((byte)(FlagType.N | FlagType.H));
+
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
 
 
@@ -37,6 +40,10 @@ namespace Z80Sharp.Processor
             Registers.SetFlag(FlagType.C);
             Registers.ClearFlag(FlagType.N);
             Registers.ClearFlag(FlagType.H);
+
+            byte temp = (byte)(Registers.A | Registers.F);
+            Registers.SetFlagConditionally(FlagType.X, (temp & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (temp & 0x20) != 0);
         }
 
 

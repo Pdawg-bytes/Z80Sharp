@@ -10,6 +10,7 @@ namespace Z80Sharp.Processor
         private void ExecuteIndexRBitInstruction(ref ushort indexAddressingMode)
         {
             _clock.Add(20);
+
             sbyte displacement = (sbyte)Fetch(); // Displacement comes before opcode in index bit
             byte instruction = Fetch();          // So we fetch actual opcode after displacement
             _currentInstruction = instruction;
@@ -83,7 +84,7 @@ namespace Z80Sharp.Processor
                 case 0x2C: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); _clock.Add(3); break; // SRA (IR + d), H | UNDOCUMENTED
                 case 0x2D: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); _clock.Add(3); break; // SRA (IR + d), L | UNDOCUMENTED
                 case 0x2F: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); _clock.Add(3); break; // SRA (IR + d), A | UNDOCUMENTED
-                case 0x2E: SRA_IRDMEM(displacement, ref indexAddressingMode); break;                    // SRA (IR + d)
+                case 0x2E: SRA_IRDMEM(displacement, ref indexAddressingMode); _clock.Add(3); break;                    // SRA (IR + d)
 
                 case 0x38: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // SRL (IR + d), B | UNDOCUMENTED
                 case 0x39: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // SRL (IR + d), C | UNDOCUMENTED

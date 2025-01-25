@@ -20,6 +20,8 @@ namespace Z80Sharp.Processor
             Registers.A |= (byte)(carry << 7);
             Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagBits(carry);
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
 
         private void RLA()
@@ -54,8 +56,8 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);          // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(Registers.A)); // (PV) (Set if bit parity is even)
             Registers.F &= (byte)~(FlagType.N | FlagType.H);                       // (N, H) (Unconditionally reset)
-            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x20) > 0);  // (X)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x08) > 0);  // (Y)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) > 0);  // (Y)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) > 0);  // (X)  (Undocumented flag)
         }
         private void RLD()
         {
@@ -69,8 +71,8 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Z, regA == 0);          // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(regA)); // (PV) (Set if bit parity is even)
             Registers.F &= (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
-            Registers.SetFlagConditionally(FlagType.X, (regA & 0x20) > 0);  // (X)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x08) > 0);  // (Y)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x20) > 0);  // (Y)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.X, (regA & 0x08) > 0);  // (X)  (Undocumented flag)
         }
         #endregion
 

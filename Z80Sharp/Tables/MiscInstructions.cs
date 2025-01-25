@@ -9,6 +9,8 @@ namespace Z80Sharp.Processor
         private void ExecuteMiscInstruction()
         {
             _clock.Add(8);
+            Registers.IncrementRefresh();
+
             byte instruction = Fetch();
             _currentInstruction = instruction;
             switch (instruction)
@@ -64,9 +66,9 @@ namespace Z80Sharp.Processor
                 case 0x7B: LD_RR_NNMEM(ref Registers.SP); _clock.Add(12); break; // LD SP, (NN)
 
                 case 0x47: LD_R_R(ref Registers.I, ref Registers.A); _clock.Add(1); break; // LD I, A
-                case 0x57: LD_R_R(ref Registers.A, ref Registers.I); _clock.Add(1); break; // LD A, I
                 case 0x4F: LD_R_R(ref Registers.R, ref Registers.A); _clock.Add(1); break; // LD R, A
-                case 0x5F: LD_R_R(ref Registers.A, ref Registers.R); _clock.Add(1); break; // LD A, R
+                case 0x57: LD_A_R(ref Registers.I); _clock.Add(1); break; // LD A, I
+                case 0x5F: LD_A_R(ref Registers.R); _clock.Add(1); break; // LD A, R
 
                 // IMx instructions: change the interrupt mode of the Z80
                 case 0x46: IM_M(InterruptMode.IM0); break; // IM0

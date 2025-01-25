@@ -29,18 +29,12 @@ namespace Z80Sharp.Processor
             set
             {
                 _halted = value;
-                if(value)
-                {
-                    _logger.Log(LogSeverity.Info, "Processor halted");
-                }
-                else
-                {
-                    _logger.Log(LogSeverity.Info, "Processor unhalted");
-                }
+                if(value) _logger.Log(LogSeverity.Info, "Processor halted");
+                else _logger.Log(LogSeverity.Info, "Processor unhalted");
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void UnhaltIfHalted() { if(_halted) Halted = false; Registers.PC++; }
+        private void UnhaltIfHalted() { if(_halted) Registers.PC++; Halted = false; }
 
         public Z80(MainMemory memory, IDataBus dataBus, IZ80Logger logger, double clockSpeed)
         {
@@ -74,10 +68,9 @@ namespace Z80Sharp.Processor
         }
         private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
+            //Console.WriteLine($"{InstrsExecuted - InstrsExecutedLastSecond:n0} instr/s");
             InstrsExecutedLastSecond = InstrsExecuted;
         }
-
 
         private void ExecuteOnce()
         {
@@ -85,6 +78,7 @@ namespace Z80Sharp.Processor
 
             if (_halted) return;
 
+            Registers.IncrementRefresh();
             _currentInstruction = Fetch();
             switch (_currentInstruction)
             {

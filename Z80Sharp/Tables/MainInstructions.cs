@@ -223,9 +223,9 @@ namespace Z80Sharp.Processor
                 case 0x77: LD_RRMEM_R(ref Registers.HL, ref Registers.A); _clock.Add(3); break;  // LD (HL), A
 
 
-                case 0x10: DJNZ_D(); break; // DJNZ D
-                case 0xC3: JP_NN(); _clock.Add(6); break;  // JP NN
-                case 0xE9: JP_RR(ref Registers.HL); break; // JP (HL)
+                case 0x10: DJNZ_D(); _clock.Add(13, 8); break;  // DJNZ D
+                case 0xC3: JP_NN(); _clock.Add(6); break;       // JP NN
+                case 0xE9: JP_RR(ref Registers.HL); break;      // JP (HL)
                 case 0xC2: JP_NN_C(NZ_C); _clock.Add(6); break; // JP NZ, NN
                 case 0xCA: JP_NN_C(Z_C);  _clock.Add(6); break; // JP Z, NN
                 case 0xD2: JP_NN_C(NC_C); _clock.Add(6); break; // JP NC, NN

@@ -99,8 +99,13 @@ namespace Z80Sharp.Tests
 
             if (z80.Registers.A != (byte)(expectedState.state.af >> 8))
                 badRegisters.Add($"A (0x{z80.Registers.A:X2}) : (0x{(expectedState.state.af >> 8) & 0xFF:X2})");
-            //if (z80.Registers.F != (byte)expectedState.state.af)
-            //    badRegisters.Add($"F (0x{z80.Registers.F:X2}) : (0x{expectedState.state.af & 0xFF:X2})");
+
+            if ((z80.Registers.F) != ((byte)(expectedState.state.af & 0xFF)))
+            {
+                string actualBinary = Convert.ToString(z80.Registers.F, 2).PadLeft(8, '0');
+                string expectedBinary = Convert.ToString((byte)(expectedState.state.af & 0xFF), 2).PadLeft(8, '0');
+                badRegisters.Add($"F (0b{actualBinary}) : (0b{expectedBinary})");
+            }
 
             if (z80.Registers.B != (byte)(expectedState.state.bc >> 8))
                 badRegisters.Add($"B (0x{z80.Registers.B:X2}) : (0x{(expectedState.state.bc >> 8) & 0xFF:X2})");
@@ -133,13 +138,13 @@ namespace Z80Sharp.Tests
 
             if (z80.Registers.SP != expectedState.state.sp)
                 badRegisters.Add($"SP (0x{z80.Registers.SP:X4}) : (0x{expectedState.state.sp:X4})");
-            //if (z80.Registers.PC != expectedState.state.pc)
-            //    badRegisters.Add($"PC (0x{z80.Registers.PC:X4}) : (0x{expectedState.state.pc:X4})");
+            if (z80.Registers.PC != expectedState.state.pc)
+                badRegisters.Add($"PC (0x{z80.Registers.PC:X4}) : (0x{expectedState.state.pc:X4})");
 
             if (z80.Registers.I != expectedState.state.i)
                 badRegisters.Add($"I (0x{z80.Registers.I:X2}) : (0x{expectedState.state.i:X2})");
-            //if (z80.Registers.R != expectedState.state.r)
-            //    badRegisters.Add($"R (0x{z80.Registers.R:X2}) : (0x{expectedState.state.r:X2})");
+            if (z80.Registers.R != expectedState.state.r)
+                badRegisters.Add($"R (0x{z80.Registers.R:X2}) : (0x{expectedState.state.r:X2})");
 
             bool passed = badRegisters.Count == 0;
 

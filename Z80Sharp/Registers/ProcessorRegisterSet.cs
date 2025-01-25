@@ -18,6 +18,10 @@ namespace Z80Sharp.Registers
         // Interrupt and refresh registers
         private byte _i, _r;
 
+        // Internal registers
+        private ushort _memptr;
+        private byte _q;
+
 
         [UnscopedRef] public ref byte I => ref _i;
         [UnscopedRef] public ref byte R => ref _r;
@@ -56,5 +60,8 @@ namespace Z80Sharp.Registers
         [UnscopedRef] public ref byte IYhi => ref Unsafe.Add(ref IYlo, 1);
 
         [UnscopedRef] public ref ushort PC => ref _pc;
+
+        [UnscopedRef] public ref ushort MEMPTR => ref _memptr;
+        [UnscopedRef] public ref byte Q => ref _q;
     }
 }
