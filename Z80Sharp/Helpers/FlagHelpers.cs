@@ -38,7 +38,9 @@ namespace Z80Sharp.Processor
             Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & result); // (S, Y, X) (Set based on respective bits of result)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(result));			 // (P/V) (Set depending on bit parity)
             Registers.F |= (byte)((byte)FlagType.C & carry);							 // (C)   (Set if carry is true)
-            Registers.SetFlagConditionally(FlagType.Z, result == 0);					 // (Z)   (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.Z, result == 0);                     // (Z)   (Set if result is 0)
+            Registers.SetFlagConditionally(FlagType.X, (result & 0x08) != 0);			 // (X)   (copy of bit 3)
+            Registers.SetFlagConditionally(FlagType.Y, (result & 0x20) != 0);			 // (Y)   (copy of bit 5)
         }
     }
 }

@@ -230,6 +230,9 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlagConditionally(FlagType.C, regA < operand);
             Registers.SetFlag(FlagType.N);
+
+            Registers.SetFlagConditionally(FlagType.X, (diff & 0x08) != 0); // (X) (copy of bit 3)
+            Registers.SetFlagConditionally(FlagType.Y, (diff & 0x20) != 0); // (Y) (copy of bit 5)
         }
         /// <summary>
         /// Subtracts <paramref name="operand"/> and Carry flag from A and sets flags accordingly.
@@ -252,6 +255,9 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlagConditionally(FlagType.C, diff < 0);
             Registers.SetFlag(FlagType.N);
+
+            Registers.SetFlagConditionally(FlagType.X, (diff & 0x08) != 0); // (X) (copy of bit 3)
+            Registers.SetFlagConditionally(FlagType.Y, (diff & 0x20) != 0); // (Y) (copy of bit 5)
         }
 
         /// <summary>
@@ -276,6 +282,9 @@ namespace Z80Sharp.Processor
 
             Registers.SetFlagConditionally(FlagType.C, diff < 0);
             Registers.SetFlag(FlagType.N);
+
+            Registers.SetFlagConditionally(FlagType.X, (diff & 0x0800) != 0); // (X) (copy of bit 11)
+            Registers.SetFlagConditionally(FlagType.Y, (diff & 0x2000) != 0); // (Y) (copy of bit 13)
         }
     }
 }

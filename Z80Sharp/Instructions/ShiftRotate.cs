@@ -12,6 +12,8 @@ namespace Z80Sharp.Processor
             Registers.A = (byte)((Registers.A << 1) | carry);
             Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagConditionally(FlagType.C, carry != 0);
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
         private void RRCA()
         {
@@ -32,6 +34,8 @@ namespace Z80Sharp.Processor
             Registers.A = Registers.A;
             Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagBits(carry);
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
         private void RRA()
         {
@@ -41,6 +45,8 @@ namespace Z80Sharp.Processor
             Registers.A = Registers.A;
             Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
             Registers.SetFlagBits(carry);
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
         #endregion
 
@@ -56,8 +62,8 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);          // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(Registers.A)); // (PV) (Set if bit parity is even)
             Registers.F &= (byte)~(FlagType.N | FlagType.H);                       // (N, H) (Unconditionally reset)
-            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) > 0);  // (Y)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) > 0);  // (X)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
         private void RLD()
         {
@@ -71,8 +77,8 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Z, regA == 0);          // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(regA)); // (PV) (Set if bit parity is even)
             Registers.F &= (byte)~(FlagType.N | FlagType.H);                // (N, H) (Unconditionally reset)
-            Registers.SetFlagConditionally(FlagType.Y, (regA & 0x20) > 0);  // (Y)  (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.X, (regA & 0x08) > 0);  // (X)  (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
         #endregion
 

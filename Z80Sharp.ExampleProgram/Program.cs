@@ -27,7 +27,7 @@ namespace Z80Sharp.ExampleProgram
             z80.Reset();
             Thread processorThread = new(() =>
             {
-                RunCPMBinary("zexdoc.com");
+                RunCPMBinary("zexall.bin");
             });
             processorThread.Start();
 
