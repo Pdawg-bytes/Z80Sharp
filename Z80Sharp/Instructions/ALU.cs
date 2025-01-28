@@ -152,20 +152,21 @@ namespace Z80Sharp.Processor
         private void CMPBlock(bool increment, bool repeat)
         {
             byte hlMem = _memory.Read(Registers.HL);
-            sbyte diff = (sbyte)(Registers.A - hlMem);
 
             Registers.HL += (ushort)(increment ? 1 : -1);
             Registers.BC--;
 
-            Registers.SetFlagConditionally(FlagType.S, (byte)diff > 0x7F);
-            Registers.SetFlagConditionally(FlagType.Z, diff == 0);
-            Registers.SetFlagConditionally(FlagType.H, (Registers.A & 0x0F) < (hlMem & 0x0F));
-            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
-            Registers.SetFlag(FlagType.N);
+            int diff = Registers.A - hlMem;
 
-            int undoc = Registers.A - hlMem - (Registers.F & (byte)FlagType.H);
-            Registers.SetFlagConditionally(FlagType.Y, (undoc & 0x02) != 0);
-            Registers.SetFlagConditionally(FlagType.X, (undoc & 0x08) != 0);
+            Registers.F &= (byte)FlagType.C;
+            Registers.F |= (byte)((byte)FlagType.N | (byte)(diff & (byte)FlagType.S));
+            Registers.SetFlagConditionally(FlagType.Z, diff == 0);
+            Registers.F |= (byte)((Registers.A ^ hlMem ^ diff) & (byte)FlagType.H);
+            Registers.SetFlagConditionally(FlagType.PV, Registers.BC != 0);
+
+            var n = diff - (((Registers.F & (byte)FlagType.H) != 0) ? 1 : 0);
+            Registers.SetFlagConditionally(FlagType.Y, (n & 0b0000010) != 0);
+            Registers.SetFlagConditionally(FlagType.X, (n & 0b0001000) != 0);
 
             if (repeat && Registers.BC != 0 && diff != 0)
             {

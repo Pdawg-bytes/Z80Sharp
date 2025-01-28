@@ -1,5 +1,6 @@
 ﻿using Z80Sharp.Enums;
 using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Z80Sharp.Processor
 {
@@ -21,30 +22,21 @@ namespace Z80Sharp.Processor
 
         private void CPL()
         {
-            Registers.A ^= 0b11111111;
-            Registers.SetFlagBits((byte)(FlagType.N | FlagType.H));
-
-            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
-            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
+            Registers.A = (byte)~Registers.A;
+            Registers.F &= (byte)(FlagType.S | FlagType.Z | FlagType.PV | FlagType.C);
+            Registers.F |= (byte)((byte)FlagType.H | (byte)FlagType.N | (byte)(FlagType.Y | FlagType.X) & Registers.A);
         }
 
 
         private void CCF()
         {
-            Registers.F &= (byte)~(FlagType.H | FlagType.N);
-            Registers.SetFlagBits((byte)((Registers.F << 4) & 0b00010000));
-            Registers.InvertFlag(FlagType.C);
+            bool original = Registers.IsFlagSet(FlagType.C);
+            Registers.F = (byte)(Registers.F & ((byte)(FlagType.S | FlagType.Z | FlagType.PV | FlagType.C) | (byte)(FlagType.Y | FlagType.X) & Registers.A) ^ (byte)FlagType.C);
+            Registers.SetFlagConditionally(FlagType.H, original);
         }
-        private void SCF()
-        {
-            Registers.SetFlag(FlagType.C);
-            Registers.ClearFlag(FlagType.N);
-            Registers.ClearFlag(FlagType.H);
 
-            byte temp = (byte)(Registers.A | Registers.F);
-            Registers.SetFlagConditionally(FlagType.X, (temp & 0x08) != 0);
-            Registers.SetFlagConditionally(FlagType.Y, (temp & 0x20) != 0);
-        }
+        [MethodImplAttribute(MethodImplOptions.AggressiveInlining)]
+        private void SCF() => Registers.F = (byte)(Registers.F & (byte)(FlagType.S | FlagType.Z | FlagType.PV) | (byte)FlagType.C | (byte)(FlagType.Y | FlagType.X) & Registers.A);
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -82,6 +74,6 @@ namespace Z80Sharp.Processor
         private void EI() => Registers.IFF1 = Registers.IFF2 = true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void IM_M(InterruptMode mode) => Registers.InterruptMode = mode;
+        private void IM_M([ConstantExpected] InterruptMode mode) => Registers.InterruptMode = mode;
     }
 }
