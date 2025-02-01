@@ -20,25 +20,6 @@ namespace Z80Sharp.Processor
         }
 
 
-        private void CPL()
-        {
-            Registers.A = (byte)~Registers.A;
-            Registers.F &= (byte)(FlagType.S | FlagType.Z | FlagType.PV | FlagType.C);
-            Registers.F |= (byte)((byte)FlagType.H | (byte)FlagType.N | (byte)(FlagType.Y | FlagType.X) & Registers.A);
-        }
-
-
-        private void CCF()
-        {
-            bool original = Registers.IsFlagSet(FlagType.C);
-            Registers.F = (byte)(Registers.F & ((byte)(FlagType.S | FlagType.Z | FlagType.PV | FlagType.C) | (byte)(FlagType.Y | FlagType.X) & Registers.A) ^ (byte)FlagType.C);
-            Registers.SetFlagConditionally(FlagType.H, original);
-        }
-
-        [MethodImplAttribute(MethodImplOptions.AggressiveInlining)]
-        private void SCF() => Registers.F = (byte)(Registers.F & (byte)(FlagType.S | FlagType.Z | FlagType.PV) | (byte)FlagType.C | (byte)(FlagType.Y | FlagType.X) & Registers.A);
-
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EX_AF_AF_() => Registers.R16Exchange(ref Registers.AF, ref Registers.AF_);
 
@@ -66,6 +47,7 @@ namespace Z80Sharp.Processor
             Registers.R16Exchange(ref Registers.DE, ref Registers.DE_);
             Registers.R16Exchange(ref Registers.HL, ref Registers.HL_);
         }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DI() => Registers.IFF1 = Registers.IFF2 = false;

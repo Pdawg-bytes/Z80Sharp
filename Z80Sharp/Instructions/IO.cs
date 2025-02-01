@@ -13,11 +13,11 @@ namespace Z80Sharp.Processor
             byte data = _dataBus.ReadPort(Registers.BC);
             operatingRegister = data;
 
-            Registers.SetFlagConditionally(FlagType.S, (data & 0x80) != 0); // (S) (Set if negative)
-            Registers.SetFlagConditionally(FlagType.Z, data == 0);          // (Z) (Set if result is zero)
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity(data)); // (PV) (Set if bit parity is even)
-            Registers.SetFlagConditionally(FlagType.Y, (data & 0x20) != 0); // (Y) (Undocumented flag)
-            Registers.SetFlagConditionally(FlagType.X, (data & 0x08) != 0); // (X) (Undocumented flag)
+            Registers.SetFlagConditionally(FlagType.S, (data & 0x80) != 0);
+            Registers.SetFlagConditionally(FlagType.Z, data == 0);
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(data));
+            Registers.SetFlagConditionally(FlagType.Y, (data & 0x20) != 0);
+            Registers.SetFlagConditionally(FlagType.X, (data & 0x08) != 0);
         }
         private void IN_CPORT()
         {
@@ -35,14 +35,11 @@ namespace Z80Sharp.Processor
             byte regB = --Registers.B;
 
             Registers.F = 0;
-            Registers.F |= (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & regB);
+            Registers.F |= (byte)(0xA8 & regB);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
             Registers.F |= temp < data ? (byte)(FlagType.H | FlagType.C) : (byte)0;
             Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)((temp & 0x07) ^ regB)));
             Registers.SetFlagConditionally(FlagType.N, (data & 0x80) != 0);
-
-            Registers.SetFlagConditionally(FlagType.X, (regB & 0x08) != 0); // (X) (copy of bit 3)
-            Registers.SetFlagConditionally(FlagType.Y, (regB & 0x20) != 0); // (Y) (copy of bit 5)
 
             if (repeat && Registers.B != 0)
             {
@@ -82,14 +79,11 @@ namespace Z80Sharp.Processor
             byte regB = --Registers.B;
 
             Registers.F = 0;
-            Registers.F |= (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & regB);
+            Registers.F |= (byte)(0xA8 & regB);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
             Registers.F |= temp < hlMem ? (byte)(FlagType.H | FlagType.C) : (byte)0;
             Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)((temp & 0x07) ^ regB)));
             Registers.SetFlagConditionally(FlagType.N, (hlMem & 0x80) != 0);
-
-            Registers.SetFlagConditionally(FlagType.X, (regB & 0x08) != 0); // (X) (copy of bit 3)
-            Registers.SetFlagConditionally(FlagType.Y, (regB & 0x20) != 0); // (Y) (copy of bit 5)
 
             if (repeat && Registers.B != 0)
             {

@@ -15,14 +15,14 @@ namespace Z80Sharp.Registers
         /// </summary>
         /// <remarks>Only the lower 7 bits (bits 0-6) are incremented, while the MSB (bit 7) is preserved.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void IncrementRefresh() => R = (byte)((R & 0x80) | ((R & 0x7F) + 1));
+        internal void IncrementRefresh() => R = (byte)((R & 0x80) | ((R & 0x7F) + 1));
 
         /// <summary>
         /// Gets the name of the current interrupt mode.
         /// </summary>
         /// <param name="interruptMode">The interrupt mode the processor is currently in.</param>
         /// <returns>The name, in string form, of the mode.</returns>
-        public string InterruptModeName(InterruptMode interruptMode) => interruptMode switch
+        internal string InterruptModeName(InterruptMode interruptMode) => interruptMode switch
         {
             InterruptMode.IM0 => "IM0",
             InterruptMode.IM1 => "IM1",
@@ -36,7 +36,7 @@ namespace Z80Sharp.Registers
         /// <param name="condition">The flag condition.</param>
         /// <returns>True if the flag condition matches the expected value; false if otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool EvaluateJumpFlagCondition([ConstantExpected] byte condition)
+        internal bool EvaluateJumpFlagCondition([ConstantExpected] byte condition)
         {
             switch (condition & 0xFE) // Mask out LSB to handle paired conditions.
             {
@@ -58,14 +58,14 @@ namespace Z80Sharp.Registers
 
         #region Register exchange operations
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void R8Exchange(ref byte reg1, ref byte reg2)
+        internal void R8Exchange(ref byte reg1, ref byte reg2)
         {
             byte reg1_old = reg1;
             reg1 = reg2;
             reg2 = reg1_old;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void R16Exchange(ref ushort regPair1, ref ushort regPair2)
+        internal void R16Exchange(ref ushort regPair1, ref ushort regPair2)
         {
             (regPair1, regPair2) = (regPair2, regPair1);
         }

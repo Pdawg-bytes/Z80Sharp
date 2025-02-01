@@ -93,7 +93,6 @@ namespace Z80Sharp.Processor
         }
 
 
-        // Reference: http://www.z80.info/zip/z80-documented.pdf (page 9, section 2.4)
         public void Reset()
         {
             Halted = false;

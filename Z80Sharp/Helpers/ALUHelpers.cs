@@ -1,109 +1,23 @@
 ﻿using Z80Sharp.Enums;
-using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Processor
 {
     public unsafe partial class Z80
     {
         /// <summary>
-        /// Increments the input value and sets the flags register accordingly.
-        /// </summary>
-        /// <param name="increment">The value that will be incremented.</param>
-        /// <returns>The incremented value.</returns>
-        private byte INCAny(byte increment)
-        {
-            // https://www.zilog.com/docs/z80/um0080.pdf Flags detailed on page 179.
-            byte sum = (byte)(increment + 1);
-
-            Registers.SetFlagConditionally(FlagType.S, (sum & 0x80) > 0);                         // (S) (check 7th bit for sign)
-            Registers.SetFlagConditionally(FlagType.Z, sum == 0);                                 // (Z) (set if result is zero)
-            Registers.SetFlagConditionally(FlagType.H, (increment & 0x0F) + (0x01 & 0x0F) > 0xF); // (H) (set if carry from bit 3 to bit 4)
-            Registers.SetFlagConditionally(FlagType.PV, increment == 0x7F);                       // (P/V) (set on signed overflow)
-            Registers.ClearFlag(FlagType.N);
-
-            Registers.SetFlagConditionally(FlagType.X, (sum & 0x08) != 0); // (X) (copy of bit 3)
-            Registers.SetFlagConditionally(FlagType.Y, (sum & 0x20) != 0); // (Y) (copy of bit 5)
-
-            return sum;
-        }
-        /// <summary>
-        /// Decrements the input value and sets the flags register accordingly.
-        /// </summary>
-        /// <param name="decrement">The value that will be decremented.</param>
-        /// <returns>The decremented value.</returns>
-        private byte DECAny(byte decrement)
-        {
-            // https://www.zilog.com/docs/z80/um0080.pdf Flags detailed on page 185.
-            byte diff = (byte)(decrement - 1);
-
-            Registers.SetFlagConditionally(FlagType.PV, decrement == 0x80);                 // (P/V) (set on signed overflow -128 -> 127)
-            Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) > 0);                  // (S) (check 7th bit for sign)
-            Registers.SetFlagConditionally(FlagType.Z, diff == 0);                          // (Z) (set if result is zero)
-            Registers.SetFlagConditionally(FlagType.H, (decrement & 0x0F) < (0x01 & 0x0F)); // (H) (borrow from bit 4)
-            Registers.SetFlag(FlagType.N);
-
-            Registers.SetFlagConditionally(FlagType.X, (diff & 0x08) != 0); // (X) (copy of bit 3)
-            Registers.SetFlagConditionally(FlagType.Y, (diff & 0x20) != 0); // (Y) (copy of bit 5)
-
-            return diff;
-        }
-
-        /// <summary>
-        /// Performs a bitwise OR on the Accumulator with <paramref name="operand"/>.
-        /// </summary>
-        /// <param name="operand">The operand which we OR A with.</param>
-        private void ORAny(byte operand)
-        {
-            Registers.A |= operand;
-            byte result = Registers.A;
-            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & result); // (S, Y, X) (set based on respective bits of result)
-            Registers.SetFlagConditionally(FlagType.Z, result == 0);                     // (Z) (set if result is zero)
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity(result));            // (P/V) (set if parity)
-            Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
-        }
-        /// <summary>
-        /// Performs a bitwise XOR on the Accumulator with <paramref name="operand"/>.
-        /// </summary>
-        /// <param name="operand">The operand which we XOR A with.</param>
-        private void XORAny(byte operand)
-        {
-            Registers.A ^= operand;
-            byte result = Registers.A;
-            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & result); // (S, Y, X) (set based on respective bits of result)
-            Registers.SetFlagConditionally(FlagType.Z, result == 0);                     // (Z) (set if result is zero)
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity(result));            // (P/V) (set if parity)
-            Registers.F &= (byte)~(FlagType.N | FlagType.H | FlagType.C);
-        }
-
-        /// <summary>
-        /// Performs a bitwise AND on the Accumulator with <paramref name="operand"/>.
-        /// </summary>
-        /// <param name="operand">The operand which we AND A with.</param>
-        private void ANDAny(byte operand)
-        {
-            Registers.A &= operand;
-            byte result = Registers.A;
-            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & result); // (S, Y, X) (set based on respective bits of result)
-            Registers.SetFlagConditionally(FlagType.Z, result == 0);                     // (Z) (set if result is zero)
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity(result));            // (PV) (set if parity)
-            Registers.F &= (byte)~(FlagType.N | FlagType.C);
-            Registers.SetFlag(FlagType.H);
-        }
-
-        /// <summary>
         /// Performs a comparison on A with <paramref name="operand"/> and sets flags accordingly.
         /// </summary>
         /// <param name="operand">The value to subtract from A.</param>
         /// <remarks>A is not modified during this instruction.</remarks>
-        private void CMPAny(byte operand)
+        private void Compare8(byte operand)
         {
             byte regA = Registers.A;
             int diff = regA - operand;
 
-            Registers.F = (byte)((byte)(FlagType.Y | FlagType.X) & operand);            // (Y, X) (Set based on respective bits of input)
-            Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) != 0);             // (S) (Set if sign is 1)
-            Registers.SetFlagConditionally(FlagType.Z, diff == 0);                      // (Z) (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < (operand & 0xF)); // (H) (Set if borrow occurs from bit 4)
+            Registers.F = (byte)(0x28 & operand); // (Y | X) & operand
+            Registers.SetFlagConditionally(FlagType.S, (diff & 0x80) != 0);
+            Registers.SetFlagConditionally(FlagType.Z, diff == 0);
+            Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < (operand & 0xF));
 
             Registers.SetFlagConditionally(FlagType.PV,
                 ((regA ^ operand) & 0x80) != 0 &&
@@ -114,90 +28,123 @@ namespace Z80Sharp.Processor
         }
 
         /// <summary>
-        /// Adds <paramref name="operand"/> to A and sets flags accordingly.
+        /// Performs a bitwise operation on A with <paramref name="operand"/>, given the <see cref="BitOperation"/>.
         /// </summary>
-        /// <param name="operand">The value to add to A.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ADDAny(byte operand)
+        /// <param name="operand">The operand to modify A with.</param>
+        /// <param name="operation">The operation to perform on A and the <paramref name="operand"/>.</param>
+        private void Bitwise8(byte operand, BitOperation operation)
+        {
+            byte result = Registers.A = operation switch
+            {
+                BitOperation.Xor => (byte)(Registers.A ^ operand),
+                BitOperation.Or => (byte)(Registers.A | operand),
+                BitOperation.And => (byte)(Registers.A & operand),
+                _ => Registers.A
+            };
+
+            Registers.F = (byte)(0xA8 & result);
+            Registers.F &= (byte)~(FlagType.N | FlagType.C);
+            Registers.SetFlagConditionally(FlagType.Z, result == 0);
+            Registers.SetFlagConditionally(FlagType.H, operation == BitOperation.And);
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(result));
+        }
+
+        /// <summary>
+        /// Increments or decrements the <paramref name="operand"/>, sets flags accordingly, and returns the result.
+        /// </summary>
+        /// <param name="operand">The value to modify.</param>
+        /// <param name="decrement"><c>true</c> if the value is being decremented; <c>false</c> if otherwise.</param>
+        /// <returns></returns>
+        private byte IncDec8(byte operand, bool decrement)
+        {
+            byte result = (byte)(operand + (decrement ? -1 : 1));
+
+            Registers.F &= 0b00000001;            // Preserve carry
+            Registers.F |= (byte)(0xA8 & result); // (S | Y | X) & result
+
+            Registers.SetFlagConditionally(FlagType.Z, result == 0);
+            Registers.SetFlagConditionally(FlagType.H, (operand & 0x0F) == (decrement ? 0x00 : 0x0F));
+            Registers.SetFlagConditionally(FlagType.PV, operand == (decrement ? 0x80 : 0x7F));
+            Registers.SetFlagConditionally(FlagType.N, decrement);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Adds or subtracts <paramref name="operand"/> and the 
+        /// <see cref="FlagType.C"/> flag from <see cref="Registers.ProcessorRegisters.A"/> 
+        /// depending on <paramref name="subtract"/> and <paramref name="carry"/>.
+        /// </summary>
+        /// <param name="operand">The operand to modify A with.</param>
+        /// <param name="subtract"><c>true</c> if a subtraction is taking place; <c>false</c> otherwise.</param>
+        /// <param name="carry"><c>true</c> if the carry flag is included in the operation; <c>false</c> otherwise.</param>
+        private void AddSub8WithCarry(byte operand, bool subtract, bool carry)
         {
             byte regA = Registers.A;
-            int sum = regA + operand;
-            byte result = (byte)sum;
+            int opResult = subtract
+                ? (regA - operand - (carry ? (byte)(Registers.F & 0b00000001) : 0))
+                : (regA + operand + (carry ? (byte)(Registers.F & 0b00000001) : 0));
+
+            byte result = (byte)opResult;
+
+            Registers.F = (byte)(result & 0xA8);
+            Registers.SetFlagConditionally(FlagType.Z, result == 0);
+            Registers.SetFlagConditionally(FlagType.N, subtract);
+
+            Registers.SetFlagConditionally(FlagType.H, (byte)((regA ^ operand ^ result) & 0x10) != 0);
+            Registers.SetFlagConditionally(FlagType.C, subtract ? opResult < 0 : opResult > 0xFF);
+
+            Registers.SetFlagConditionally(FlagType.PV,
+                (((regA ^ operand) & 0x80) == 0) == !subtract &&
+                ((regA ^ result) & 0x80) != 0);
+
             Registers.A = result;
-
-            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & result);        // (S, Y, X) (set based on respective bits of result)
-            Registers.SetFlagConditionally(FlagType.Z, result == 0);                            // (Z) (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, ((regA & 0xF) + (operand & 0xF)) > 0xF); // (H) (Set if borrow occurs from bit 4)
-
-            Registers.SetFlagConditionally(FlagType.PV,
-                (((regA ^ operand) & 0x80) == 0) &&
-                (((regA ^ sum) & 0x80) != 0));
-
-            Registers.SetFlagConditionally(FlagType.C, sum > 0xFF);
-            Registers.ClearFlag(FlagType.N);
-        }
-        /// <summary>
-        /// Adds <paramref name="operand"/> and <see cref="FlagType.C"/> to A and sets flags accordingly.
-        /// </summary>
-        /// <param name="operand">The value to add to A.</param>
-        private void ADCAny(byte operand)
-        {
-            byte regA = Registers.A;
-            byte carry = (byte)(Registers.F & 0b00000001);
-            int sum = regA + operand + carry;
-            Registers.A = (byte)sum;
-
-            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & (byte)sum);             // (S, Y, X) (set based on respective bits of result)
-            Registers.SetFlagConditionally(FlagType.Z, (byte)sum == 0);                                 // (Z) (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, ((regA & 0xF) + (operand & 0xF) + carry) > 0xF); // (H) (Set if borrow occurs from bit 4)
-
-            Registers.SetFlagConditionally(FlagType.PV,
-                (((regA ^ operand) & 0x80) == 0) &&
-                (((regA ^ sum) & 0x80) != 0));
-
-            Registers.SetFlagConditionally(FlagType.C, sum > 0xFF);
-            Registers.ClearFlag(FlagType.N);
         }
 
+
         /// <summary>
-        /// Adds <paramref name="operand"/> and <see cref="FlagType.C"/> to HL and sets flags accordingly.
+        /// Adds or subtracts <paramref name="operand"/> and the carry flag from <see cref="Registers.ProcessorRegisters.HL"/>.
         /// </summary>
-        /// <param name="operand">The value to add to HL.</param>
-        private void ADCHL(ushort operand)
+        /// <param name="operand">The value to modify HL with.</param>
+        /// <param name="subtract"><c>true</c> if a subtraction is taking place; <c>false</c> otherwise.</param>
+        private void AddSub16CarryHL(ushort operand, bool subtract)
         {
             ushort regHL = Registers.HL;
             byte carry = (byte)(Registers.F & 0b00000001);
-            int sum = regHL + operand + carry;
-            ushort result = (ushort)sum;
-            Registers.HL = result;
+            int newHL = subtract ? (regHL - operand - carry) : (regHL + operand + carry);
+            ushort result = (ushort)newHL;
 
-            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & sum >> 8);                      // (S, Y, X) (set based on respective bits of result)
-            Registers.SetFlagConditionally(FlagType.Z, result == 0);                                            // (Z) (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, (regHL & 0x0FFF) + (operand & 0x0FFF) + carry > 0x0FFF); // (H) (Set if borrow occurs from bit 11)
+            Registers.F = subtract ? (byte)FlagType.N : (byte)0;
+            Registers.SetFlagConditionally(FlagType.S, (result & 0x8000) != 0);
+            Registers.SetFlagConditionally(FlagType.Z, result == 0);
+
+            Registers.SetFlagConditionally(FlagType.H, ((regHL ^ operand ^ result) & 0x1000) != 0);
 
             Registers.SetFlagConditionally(FlagType.PV,
-                (((regHL ^ operand) & 0x8000) == 0) &&
-                (((regHL ^ sum) & 0x8000) != 0));
+                (((regHL ^ operand) & 0x8000) == 0) == !subtract &&
+                ((regHL ^ result) & 0x8000) != 0);
 
-            Registers.SetFlagConditionally(FlagType.C, sum > 0xFFFF);
-            Registers.ClearFlag(FlagType.N);
+            Registers.SetFlagConditionally(FlagType.C, subtract ? (newHL < 0) : (newHL > 0xFFFF));
+            Registers.F |= (byte)((byte)(result >> 8) & (byte)(FlagType.Y | FlagType.X));
+
+            Registers.HL = result;
         }
 
         /// <summary>
         /// Adds two 16-bit addends together and sets flags accordingly.
         /// </summary>
-        /// <param name="augend">The first addend.</param>
-        /// <param name="addend">The second addend.</param>
+        /// <param name="left">The first right.</param>
+        /// <param name="right">The second right.</param>
         /// <returns>The sum of the addends.</returns>
-        private ushort ADDWord(ushort augend, ushort addend)
+        private ushort Add16(ushort left, ushort right)
         {
-            int sum = augend + addend;
+            int sum = left + right;
             ushort result = (ushort)sum;
 
             Registers.F &= (byte)(FlagType.S | FlagType.Z | FlagType.PV);
 
             Registers.SetFlagConditionally(FlagType.H,
-                ((augend & 0x0FFF) + (addend & 0x0FFF))
+                ((left & 0x0FFF) + (right & 0x0FFF))
                 > 0x0FFF);
 
             Registers.SetFlagConditionally(FlagType.C, sum > 0xFFFF);
@@ -206,85 +153,6 @@ namespace Z80Sharp.Processor
             Registers.F |= (byte)((result >> 8) & (byte)(FlagType.Y | FlagType.X));
 
             return result;
-        }
-
-
-        /// <summary>
-        /// Subtracts <paramref name="operand"/> from A and sets flags accordingly.
-        /// </summary>
-        /// <param name="operand">The value to subtract from A.</param>
-        private void SUBAny(byte operand)
-        {
-            byte regA = Registers.A;
-            int diff = regA - operand;
-            Registers.A = (byte)diff;
-
-            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & (byte)diff); // (S, Y, X) (set based on respective bits of result)
-            Registers.SetFlagConditionally(FlagType.S, ((byte)diff & 0x80) != 0);            // (S) (check 7th bit for sign)
-            Registers.SetFlagConditionally(FlagType.Z, (byte)diff == 0);                     // (Z) (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < (operand & 0xF));      // (H) (Set if borrow occurs from bit 4)
-
-            Registers.SetFlagConditionally(FlagType.PV,
-                (((regA ^ operand) & 0x80) != 0) &&
-                (((regA ^ (byte)diff) & 0x80) != 0));
-
-            Registers.SetFlagConditionally(FlagType.C, regA < operand);
-            Registers.SetFlag(FlagType.N);
-
-            Registers.SetFlagConditionally(FlagType.X, (diff & 0x08) != 0); // (X) (copy of bit 3)
-            Registers.SetFlagConditionally(FlagType.Y, (diff & 0x20) != 0); // (Y) (copy of bit 5)
-        }
-        /// <summary>
-        /// Subtracts <paramref name="operand"/> and Carry flag from A and sets flags accordingly.
-        /// </summary>
-        /// <param name="operand">The value to subtract from A.</param>
-        private void SBCAny(byte operand)
-        {
-            byte regA = Registers.A;
-            byte carry = (byte)(Registers.F & 0b00000001);
-            int diff = regA - operand - carry;
-            Registers.A = (byte)diff;
-
-            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & (byte)diff);      // (S, Y, X) (set based on respective bits of result)
-            Registers.SetFlagConditionally(FlagType.Z, diff == 0);                                // (Z) (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, (regA & 0xF) < ((operand + carry) & 0xF)); // (H) (Set if borrow occurs from bit 4)
-
-            Registers.SetFlagConditionally(FlagType.PV,
-                (((regA ^ (operand + carry)) & 0x80) != 0) &&
-                ((((operand + carry) ^ diff) & 0x80) == 0));
-
-            Registers.SetFlagConditionally(FlagType.C, diff < 0);
-            Registers.SetFlag(FlagType.N);
-
-            Registers.SetFlagConditionally(FlagType.X, (diff & 0x08) != 0); // (X) (copy of bit 3)
-            Registers.SetFlagConditionally(FlagType.Y, (diff & 0x20) != 0); // (Y) (copy of bit 5)
-        }
-
-        /// <summary>
-        /// Subtracts <paramref name="operand"/> and Carry flag from HL and sets flags accordingly.
-        /// </summary>
-        /// <param name="operand">The value to subtract from HL.</param>
-        private void SBCHL(ushort operand)
-        {
-            ushort regHL = Registers.HL;
-            byte carry = (byte)(Registers.F & 0b00000001);
-            int diff = Registers.HL - operand - carry;
-            Registers.HL = (ushort)diff;
-
-            Registers.F = (byte)((byte)(FlagType.S | FlagType.Y | FlagType.X) & diff >> 8);            // (S, Y, X) (set based on respective bits of result)
-            Registers.SetFlagConditionally(FlagType.S, ((ushort)diff & 0x8000) > 0);                   // (S) (check 15th bit for sign)
-            Registers.SetFlagConditionally(FlagType.Z, (ushort)diff == 0);                             // (Z) (Set if result is 0)
-            Registers.SetFlagConditionally(FlagType.H, (regHL & 0x0FFF) < (operand & 0x0FFF) + carry); // (H) (Set if borrow occurs from bit 11)
-
-            Registers.SetFlagConditionally(FlagType.PV, 
-                (((regHL ^ (operand + carry)) & 0x8000) != 0) &&
-                ((((operand + carry) ^ (ushort)diff) & 0x8000) == 0));
-
-            Registers.SetFlagConditionally(FlagType.C, diff < 0);
-            Registers.SetFlag(FlagType.N);
-
-            Registers.SetFlagConditionally(FlagType.X, (diff & 0x0800) != 0); // (X) (copy of bit 11)
-            Registers.SetFlagConditionally(FlagType.Y, (diff & 0x2000) != 0); // (Y) (copy of bit 13)
         }
     }
 }
