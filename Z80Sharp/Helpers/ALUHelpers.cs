@@ -2,7 +2,7 @@
 
 namespace Z80Sharp.Processor
 {
-    public unsafe partial class Z80
+    public partial class Z80
     {
         /// <summary>
         /// Performs a comparison on A with <paramref name="operand"/> and sets flags accordingly.

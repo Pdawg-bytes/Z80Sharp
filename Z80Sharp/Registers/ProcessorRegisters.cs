@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Registers
 {
-    public unsafe partial struct ProcessorRegisters
+    public partial struct ProcessorRegisters
     {
         public bool IFF1;
         public bool IFF2;

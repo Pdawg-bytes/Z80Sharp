@@ -5,7 +5,7 @@ using static Z80Sharp.Registers.ProcessorRegisters;
 
 namespace Z80Sharp.Processor
 {
-    public unsafe partial class Z80
+    public partial class Z80
     {
         private void ExecuteIndexRInstruction(ref ushort indexAddressingMode, ref byte irH, ref byte irL)
         {

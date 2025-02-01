@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Processor
 {
-    public unsafe partial class Z80
+    public partial class Z80
     {
         // Reference: https://stackoverflow.com/questions/8119577/z80-daa-instruction
         // I copied this code...I wish there was a better way to do this while keeping it 100% accurate.
@@ -63,19 +63,29 @@ namespace Z80Sharp.Processor
         private void CPL()
         {
             Registers.A = (byte)~Registers.A;
-            Registers.F &= (byte)(FlagType.S | FlagType.Z | FlagType.PV | FlagType.C);
-            Registers.F |= (byte)((byte)FlagType.H | (byte)FlagType.N | (byte)(FlagType.Y | FlagType.X) & Registers.A);
+            Registers.SetFlag(FlagType.N);
+            Registers.SetFlag(FlagType.H);
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
 
 
         private void CCF()
         {
-            bool original = Registers.IsFlagSet(FlagType.C);
-            Registers.F = (byte)(Registers.F & ((byte)(FlagType.S | FlagType.Z | FlagType.PV | FlagType.C) | (byte)(FlagType.Y | FlagType.X) & Registers.A) ^ (byte)FlagType.C);
-            Registers.SetFlagConditionally(FlagType.H, original);
+            Registers.SetFlagConditionally(FlagType.H, Registers.IsFlagSet(FlagType.C));
+            Registers.InvertFlag(FlagType.C);
+            Registers.ClearFlag(FlagType.N);
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void SCF() => Registers.F = (byte)(Registers.F & (byte)(FlagType.S | FlagType.Z | FlagType.PV) | (byte)FlagType.C | (byte)(FlagType.Y | FlagType.X) & Registers.A);
+        private void SCF()
+        {
+            Registers.SetFlag(FlagType.C);
+            Registers.ClearFlag(FlagType.N);
+            Registers.ClearFlag(FlagType.H);
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
+        }
     }
 }

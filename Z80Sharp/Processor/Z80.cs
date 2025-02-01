@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Processor
 {
-    public unsafe partial class Z80
+    public partial class Z80
     {
         private readonly MainMemory _memory;
         private readonly Clock _clock;

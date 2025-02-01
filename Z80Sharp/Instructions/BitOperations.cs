@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Processor
 {
-    public unsafe partial class Z80
+    public partial class Z80
     {
         private void BIT_B_R([ConstantExpected] byte bit, ref byte operatingRegister)
         {

@@ -3,7 +3,7 @@ using Z80Sharp.Enums;
 
 namespace Z80Sharp.Processor
 {
-    public unsafe partial class Z80
+    public partial class Z80
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void HandleInterrupts()

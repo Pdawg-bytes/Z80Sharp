@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Registers
 {
-    public unsafe partial struct ProcessorRegisters
+    public partial struct ProcessorRegisters
     {
         // General-purpose registers
         private ushort _af, _bc, _de, _hl;

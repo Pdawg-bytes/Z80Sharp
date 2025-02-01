@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Processor
 {
-    public unsafe partial class Z80
+    public partial class Z80
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ADD_A_R(ref byte operatingRegister) => AddSub8WithCarry(operatingRegister, false, false);

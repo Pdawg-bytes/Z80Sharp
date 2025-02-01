@@ -4,7 +4,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Z80Sharp.Processor
 {
-    public unsafe partial class Z80
+    public partial class Z80
     {
         private void IN_A_NPORT() => Registers.A = _dataBus.ReadPort((ushort)(Fetch() + (Registers.A << 8)));
 
