@@ -2,6 +2,7 @@
 using Z80Sharp.Logging;
 using Z80Sharp.Memory;
 using Z80Sharp.Processor;
+using Z80Sharp.Tests.FUSE;
 
 namespace Z80Sharp.Tests
 {

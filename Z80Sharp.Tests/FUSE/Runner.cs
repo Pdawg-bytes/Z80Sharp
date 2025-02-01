@@ -5,7 +5,7 @@ using Z80Sharp.Memory;
 using Z80Sharp.Processor;
 using Z80Sharp.Registers;
 
-namespace Z80Sharp.Tests
+namespace Z80Sharp.Tests.FUSE
 {
     internal class Runner
     {
@@ -98,9 +98,9 @@ namespace Z80Sharp.Tests
 
 
             if (z80.Registers.A != (byte)(expectedState.state.af >> 8))
-                badRegisters.Add($"A (0x{z80.Registers.A:X2}) : (0x{(expectedState.state.af >> 8) & 0xFF:X2})");
+                badRegisters.Add($"A (0x{z80.Registers.A:X2}) : (0x{expectedState.state.af >> 8 & 0xFF:X2})");
 
-            if ((z80.Registers.F) != ((byte)(expectedState.state.af & 0xFF)))
+            if (z80.Registers.F != (byte)(expectedState.state.af & 0xFF))
             {
                 string actualBinary = Convert.ToString(z80.Registers.F, 2).PadLeft(8, '0');
                 string expectedBinary = Convert.ToString((byte)(expectedState.state.af & 0xFF), 2).PadLeft(8, '0');
@@ -108,17 +108,17 @@ namespace Z80Sharp.Tests
             }
 
             if (z80.Registers.B != (byte)(expectedState.state.bc >> 8))
-                badRegisters.Add($"B (0x{z80.Registers.B:X2}) : (0x{(expectedState.state.bc >> 8) & 0xFF:X2})");
+                badRegisters.Add($"B (0x{z80.Registers.B:X2}) : (0x{expectedState.state.bc >> 8 & 0xFF:X2})");
             if (z80.Registers.C != (byte)expectedState.state.bc)
                 badRegisters.Add($"C (0x{z80.Registers.C:X2}) : (0x{expectedState.state.bc & 0xFF:X2})");
 
             if (z80.Registers.D != (byte)(expectedState.state.de >> 8))
-                badRegisters.Add($"D (0x{z80.Registers.D:X2}) : (0x{(expectedState.state.de >> 8) & 0xFF:X2})");
+                badRegisters.Add($"D (0x{z80.Registers.D:X2}) : (0x{expectedState.state.de >> 8 & 0xFF:X2})");
             if (z80.Registers.E != (byte)expectedState.state.de)
                 badRegisters.Add($"E (0x{z80.Registers.E:X2}) : (0x{expectedState.state.de & 0xFF:X2})");
 
             if (z80.Registers.H != (byte)(expectedState.state.hl >> 8))
-                badRegisters.Add($"H (0x{z80.Registers.H:X2}) : (0x{(expectedState.state.hl >> 8) & 0xFF:X2})");
+                badRegisters.Add($"H (0x{z80.Registers.H:X2}) : (0x{expectedState.state.hl >> 8 & 0xFF:X2})");
             if (z80.Registers.L != (byte)expectedState.state.hl)
                 badRegisters.Add($"L (0x{z80.Registers.L:X2}) : (0x{expectedState.state.hl & 0xFF:X2})");
 

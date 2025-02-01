@@ -1,8 +1,8 @@
-﻿namespace Z80Sharp.Tests
+﻿namespace Z80Sharp.Tests.FUSE
 {
     static class Constants
     {
-        internal static string[] UndocumentedInstructions = 
+        internal static string[] UndocumentedInstructions =
         {
             "76", // exclude HALT
             "db", // IN a, (n)

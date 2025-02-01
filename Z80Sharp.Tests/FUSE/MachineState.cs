@@ -1,4 +1,4 @@
-﻿namespace Z80Sharp.Tests
+﻿namespace Z80Sharp.Tests.FUSE
 {
     public class MachineState
     {
