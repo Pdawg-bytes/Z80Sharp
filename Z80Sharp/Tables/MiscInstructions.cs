@@ -43,7 +43,7 @@ namespace Z80Sharp.Processor
                 case 0xAB: OUTD(); _clock.Add(8); break;     // OUTD
                 case 0xBB: OTDR(); _clock.Add(13, 8); break; // OTDR
 
-                // ADC/SBC HL: Add/Subtract with carry to/from HL
+
                 case 0x42: SBC_HL_RR(ref Registers.BC); _clock.Add(7); break; // SBC HL, BC
                 case 0x52: SBC_HL_RR(ref Registers.DE); _clock.Add(7); break; // SBC HL, DE
                 case 0x62: SBC_HL_RR(ref Registers.HL); _clock.Add(7); break; // SBC HL, HL
@@ -54,28 +54,28 @@ namespace Z80Sharp.Processor
                 case 0x6A: ADC_HL_RR(ref Registers.HL); _clock.Add(7); break; // ADC HL, HL
                 case 0x7A: ADC_HL_RR(ref Registers.SP); _clock.Add(7); break; // ADC HL, SP
 
-                // LD instructions: Load values to/from registers or memory
+
                 case 0x43: LD_NNMEM_RR(ref Registers.BC); _clock.Add(12); break; // LD (NN), BC
                 case 0x53: LD_NNMEM_RR(ref Registers.DE); _clock.Add(12); break; // LD (NN), DE
                 case 0x63: LD_NNMEM_RR(ref Registers.HL); _clock.Add(12); break; // LD (NN), HL | UNDOCUMENTED
                 case 0x73: LD_NNMEM_RR(ref Registers.SP); _clock.Add(12); break; // LD (NN), SP
 
-                case 0x4B: LD_RR_NNMEM(ref Registers.BC); _clock.Add(12); break; // LD BC, (NN)
-                case 0x5B: LD_RR_NNMEM(ref Registers.DE); _clock.Add(12); break; // LD DE, (NN)
-                case 0x6B: LD_RR_NNMEM(ref Registers.HL); _clock.Add(12); break; // LD HL, (NN) | UNDOCUMENTED
-                case 0x7B: LD_RR_NNMEM(ref Registers.SP); _clock.Add(12); break; // LD SP, (NN)
+                case 0x4B: LD_RR_NNMEM_F(ref Registers.BC); _clock.Add(12); break; // LD BC, (NN)
+                case 0x5B: LD_RR_NNMEM_F(ref Registers.DE); _clock.Add(12); break; // LD DE, (NN)
+                case 0x6B: LD_RR_NNMEM_F(ref Registers.HL); _clock.Add(12); break; // LD HL, (NN) | UNDOCUMENTED
+                case 0x7B: LD_RR_NNMEM_F(ref Registers.SP); _clock.Add(12); break; // LD SP, (NN)
 
                 case 0x47: LD_R_R(ref Registers.I, ref Registers.A); _clock.Add(1); break; // LD I, A
                 case 0x4F: LD_R_R(ref Registers.R, ref Registers.A); _clock.Add(1); break; // LD R, A
                 case 0x57: LD_A_R(ref Registers.I); _clock.Add(1); break; // LD A, I
                 case 0x5F: LD_A_R(ref Registers.R); _clock.Add(1); break; // LD A, R
 
-                // IMx instructions: change the interrupt mode of the Z80
+
                 case 0x46: IM_M(InterruptMode.IM0); break; // IM0
                 case 0x56: IM_M(InterruptMode.IM1); break; // IM1
                 case 0x5E: IM_M(InterruptMode.IM2); break; // IM2
 
-                // IN instructions: read from port into register
+
                 case 0x40: IN_R_CPORT(ref Registers.B); _clock.Add(4); break; // IN B, (C)
                 case 0x48: IN_R_CPORT(ref Registers.C); _clock.Add(4); break; // IN C, (C)
                 case 0x50: IN_R_CPORT(ref Registers.D); _clock.Add(4); break; // IN D, (C)
@@ -86,7 +86,7 @@ namespace Z80Sharp.Processor
 
                 case 0x70: IN_CPORT(); _clock.Add(4); break; // IN (C) | UNDOCUMENTED
 
-                // OUT instructions: output on port from register value
+
                 case 0x41: OUT_CPORT_R(ref Registers.B); _clock.Add(4); break; // OUT (C), B
                 case 0x49: OUT_CPORT_R(ref Registers.C); _clock.Add(4); break; // OUT (C), C
                 case 0x51: OUT_CPORT_R(ref Registers.D); _clock.Add(4); break; // OUT (C), D
@@ -96,6 +96,30 @@ namespace Z80Sharp.Processor
                 case 0x79: OUT_CPORT_R(ref Registers.A); _clock.Add(4); break; // OUT (C), A
 
                 case 0x71: OUT_CPORT_0(); _clock.Add(4); break;  // OUT (C), 0 | UNDOCUMENTED
+
+
+                // These instructions are quite weird, but are expected by FUSE.
+                case 0x4E: IM_M(InterruptMode.IM0); break; // IM 0 | UNDOCUMENTED
+                case 0x4C: NEG(); break;                   // NEG | UNDOCUMENTED
+
+                case 0x54: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x55: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+                case 0x5C: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x5D: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+
+                case 0x64: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x65: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+                case 0x66: IM_M(InterruptMode.IM0); break; // IM 0 | UNDOCUMENTED
+                case 0x6C: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x6D: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+
+                case 0x74: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x75: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+                case 0x76: IM_M(InterruptMode.IM1); break; // IM 1 | UNDOCUMENTED
+                case 0x7C: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x7D: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+                case 0x7E: IM_M(InterruptMode.IM2); break; // IM 2 | UNDOCUMENTED
+                case 0x7F: NOP(); break;                   // NOP | UNDOCUMENTED
 
                 default:
                     _logger.Log(Enums.LogSeverity.Fatal, $"Unrecognized MISC opcode: 0x{_currentInstruction:X2}");

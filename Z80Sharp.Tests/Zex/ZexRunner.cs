@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Z80Sharp.Interfaces;
+﻿using Z80Sharp.Data;
 using Z80Sharp.Logging;
-using Z80Sharp.Data;
 using Z80Sharp.Processor;
+using System.Diagnostics;
+using Z80Sharp.Interfaces;
 
 namespace Z80Sharp.Tests.Zex
 {

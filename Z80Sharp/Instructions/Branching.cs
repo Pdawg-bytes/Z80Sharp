@@ -119,6 +119,7 @@ namespace Z80Sharp.Processor
             {
                 PUSH_PC();
                 Registers.PC = jumpTo;
+                Registers.MEMPTR = jumpTo;
                 _clock.LastOperationStatus = true;
                 return;
             }

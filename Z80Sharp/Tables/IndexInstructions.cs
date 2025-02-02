@@ -19,6 +19,10 @@ namespace Z80Sharp.Processor
             _clock.Add(8);
             switch (instruction)
             {
+                case 0x00: NOP(); break; // NOP | UNDOCUMENTED
+                case 0xDD: NOP(); break; // NOP | UNDOCUMENTED
+                case 0xFD: NOP(); break; // NOP | UNDOCUMENTED
+
                 case 0x09: ADD_IR_RR(ref indexAddressingMode, ref Registers.BC); _clock.Add(7); break;        // ADD IR, BC
                 case 0x19: ADD_IR_RR(ref indexAddressingMode, ref Registers.DE); _clock.Add(7); break;        // ADD IR, DE
                 case 0x29: ADD_IR_RR(ref indexAddressingMode, ref indexAddressingMode); _clock.Add(7); break; // ADD IR, IR
@@ -100,16 +104,16 @@ namespace Z80Sharp.Processor
                 case 0x21: LD_RR_NN(ref indexAddressingMode); _clock.Add(6); break;                   // LD IR, NN
                 case 0xF9: LD_RR_RR(ref Registers.SP, ref indexAddressingMode); _clock.Add(2); break; // LD SP, IR
 
-                case 0x06: LD_R_N(ref Registers.B); break;    // LD B, N | UNDOCUMENTED
-                case 0x0E: LD_R_N(ref Registers.C); break;    // LD C, N | UNDOCUMENTED
-                case 0x16: LD_R_N(ref Registers.D); break;    // LD D, N | UNDOCUMENTED
-                case 0x1E: LD_R_N(ref Registers.E); break;    // LD E, N | UNDOCUMENTED
-                case 0x26: LD_R_N(ref irH); break;            // LD IRh, N | UNDOCUMENTED
-                case 0x2E: LD_R_N(ref irL); break;            // LD IRl, N | UNDOCUMENTED
-                case 0x3E: LD_R_N(ref Registers.A); break;    // LD A, N | UNDOCUMENTED
+                case 0x06: LD_R_N(ref Registers.B); _clock.Add(3); break;    // LD B, N | UNDOCUMENTED
+                case 0x0E: LD_R_N(ref Registers.C); _clock.Add(3); break;    // LD C, N | UNDOCUMENTED
+                case 0x16: LD_R_N(ref Registers.D); _clock.Add(3); break;    // LD D, N | UNDOCUMENTED
+                case 0x1E: LD_R_N(ref Registers.E); _clock.Add(3); break;    // LD E, N | UNDOCUMENTED
+                case 0x26: LD_R_N(ref irH); _clock.Add(3); break;            // LD IRh, N | UNDOCUMENTED
+                case 0x2E: LD_R_N(ref irL); _clock.Add(3); break;            // LD IRl, N | UNDOCUMENTED
+                case 0x3E: LD_R_N(ref Registers.A); _clock.Add(3); break;    // LD A, N | UNDOCUMENTED
 
                 case 0x22: LD_NNMEM_RR(ref indexAddressingMode); _clock.Add(12); break;   // LD (NN), IR
-                case 0x2A: LD_RR_NNMEM(ref indexAddressingMode); _clock.Add(12); break;   // LD IR, (NN)
+                case 0x2A: LD_IR_NNMEM(ref indexAddressingMode); _clock.Add(12); break;   // LD IR, (NN)
 
                 case 0x40: LD_R_R(ref Registers.B, ref Registers.B); break;                               // LD B, B | UNDOCUMENTED
                 case 0x41: LD_R_R(ref Registers.B, ref Registers.C); break;                               // LD B, C | UNDOCUMENTED
@@ -151,8 +155,8 @@ namespace Z80Sharp.Processor
                 case 0x61: LD_R_R(ref irH, ref Registers.C); break;                                       // LD IRh, C | UNDOCUMENTED
                 case 0x62: LD_R_R(ref irH, ref Registers.D); break;                                       // LD IRh, D | UNDOCUMENTED
                 case 0x63: LD_R_R(ref irH, ref Registers.E); break;                                       // LD IRh, E | UNDOCUMENTED
-                case 0x64: LD_R_R(ref irH, ref Registers.H); break;                                       // LD IRh, H | UNDOCUMENTED
-                case 0x65: LD_R_R(ref irH, ref Registers.L); break;                                       // LD IRh, L | UNDOCUMENTED
+                case 0x64: LD_R_R(ref irH, ref irH); break;                                               // LD IRh, IRh | UNDOCUMENTED
+                case 0x65: LD_R_R(ref irH, ref irL); break;                                               // LD IRh, IRl | UNDOCUMENTED
                 case 0x66: LD_R_IRDMEM(ref Registers.H, ref indexAddressingMode); _clock.Add(11); break;  // LD H, (IR + d)
                 case 0x67: LD_R_R(ref irH, ref Registers.A); break;                                       // LD IRh, A | UNDOCUMENTED
 
@@ -160,8 +164,8 @@ namespace Z80Sharp.Processor
                 case 0x69: LD_R_R(ref irL, ref Registers.C); break;                                        // LD IRl, C | UNDOCUMENTED
                 case 0x6A: LD_R_R(ref irL, ref Registers.D); break;                                        // LD IRl, D | UNDOCUMENTED
                 case 0x6B: LD_R_R(ref irL, ref Registers.E); break;                                        // LD IRl, E | UNDOCUMENTED
-                case 0x6C: LD_R_R(ref irL, ref Registers.H); break;                                        // LD IRl, H | UNDOCUMENTED
-                case 0x6D: LD_R_R(ref irL, ref Registers.L); break;                                        // LD IRl, L | UNDOCUMENTED
+                case 0x6C: LD_R_R(ref irL, ref irH); break;                                                // LD IRl, IRh | UNDOCUMENTED
+                case 0x6D: LD_R_R(ref irL, ref irL); break;                                                // LD IRl, IRl | UNDOCUMENTED
                 case 0x6E: LD_R_IRDMEM(ref Registers.L, ref indexAddressingMode); _clock.Add(11); break;   // LD L, (IR + d)
                 case 0x6F: LD_R_R(ref irL, ref Registers.A); break;                                        // LD IRl, A | UNDOCUMENTED
 

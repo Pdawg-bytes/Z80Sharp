@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Z80Sharp\Z80Sharp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Z80Test\ROMs\" />
+  </ItemGroup>
+
 </Project>

@@ -163,7 +163,7 @@ namespace Z80Sharp.Processor
             Registers.I = state.I;
             Registers.R = state.R;
 
-            Registers.MEMPTR = 0x0000;
+            Registers.MEMPTR = state.MEMPTR;
 
             _clock.Reset();
         }

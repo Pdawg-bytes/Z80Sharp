@@ -34,7 +34,9 @@ namespace Z80Sharp.Processor
         }
         private void BIT_B_IRDMEM([ConstantExpected] byte bit, sbyte displacement, ref ushort indexAddressingMode)
         {
-            byte result = (byte)(_memory.Read((ushort)(indexAddressingMode + displacement)) & (byte)(1 << bit));
+            ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
+            byte result = (byte)(_memory.Read(ird) & (byte)(1 << bit));
 
             Registers.SetFlagConditionally(FlagType.Z, result == 0);
             Registers.ClearFlag(FlagType.N);

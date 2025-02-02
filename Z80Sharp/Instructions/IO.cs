@@ -19,15 +19,15 @@ namespace Z80Sharp.Processor
             Registers.MEMPTR = (ushort)(Registers.BC + 1);
             operatingRegister = data;
 
-            Registers.SetFlagConditionally(FlagType.S, (data & 0x80) != 0);
+            Registers.F = (byte)(Registers.F & (byte)FlagType.C);
+            Registers.F |= (byte)(0xA8 & data);
             Registers.SetFlagConditionally(FlagType.Z, data == 0);
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(data));
-            Registers.SetFlagConditionally(FlagType.Y, (data & 0x20) != 0);
-            Registers.SetFlagConditionally(FlagType.X, (data & 0x08) != 0);
         }
         private void IN_CPORT()
         {
             byte data = _dataBus.ReadPort(Registers.BC);
+            Registers.MEMPTR = (ushort)(Registers.BC + 1);
             Registers.F &= (byte)~(FlagType.N | FlagType.H);
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(data));
         }
@@ -79,8 +79,12 @@ namespace Z80Sharp.Processor
             Registers.MEMPTR = (ushort)(Registers.BC + 1);
             _dataBus.WritePort(Registers.BC, operatingRegister);
         }
-        
-        private void OUT_CPORT_0() => _dataBus.WritePort(Registers.BC, 0x00); // Should be 255 on a CMOS Z80, 0 on NMOS
+
+        private void OUT_CPORT_0()
+        {
+            Registers.MEMPTR = (ushort)(Registers.BC + 1);
+            _dataBus.WritePort(Registers.BC, 0x00); // Should be 255 on a CMOS Z80, 0 on NMOS
+        }
 
         private void OUTBlock(bool increment, bool repeat)
         {
