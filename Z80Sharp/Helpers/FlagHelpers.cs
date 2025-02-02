@@ -42,5 +42,15 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.X, (result & 0x08) != 0);			 // (X)   (copy of bit 3)
             Registers.SetFlagConditionally(FlagType.Y, (result & 0x20) != 0);			 // (Y)   (copy of bit 5)
         }
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void UpdateCommonInxrOtxrFlags(byte data)
+		{
+            Registers.MEMPTR = (ushort)(Registers.PC + 1);
+
+            // Apparently, the Z80 copies bits 11 and 13 of PC into X and Y when a repeat occurs. Why? I don't know.
+            Registers.SetFlagConditionally(FlagType.X, (Registers.PC & 0x0800) != 0);
+            Registers.SetFlagConditionally(FlagType.Y, (Registers.PC & 0x2000) != 0);
+        }
     }
 }

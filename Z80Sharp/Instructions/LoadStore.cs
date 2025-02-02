@@ -52,12 +52,10 @@ namespace Z80Sharp.Processor
         private void LD_A_R(ref byte source)
         {
             Registers.A = source;
-            Registers.F &= (byte)~(FlagType.N | FlagType.H);
-            Registers.SetFlagConditionally(FlagType.Z, source == 0);
-            Registers.SetFlagConditionally(FlagType.S, (source & 0x80) != 0);
+            Registers.F = (byte)(Registers.F & (byte)FlagType.C);
+            Registers.SetFlagBits((byte)(0xA8 & Registers.A));
+            Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);
             Registers.SetFlagConditionally(FlagType.PV, Registers.IFF2);
-            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
-            Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
 
 
@@ -144,8 +142,11 @@ namespace Z80Sharp.Processor
             if (repeat && Registers.BC != 0)
             {
                 Registers.PC -= 2;
-                _clock.LastOperationStatus = true;
                 Registers.MEMPTR = (ushort)(Registers.PC + 1);
+                // Apparently, the Z80 copies bits 11 and 13 of PC into X and Y when a repeat occurs. Why? I don't know.
+                Registers.SetFlagConditionally(FlagType.X, (Registers.PC & 0x0800) != 0);
+                Registers.SetFlagConditionally(FlagType.Y, (Registers.PC & 0x2000) != 0);
+                _clock.LastOperationStatus = true;
                 return;
             }
             _clock.LastOperationStatus = false;

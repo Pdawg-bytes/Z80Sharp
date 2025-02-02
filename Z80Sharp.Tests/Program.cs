@@ -16,7 +16,7 @@ namespace Z80Sharp.Tests
 
             Console.WriteLine("Enter the test # you'd like to execute:" +
                 "\n    1. Zexdoc\n    2. Zexall\n    3. Prelim\n    4. FUSE" +
-                "\n    5. Z80Test - full\n    6. Z80Test - documented\n    " +
+                "\n    5. Z80Test - documented\n    6. Z80Test - full\n    " +
                 "7. Z80Test - MEMPTR\n    8. Z80Test - CCF");
 
             int test = Console.ReadKey().KeyChar - '0';
@@ -37,10 +37,10 @@ namespace Z80Sharp.Tests
                     fuseRunner.RunFUSETests();
                     break;
                 case 5:
-                    z80TestRunner.RunZ80Test(Z80TestType.Full);
+                    z80TestRunner.RunZ80Test(Z80TestType.Documented);
                     break;
                 case 6:
-                    z80TestRunner.RunZ80Test(Z80TestType.Documented);
+                    z80TestRunner.RunZ80Test(Z80TestType.Full);
                     break;
                 case 7:
                     z80TestRunner.RunZ80Test(Z80TestType.MEMPTR);

@@ -28,25 +28,30 @@ namespace Z80Sharp.Processor
         {
             byte data = _dataBus.ReadPort(Registers.BC);
             Registers.MEMPTR = (ushort)(Registers.BC + 1);
-            Registers.F &= (byte)~(FlagType.N | FlagType.H);
+
+            Registers.F = (byte)(Registers.F & (byte)FlagType.C);
+            Registers.F |= (byte)(0xA8 & data);
+            Registers.SetFlagConditionally(FlagType.Z, data == 0);
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(data));
+            Registers.ClearFlag(FlagType.H);
+            Registers.ClearFlag(FlagType.N);
         }
 
         private void INBlock(bool increment, bool repeat)
         {
-            byte data = _dataBus.ReadPort(Registers.BC);
+            byte io = _dataBus.ReadPort(Registers.BC);
             Registers.MEMPTR = (ushort)(Registers.BC + (ushort)(increment ? 1 : -1));
-            _memory.Write(increment ? Registers.HL++ : Registers.HL--, data);
-            byte temp = (byte)(Registers.C + data + (increment ? 1 : -1));
+            _memory.Write(increment ? Registers.HL++ : Registers.HL--, io);
+            byte temp = (byte)(Registers.C + io + (increment ? 1 : -1));
 
             byte regB = --Registers.B;
 
             Registers.F = 0;
             Registers.F |= (byte)(0xA8 & regB);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
-            Registers.F |= temp < data ? (byte)(FlagType.H | FlagType.C) : (byte)0;
+            Registers.F |= temp < io ? (byte)(FlagType.H | FlagType.C) : (byte)0;
             Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)((temp & 0x07) ^ regB)));
-            Registers.SetFlagConditionally(FlagType.N, (data & 0x80) != 0);
+            Registers.SetFlagConditionally(FlagType.N, (io & 0x80) != 0);
 
             if (repeat && Registers.B != 0)
             {
@@ -88,9 +93,9 @@ namespace Z80Sharp.Processor
 
         private void OUTBlock(bool increment, bool repeat)
         {
-            byte hlMem = _memory.Read(increment ? Registers.HL++ : Registers.HL--);
-            _dataBus.WritePort(Registers.BC, hlMem);
-            byte temp = (byte)(Registers.L + hlMem);
+            byte io = _memory.Read(increment ? Registers.HL++ : Registers.HL--);
+            _dataBus.WritePort(Registers.BC, io);
+            byte temp = (byte)(Registers.L + io);
 
             byte regB = --Registers.B;
 
@@ -99,9 +104,9 @@ namespace Z80Sharp.Processor
             Registers.F = 0;
             Registers.F |= (byte)(0xA8 & regB);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
-            Registers.F |= temp < hlMem ? (byte)(FlagType.H | FlagType.C) : (byte)0;
+            Registers.F |= temp < io ? (byte)(FlagType.H | FlagType.C) : (byte)0;
             Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)((temp & 0x07) ^ regB)));
-            Registers.SetFlagConditionally(FlagType.N, (hlMem & 0x80) != 0);
+            Registers.SetFlagConditionally(FlagType.N, (io & 0x80) != 0);
 
             if (repeat && Registers.B != 0)
             {

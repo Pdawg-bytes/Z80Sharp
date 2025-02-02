@@ -16,7 +16,7 @@ namespace Z80Sharp.Tests.Z80Test
         {
             var dataBus = new DataBus()
             {
-                ReadPort = (port) => (byte)(port >> 8)
+                ReadPort = (port) => 0xBF
             };
 
             z80 = new(memory, dataBus, logger, 0);
@@ -55,11 +55,7 @@ namespace Z80Sharp.Tests.Z80Test
                 z80.Step();
                 if (z80.Halted) break;
 
-                if (z80.Registers.PC == 0x0000)
-                {
-                    Console.WriteLine();
-                    break;
-                }
+                if (z80.Registers.PC == 0x0000) break;
 
                 if (z80.Registers.PC == 0x0010)
                 {
@@ -73,7 +69,7 @@ namespace Z80Sharp.Tests.Z80Test
             }
             testTime.Stop();
 
-            if (msg.Contains("CPU TESTS OK"))
+            if (msg.Contains("CPU TESTS OK") || msg.Contains("all tests passed"))
                 Console.WriteLine($"\nZ80Test completed in {(testTime.ElapsedMilliseconds / 1000f):n2} seconds, {z80.CyclesExecuted:n0} cycles.");
             else
                 Console.WriteLine($"\nZ80Test failed! {z80.CyclesExecuted:n0} cycles executed.");

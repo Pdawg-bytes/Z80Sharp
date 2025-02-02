@@ -17,6 +17,7 @@ namespace Z80Sharp.Processor
         private ulong _instrsExecuted;
         private ulong _instrsExecutedLastSecond;
         private System.Timers.Timer _cycleTimer = new(1000);
+
         private byte _currentInstruction;
 
         public ProcessorRegisters Registers = new();

@@ -15,6 +15,8 @@ namespace Z80Sharp.Processor
             _currentInstruction = instruction;
             switch (instruction)
             {
+                case 0x00: NOP(); break; // NOP | UNDOCUMENTED
+
                 case 0x44: NEG(); break; // NEG
 
                 case 0x45: RETN(); _clock.Add(6); break; // RETN
@@ -123,7 +125,7 @@ namespace Z80Sharp.Processor
 
                 default:
                     _logger.Log(Enums.LogSeverity.Fatal, $"Unrecognized MISC opcode: 0x{_currentInstruction:X2}");
-                    Halted = true;
+                    //Halted = true;
                     break;
             }
         }
