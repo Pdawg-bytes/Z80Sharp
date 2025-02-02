@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Z80Sharp.ExampleProgram\Z80Sharp.ExampleProgram.csproj" />
     <ProjectReference Include="..\Z80Sharp\Z80Sharp.csproj" />
   </ItemGroup>
 

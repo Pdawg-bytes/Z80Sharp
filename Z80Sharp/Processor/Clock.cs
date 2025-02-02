@@ -6,54 +6,56 @@ namespace Z80Sharp.Processor
     internal class Clock
     {
         private readonly Stopwatch _stopwatch;
-        private readonly long _ticksPerTState;
-        private long _nextTickTarget;
+        private readonly ulong _ticksPerTState;
+        private ulong _nextTickTarget;
 
-        private readonly long[] _precomputedTimes;
+        private readonly ulong[] _precomputedTimes;
 
-        internal long TotalTStates;
+        internal ulong TotalTStates;
         internal bool LastOperationStatus;
 
         internal Clock(double clockSpeedMHz)
         {
-            _ticksPerTState = (long)(Stopwatch.Frequency / (clockSpeedMHz * 1_000_000));
+            _ticksPerTState = (ulong)(Stopwatch.Frequency / (clockSpeedMHz * 1_000_000));
             _stopwatch = Stopwatch.StartNew();
             _nextTickTarget = 0;
 
             if (clockSpeedMHz == 0) { _ticksPerTState = 0; }
 
-            _precomputedTimes = new long[256];
-            for (int i = 0; i < 256; i++)
+            _precomputedTimes = new ulong[256];
+            for (uint i = 0; i < 256; i++)
             {
                 _precomputedTimes[i] = i * _ticksPerTState;
             }
         }
 
-        internal void Add([ConstantExpected] int tStates)
+        internal void Add([ConstantExpected] uint tStates)
         {
+            TotalTStates += tStates;
             if (_ticksPerTState == 0) return;
 
             unchecked
             {
                 _nextTickTarget += _precomputedTimes[tStates];
-                TotalTStates += tStates;
             }
         }
-        internal void Add([ConstantExpected] int tStatesIfConditionMet, [ConstantExpected] int tStatesIfConditionNotMet)
+        internal void Add([ConstantExpected] uint tStatesIfConditionMet, [ConstantExpected] uint tStatesIfConditionNotMet)
         {
+            uint tStates = LastOperationStatus ? tStatesIfConditionMet : tStatesIfConditionNotMet;
+            TotalTStates += tStates;
+
             if (_ticksPerTState == 0) return;
-            int tStates = LastOperationStatus ? tStatesIfConditionMet : tStatesIfConditionNotMet;
+
             unchecked
             {
                 _nextTickTarget += _precomputedTimes[tStates];
-                TotalTStates += tStates;
             }
         }
 
         internal void Wait()
         {
             if (_ticksPerTState == 0) return;
-            while (_stopwatch.ElapsedTicks < _nextTickTarget) { }
+            while ((ulong)_stopwatch.ElapsedTicks < _nextTickTarget) { }
         }
 
         public void Reset()

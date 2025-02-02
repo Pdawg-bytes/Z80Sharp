@@ -9,15 +9,15 @@ using Z80Sharp.Logging;
 using Z80Sharp.Data;
 using Z80Sharp.Processor;
 
-namespace Z80Sharp.Tests.Zex
+namespace Z80Sharp.Tests.Prelim
 {
-    internal class ZexRunner
+    internal class PrelimRunner
     {
         readonly Z80 z80;
         readonly IZ80Logger logger = new Logger(useColors: false);
         readonly MainMemory memory = new MainMemory(65536);
 
-        internal ZexRunner() 
+        internal PrelimRunner()
         {
             var dataBus = new DataBus
             {
@@ -29,19 +29,12 @@ namespace Z80Sharp.Tests.Zex
             z80.Reset();
         }
 
-        internal void RunZex(ZexType type)
+        internal void RunPrelim()
         {
-            memory.Write(0x0000, 0x76); // halt, Zex* jumps to 0x0000 after test completion.
+            memory.Write(0x0000, 0x76); // halt, prelim jumps to 0x0000 after test completion.
             Array.Copy(CPM_IORoutine, 0, memory._memory, 0x5, CPM_IORoutine.Length);
 
-            string fileName = type switch
-            {
-                ZexType.Zexall => @"../../../Zex/ROMs/zexall.cim",
-                ZexType.Zexdoc => @"../../../Zex/ROMs/zexdoc.cim",
-                _ => ""
-            };
-
-            byte[] program = File.ReadAllBytes(fileName);
+            byte[] program = File.ReadAllBytes(@"../../../Prelim/ROMs/prelim.com");
             Array.Copy(program, 0, memory._memory, 0x100, program.Length);
 
             z80.Registers.PC = 0x100;
@@ -49,7 +42,7 @@ namespace Z80Sharp.Tests.Zex
             Stopwatch testTime = Stopwatch.StartNew();
             z80.RunUntilHalt();
             testTime.Stop();
-            Console.WriteLine($"\nZex completed in {(testTime.ElapsedMilliseconds / 1000f):n2} seconds, {z80.CyclesExecuted:n0} cycles.");
+            Console.WriteLine($"\nPrelim completed in {(testTime.ElapsedMilliseconds / 1000f):n2} seconds, {z80.CyclesExecuted:n0} cycles.");
         }
 
         /// <summary>
@@ -77,11 +70,5 @@ namespace Z80Sharp.Tests.Zex
             0x13, // INC DE
             0x18, 0xF6  // JR -10
         };
-    }
-
-    internal enum ZexType
-    {
-        Zexdoc,
-        Zexall
     }
 }

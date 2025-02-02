@@ -3,9 +3,9 @@ using Z80Sharp.Interfaces;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
-namespace Z80Sharp.Memory
+namespace Z80Sharp.Data
 {
-    public unsafe class MainMemory : IMemory
+    public unsafe class MainMemory
     {
         private GCHandle _memHandle;
         private byte* pMem;
