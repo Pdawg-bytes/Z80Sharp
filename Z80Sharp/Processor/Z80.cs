@@ -135,6 +135,8 @@ namespace Z80Sharp.Processor
             Registers.IFF1 = false;
             Registers.IFF2 = false;
 
+            Registers.MEMPTR = 0x0000;
+
             _clock.Reset();
         }
 
@@ -160,6 +162,8 @@ namespace Z80Sharp.Processor
             Registers.InterruptMode = state.InterruptMode;
             Registers.I = state.I;
             Registers.R = state.R;
+
+            Registers.MEMPTR = 0x0000;
 
             _clock.Reset();
         }

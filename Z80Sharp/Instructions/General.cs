@@ -31,6 +31,7 @@ namespace Z80Sharp.Processor
             ushort sp = Registers.SP;
             ushort oldHl = Registers.HL;
             Registers.HL = _memory.ReadWord(sp);
+            Registers.MEMPTR = Registers.HL;
             _memory.WriteWord(sp, oldHl);
         }
         private void EX_SPMEM_IR(ref ushort indexAddressingMode)
@@ -38,6 +39,7 @@ namespace Z80Sharp.Processor
             ushort sp = Registers.SP;
             ushort oldIr = indexAddressingMode;
             indexAddressingMode = _memory.ReadWord(sp);
+            Registers.MEMPTR = indexAddressingMode;
             _memory.WriteWord(sp, oldIr);
         }
 

@@ -6,11 +6,17 @@ namespace Z80Sharp.Processor
 {
     public partial class Z80
     {
-        private void IN_A_NPORT() => Registers.A = _dataBus.ReadPort((ushort)(Fetch() + (Registers.A << 8)));
+        private void IN_A_NPORT()
+        {
+            ushort port = (ushort)((Registers.A << 8) + Fetch());
+            Registers.MEMPTR = (ushort)(port + 1);
+            Registers.A = _dataBus.ReadPort(port);
+        }
 
         private void IN_R_CPORT(ref byte operatingRegister)
         {
             byte data = _dataBus.ReadPort(Registers.BC);
+            Registers.MEMPTR = (ushort)(Registers.BC + 1);
             operatingRegister = data;
 
             Registers.SetFlagConditionally(FlagType.S, (data & 0x80) != 0);
@@ -29,6 +35,7 @@ namespace Z80Sharp.Processor
         private void INBlock(bool increment, bool repeat)
         {
             byte data = _dataBus.ReadPort(Registers.BC);
+            Registers.MEMPTR = (ushort)(Registers.BC + (ushort)(increment ? 1 : -1));
             _memory.Write(increment ? Registers.HL++ : Registers.HL--, data);
             byte temp = (byte)(Registers.C + data + (increment ? 1 : -1));
 
@@ -63,10 +70,15 @@ namespace Z80Sharp.Processor
         private void OUT_NPORT_A()
         {
             ushort port = (ushort)((Registers.A << 8) | Fetch());
+            Registers.MEMPTR = (ushort)((Registers.A << 8) + ((port + 1) & 0xFF));
             _dataBus.WritePort(port, Registers.A);
         }
 
-        private void OUT_CPORT_R(ref byte operatingRegister) => _dataBus.WritePort(Registers.BC, operatingRegister);
+        private void OUT_CPORT_R(ref byte operatingRegister)
+        {
+            Registers.MEMPTR = (ushort)(Registers.BC + 1);
+            _dataBus.WritePort(Registers.BC, operatingRegister);
+        }
         
         private void OUT_CPORT_0() => _dataBus.WritePort(Registers.BC, 0x00); // Should be 255 on a CMOS Z80, 0 on NMOS
 
@@ -77,6 +89,8 @@ namespace Z80Sharp.Processor
             byte temp = (byte)(Registers.L + hlMem);
 
             byte regB = --Registers.B;
+
+            Registers.MEMPTR = (ushort)(Registers.BC + (ushort)(increment ? 1 : -1));
 
             Registers.F = 0;
             Registers.F |= (byte)(0xA8 & regB);

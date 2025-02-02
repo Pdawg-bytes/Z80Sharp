@@ -38,7 +38,7 @@ namespace Z80Sharp.Tests.FUSE
 
             if (!_undocumentedTests) machineStates.RemoveAll(state => Constants.UndocumentedInstructions.Contains(state.name.Split('_')[0]));
 
-            int passed = RunTests(machineStates, expectedStates);
+            int passed = ExecuteTest(machineStates, expectedStates);
             Console.WriteLine($"{Colors.GREEN}{passed}{Colors.ANSI_RESET} tests passed, {Colors.RED}{machineStates.Count - passed}{Colors.ANSI_RESET} tests failed.");
         }
 
@@ -47,7 +47,7 @@ namespace Z80Sharp.Tests.FUSE
             return JsonSerializer.Deserialize<T>(File.ReadAllText(path)) ?? throw new Exception($"Failed to load {path}");
         }
 
-        private int RunTests(List<MachineState> machineStates, List<ExpectedState> expectedStates)
+        private int ExecuteTest(List<MachineState> machineStates, List<ExpectedState> expectedStates)
         {
             int passed = 0;
 

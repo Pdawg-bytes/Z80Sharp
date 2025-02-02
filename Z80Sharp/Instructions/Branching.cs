@@ -6,7 +6,7 @@ namespace Z80Sharp.Processor
     public partial class Z80
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void JP_NN() => Registers.PC = FetchImmediateWord();
+        private void JP_NN() => Registers.MEMPTR = Registers.PC = FetchImmediateWord();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void JP_RR(ref ushort operatingRegister) => Registers.PC = operatingRegister;
@@ -18,6 +18,7 @@ namespace Z80Sharp.Processor
             {
                 Registers.PC = jumpTo;
             }
+            Registers.MEMPTR = jumpTo;
         }
 
 
@@ -25,6 +26,7 @@ namespace Z80Sharp.Processor
         {
             byte offset = Fetch();
             Registers.PC += (ushort)(sbyte)offset;
+            Registers.MEMPTR = Registers.PC;
         }
 
         private void JR_CC_D([ConstantExpected] byte flagCondition)
@@ -38,6 +40,7 @@ namespace Z80Sharp.Processor
 
             byte offset = Fetch();
             Registers.PC += (ushort)(sbyte)offset;
+            Registers.MEMPTR = Registers.PC;
             _clock.LastOperationStatus = true;
         }
 
@@ -55,17 +58,23 @@ namespace Z80Sharp.Processor
 
             byte offset = Fetch();
             Registers.PC += (ushort)(sbyte)offset;
+            Registers.MEMPTR = Registers.PC;
             _clock.LastOperationStatus = false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void RET() => POP_PC();
+        private void RET()
+        {
+            POP_PC();
+            Registers.MEMPTR = Registers.PC;
+        }
 
         private void RET_CC([ConstantExpected] byte flagCondition)
         {
             if (Registers.EvaluateJumpFlagCondition(flagCondition))
             {
                 POP_PC();
+                Registers.MEMPTR = Registers.PC;
                 _clock.LastOperationStatus = true;
                 return;
             }
@@ -76,6 +85,7 @@ namespace Z80Sharp.Processor
         private void RETN()
         {
             POP_PC();
+            Registers.MEMPTR = Registers.PC;
             Registers.IFF1 = Registers.IFF2;
         }
 
@@ -83,7 +93,7 @@ namespace Z80Sharp.Processor
         private void RETI()
         {
             POP_PC();
-            // signal device triggering NMI that routine has completed
+            Registers.MEMPTR = Registers.PC;
         }
 
 
@@ -91,6 +101,7 @@ namespace Z80Sharp.Processor
         {
             PUSH_PC();
             Registers.PC = pcStart;
+            Registers.MEMPTR = pcStart;
         }
 
 
@@ -99,6 +110,7 @@ namespace Z80Sharp.Processor
             ushort jumpTo = FetchImmediateWord();
             PUSH_PC();
             Registers.PC = jumpTo;
+            Registers.MEMPTR = jumpTo;
         }
         private void CALL_CC_NN([ConstantExpected] byte flagCondition)
         {
@@ -110,6 +122,7 @@ namespace Z80Sharp.Processor
                 _clock.LastOperationStatus = true;
                 return;
             }
+            Registers.MEMPTR = jumpTo;
             _clock.LastOperationStatus = false;
         }
     }

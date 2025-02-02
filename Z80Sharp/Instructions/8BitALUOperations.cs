@@ -14,7 +14,12 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ADD_A_RRMEM(ref ushort operatingRegister) => AddSub8WithCarry(_memory.Read(operatingRegister), false, false);
 
-        private void ADD_A_IRDMEM(ref ushort indexAddressingMode) => AddSub8WithCarry(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())), false, false);
+        private void ADD_A_IRDMEM(ref ushort indexAddressingMode)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            AddSub8WithCarry(_memory.Read(ird), false, false);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ADC_A_R(ref byte operatingRegister) => AddSub8WithCarry(operatingRegister, false, true);
@@ -25,7 +30,12 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ADC_A_RRMEM(ref ushort operatingRegister) => AddSub8WithCarry(_memory.Read(operatingRegister), false, true);
 
-        private void ADC_A_IRDMEM(ref ushort indexAddressingMode) => AddSub8WithCarry(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())), false, true);
+        private void ADC_A_IRDMEM(ref ushort indexAddressingMode)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            AddSub8WithCarry(_memory.Read(ird), false, true);
+        }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37,7 +47,12 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SUB_A_RRMEM(ref ushort operatingRegister) => AddSub8WithCarry(_memory.Read(operatingRegister), true, false);
 
-        private void SUB_A_IRDMEM(ref ushort indexAddressingMode) => AddSub8WithCarry(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())), true, false);
+        private void SUB_A_IRDMEM(ref ushort indexAddressingMode)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            AddSub8WithCarry(_memory.Read(ird), true, false);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SBC_A_R(ref byte operatingRegister) => AddSub8WithCarry(operatingRegister, true, true);
@@ -48,7 +63,12 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SBC_A_RRMEM(ref ushort operatingRegister) => AddSub8WithCarry(_memory.Read(operatingRegister), true, true);
 
-        private void SBC_A_IRDMEM(ref ushort indexAddressingMode) => AddSub8WithCarry(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())), true, true);
+        private void SBC_A_IRDMEM(ref ushort indexAddressingMode)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            AddSub8WithCarry(_memory.Read(ird), true, true);
+        }
 
 
 
@@ -60,8 +80,9 @@ namespace Z80Sharp.Processor
 
         private void INC_IRDMEM(ref ushort indexAddressingMode)
         {
-            ushort addr = (ushort)(indexAddressingMode + (sbyte)Fetch());
-            _memory.Write(addr, IncDec8(_memory.Read(addr), false));
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            _memory.Write(ird, IncDec8(_memory.Read(ird), false));
         }
 
 
@@ -73,8 +94,9 @@ namespace Z80Sharp.Processor
 
         private void DEC_IRDMEM(ref ushort indexAddressingMode)
         {
-            ushort addr = (ushort)(indexAddressingMode + (sbyte)Fetch());
-            _memory.Write(addr, IncDec8(_memory.Read(addr), true));
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            _memory.Write(ird, IncDec8(_memory.Read(ird), true));
         }
 
 
@@ -88,7 +110,12 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void OR_RRMEM(ref ushort operatingRegister) => Bitwise8(_memory.Read(operatingRegister), BitOperation.Or);
 
-        private void OR_IRDMEM(ref ushort indexAddressingMode) => Bitwise8(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())), BitOperation.Or);
+        private void OR_IRDMEM(ref ushort indexAddressingMode)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            Bitwise8(_memory.Read(ird), BitOperation.Or);
+        }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -100,7 +127,12 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void XOR_RRMEM(ref ushort operatingRegister) => Bitwise8(_memory.Read(operatingRegister), BitOperation.Xor);
 
-        private void XOR_IRDMEM(ref ushort indexAddressingMode) => Bitwise8(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())), BitOperation.Xor);
+        private void XOR_IRDMEM(ref ushort indexAddressingMode)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            Bitwise8(_memory.Read(ird), BitOperation.Xor);
+        }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -112,7 +144,12 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AND_RRMEM(ref ushort operatingRegister) => Bitwise8(_memory.Read(operatingRegister), BitOperation.And);
 
-        private void AND_IRDMEM(ref ushort indexAddressingMode) => Bitwise8(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())), BitOperation.And);
+        private void AND_IRDMEM(ref ushort indexAddressingMode)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            Bitwise8(_memory.Read(ird), BitOperation.And);
+        }
 
 
 
@@ -125,7 +162,12 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CMP_RRMEM(ref ushort operatingRegister) => Compare8(_memory.Read(operatingRegister));
 
-        private void CMP_IRDMEM(ref ushort indexAddressingMode) => Compare8(_memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch())));
+        private void CMP_IRDMEM(ref ushort indexAddressingMode)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            Compare8(_memory.Read(ird));
+        }
 
         private void CMPBlock(bool increment, bool repeat)
         {
@@ -149,9 +191,11 @@ namespace Z80Sharp.Processor
             if (repeat && Registers.BC != 0 && diff != 0)
             {
                 Registers.PC -= 2;
+                Registers.MEMPTR = (ushort)(Registers.PC + 1);
                 _clock.LastOperationStatus = true;
                 return;
             }
+            Registers.MEMPTR += (ushort)(increment ? 1 : -1);
             _clock.LastOperationStatus = false;
         }
 

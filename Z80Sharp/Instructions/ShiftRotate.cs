@@ -58,6 +58,8 @@ namespace Z80Sharp.Processor
             _memory.Write(Registers.HL, (byte)((memoryValue >> 4) | (Registers.A << 4))); // Combine high of (HL) w/ low of A
             Registers.A = (byte)((Registers.A & 0xF0) | (memoryValue & 0x0F));            // Combine high of A w/ low of (HL)
 
+            Registers.MEMPTR = (ushort)(Registers.HL + 1);
+
             Registers.SetFlagConditionally(FlagType.S, (Registers.A & 0x80) > 0);  // (S) (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, Registers.A == 0);          // (Z) (Set if result is 0)
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(Registers.A)); // (PV) (Set if bit parity is even)
@@ -72,6 +74,8 @@ namespace Z80Sharp.Processor
 
             _memory.Write(Registers.HL, (byte)((memoryValue << 4) | (regA & 0x0F))); // Combine low of (HL) w/ low of A
             Registers.A = regA = (byte)((regA & 0xF0) | (memoryValue >> 4));         // Combine high of A w/ high of (HL)
+
+            Registers.MEMPTR = (ushort)(Registers.HL + 1);
 
             Registers.SetFlagConditionally(FlagType.S, (regA & 0x80) > 0);  // (S) (Set if negative)
             Registers.SetFlagConditionally(FlagType.Z, regA == 0);          // (Z) (Set if result is 0)
@@ -93,12 +97,14 @@ namespace Z80Sharp.Processor
         private void SLA_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             _memory.Write(ird, ShiftArith(_memory.Read(ird), BitDirection.Left));
         }
 
         private void SLA_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             byte result = ShiftArith(_memory.Read(ird), BitDirection.Left);
             _memory.Write(ird, result);
             outputRegister = result;
@@ -114,12 +120,14 @@ namespace Z80Sharp.Processor
         private void SRA_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             _memory.Write(ird, ShiftArith(_memory.Read(ird), BitDirection.Right));
         }
 
         private void SRA_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             byte result = ShiftArith(_memory.Read(ird), BitDirection.Right);
             _memory.Write(ird, result);
             outputRegister = result;
@@ -136,12 +144,14 @@ namespace Z80Sharp.Processor
         private void SLL_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             _memory.Write(ird, ShiftLogical(_memory.Read(ird), BitDirection.Left));
         }
 
         private void SLL_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             byte result = ShiftLogical(_memory.Read(ird), BitDirection.Left);
             _memory.Write(ird, result);
             outputRegister = result;
@@ -157,12 +167,14 @@ namespace Z80Sharp.Processor
         private void SRL_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             _memory.Write(ird, ShiftLogical(_memory.Read(ird), BitDirection.Right));
         }
 
         private void SRL_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             byte result = ShiftLogical(_memory.Read(ird), BitDirection.Right);
             _memory.Write(ird, result);
             outputRegister = result;
@@ -180,12 +192,14 @@ namespace Z80Sharp.Processor
         private void RLC_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             _memory.Write(ird, RotateCircular(_memory.Read(ird), BitDirection.Left));
         }
 
         private void RLC_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             byte result = RotateCircular(_memory.Read(ird), BitDirection.Left);
             _memory.Write(ird, result);
             outputRegister = result;
@@ -200,12 +214,14 @@ namespace Z80Sharp.Processor
         private void RRC_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             _memory.Write(ird, RotateCircular(_memory.Read(ird), BitDirection.Right));
         }
 
         private void RRC_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             byte result = RotateCircular(_memory.Read(ird), BitDirection.Right);
             _memory.Write(ird, result);
             outputRegister = result;
@@ -222,12 +238,14 @@ namespace Z80Sharp.Processor
         private void RL_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             _memory.Write(ird, RotateThroughCarry(_memory.Read(ird), BitDirection.Left));
         }
 
         private void RL_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             byte result = RotateThroughCarry(_memory.Read(ird), BitDirection.Left);
             _memory.Write(ird, result);
             outputRegister = result;
@@ -243,12 +261,14 @@ namespace Z80Sharp.Processor
         private void RR_IRDMEM(sbyte displacement, ref ushort indexAddressingMode)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             _memory.Write(ird, RotateThroughCarry(_memory.Read(ird), BitDirection.Right));
         }
 
         private void RR_IRDMEM_R(sbyte displacement, ref ushort indexAddressingMode, ref byte outputRegister)
         {
             ushort ird = (ushort)(indexAddressingMode + displacement);
+            Registers.MEMPTR = ird;
             byte result = RotateThroughCarry(_memory.Read(ird), BitDirection.Right);
             _memory.Write(ird, result);
             outputRegister = result;

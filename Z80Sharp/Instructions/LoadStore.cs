@@ -12,11 +12,27 @@ namespace Z80Sharp.Processor
         private void LD_RR_NN(ref ushort operatingRegister) => operatingRegister = FetchImmediateWord();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LD_RR_NNMEM(ref ushort operatingRegister) => operatingRegister = _memory.ReadWord(FetchImmediateWord());
+        private void LD_RR_NNMEM(ref ushort operatingRegister)
+        {
+            Registers.MEMPTR = (ushort)(operatingRegister + 1);
+            operatingRegister = _memory.ReadWord(FetchImmediateWord());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void LD_NNMEM_RR(ref ushort operatingRegister)
+        {
+            ushort dest = FetchImmediateWord();
+            Registers.MEMPTR = (ushort)(dest + 1);
+            _memory.WriteWord(dest, operatingRegister);
+        }
+
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LD_R_R(ref byte dest, ref byte source) => dest = source;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void LD_R_N(ref byte operatingRegister) => operatingRegister = Fetch();
 
         private void LD_A_R(ref byte source)
         {
@@ -25,40 +41,67 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Z, source == 0);
             Registers.SetFlagConditionally(FlagType.S, (source & 0x80) != 0);
             Registers.SetFlagConditionally(FlagType.PV, Registers.IFF2);
-
-            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0); 
+            Registers.SetFlagConditionally(FlagType.X, (Registers.A & 0x08) != 0);
             Registers.SetFlagConditionally(FlagType.Y, (Registers.A & 0x20) != 0);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LD_R_N(ref byte operatingRegister) => operatingRegister = Fetch();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LD_R_NNMEM(ref byte operatingRegister) => operatingRegister = _memory.Read(FetchImmediateWord());
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LD_R_RRMEM(ref byte dest, ref ushort source) => dest = _memory.Read(source);
-
-        private void LD_R_IRDMEM(ref byte dest, ref ushort indexAddressingMode) => dest = _memory.Read((ushort)(indexAddressingMode + (sbyte)Fetch()));
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LD_NNMEM_R(ref byte operatingRegister) => _memory.Write(FetchImmediateWord(), operatingRegister);
+        private void LD_R_NNMEM(ref byte operatingRegister)
+        {
+            ushort dest = FetchImmediateWord();
+            Registers.MEMPTR = (ushort)(dest + 1);
+            operatingRegister = _memory.Read(dest);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LD_NNMEM_RR(ref ushort operatingRegister) => _memory.WriteWord(FetchImmediateWord(), operatingRegister);
+        private void LD_R_RRMEM(ref byte dest, ref ushort source)
+        {
+            Registers.MEMPTR = (ushort)(source + 1);
+            dest = _memory.Read(source);
+        }
 
+        private void LD_R_IRDMEM(ref byte dest, ref ushort indexAddressingMode)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            dest = _memory.Read(ird);
+        }
 
-        private void LD_IRDMEM_R(ref ushort indexAddressingMode, ref byte source) => _memory.Write((ushort)(indexAddressingMode + (sbyte)Fetch()), source);
-
-        private void LD_IRDMEM_N(ref ushort indexAddressingMode) => _memory.Write((ushort)(indexAddressingMode + (sbyte)Fetch()), Fetch());
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void LD_NNMEM_R(ref byte operatingRegister)
+        {
+            ushort dest = FetchImmediateWord();
+            Registers.MEMPTR = (ushort)((operatingRegister << 8) + ((dest + 1) & 0xFF));
+            _memory.Write(dest, operatingRegister);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LD_HLMEM_N() => _memory.Write(Registers.HL, Fetch());
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LD_RRMEM_R(ref ushort dest, ref byte source) => _memory.Write(dest, source);
+        private void LD_RRMEM_R(ref ushort dest, ref byte source)
+        {
+            Registers.MEMPTR = (ushort)((source << 8) + ((dest + 1) & 0xFF));
+            _memory.Write(dest, source);
+        }
+
+        private void LD_IRDMEM_R(ref ushort indexAddressingMode, ref byte source)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            _memory.Write(ird, source);
+        }
+
+        private void LD_IRDMEM_N(ref ushort indexAddressingMode)
+        {
+            ushort ird = (ushort)(indexAddressingMode + (sbyte)Fetch());
+            Registers.MEMPTR = ird;
+            _memory.Write(ird, Fetch());
+        }
+
+
 
         private void LDBlock(bool increment, bool repeat)
         {
@@ -80,6 +123,7 @@ namespace Z80Sharp.Processor
             {
                 Registers.PC -= 2;
                 _clock.LastOperationStatus = true;
+                Registers.MEMPTR = (ushort)(Registers.PC + 1);
                 return;
             }
             _clock.LastOperationStatus = false;

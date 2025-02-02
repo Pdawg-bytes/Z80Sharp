@@ -8,7 +8,11 @@ namespace Z80Sharp.Processor
         private void ADD_HL_RR(ref ushort operatingRegister) => Registers.HL = Add16(Registers.HL, operatingRegister);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ADD_IR_RR(ref ushort mode, ref ushort operatingRegister) => mode = Add16(mode, operatingRegister);
+        private void ADD_IR_RR(ref ushort mode, ref ushort operatingRegister)
+        {
+            Registers.MEMPTR = (ushort)(mode + 1);
+            mode = Add16(mode, operatingRegister);
+        }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

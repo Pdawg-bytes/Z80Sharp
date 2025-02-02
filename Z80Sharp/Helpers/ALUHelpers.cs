@@ -127,6 +127,8 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.C, subtract ? (newHL < 0) : (newHL > 0xFFFF));
             Registers.F |= (byte)((byte)(result >> 8) & (byte)(FlagType.Y | FlagType.X));
 
+            Registers.MEMPTR = (ushort)(regHL + 1);
+
             Registers.HL = result;
         }
 
@@ -151,6 +153,8 @@ namespace Z80Sharp.Processor
             Registers.ClearFlag(FlagType.N);
 
             Registers.F |= (byte)((result >> 8) & (byte)(FlagType.Y | FlagType.X));
+
+            Registers.MEMPTR = (ushort)(left + 1);
 
             return result;
         }
