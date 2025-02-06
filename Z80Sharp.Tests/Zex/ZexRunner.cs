@@ -10,7 +10,7 @@ namespace Z80Sharp.Tests.Zex
     {
         readonly Z80 z80;
         readonly IZ80Logger logger = new Logger(useColors: false);
-        readonly MainMemory memory = new MainMemory(65536);
+        readonly Memory memory = new Memory(65536);
 
         internal ZexRunner() 
         {
@@ -27,7 +27,7 @@ namespace Z80Sharp.Tests.Zex
         internal void RunZex(ZexType type)
         {
             memory.Write(0x0000, 0x76); // halt, Zex* jumps to 0x0000 after test completion.
-            Array.Copy(CPM_IORoutine, 0, memory._memory, 0x5, CPM_IORoutine.Length);
+            memory.WriteBytes(0x0005, CPM_IORoutine);
 
             string fileName = type switch
             {
@@ -37,7 +37,7 @@ namespace Z80Sharp.Tests.Zex
             };
 
             byte[] program = File.ReadAllBytes(fileName);
-            Array.Copy(program, 0, memory._memory, 0x100, program.Length);
+            memory.WriteBytes(0x0100, program);
 
             z80.Registers.PC = 0x100;
 
@@ -45,6 +45,16 @@ namespace Z80Sharp.Tests.Zex
             z80.RunUntilHalt();
             testTime.Stop();
             Console.WriteLine($"\nZex completed in {(testTime.ElapsedMilliseconds / 1000f):n2} seconds, {z80.CyclesExecuted:n0} cycles.");
+
+            Console.WriteLine("Would you like to run again?");
+            char response = Console.ReadKey().KeyChar;
+            if (response == 'y' || response == 'Y')
+            {
+                Console.WriteLine();
+                z80.Reset();
+                memory.Clear();
+                RunZex(type);
+            }
         }
 
         /// <summary>

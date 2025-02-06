@@ -10,7 +10,7 @@ namespace Z80Sharp.Tests.Z80Test
     {
         readonly Z80 z80;
         readonly IZ80Logger logger = new Logger(useColors: false);
-        readonly MainMemory memory = new MainMemory(65536);
+        readonly Memory memory = new Memory(65536);
 
         internal Z80TestRunner()
         {

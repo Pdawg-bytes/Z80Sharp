@@ -13,7 +13,7 @@ namespace Z80Sharp.Tests.FUSE
     {
         readonly Z80 z80;
         readonly IZ80Logger logger = new Logger(useColors: false);
-        readonly MainMemory memory = new MainMemory(65536);
+        readonly Z80Sharp.Data.Memory memory = new Z80Sharp.Data.Memory(65536);
 
         internal FUSERunner()
         {
@@ -111,7 +111,7 @@ namespace Z80Sharp.Tests.FUSE
         }
 
         private List<string> _mismatchedBytes = new();
-        (bool memPass, List<string> mismatches) CompareMemory(byte[] actualMemory, List<BusActivity> busActivity)
+        (bool memPass, List<string> mismatches) CompareMemory(List<BusActivity> busActivity)
         {
             _mismatchedBytes.Clear();
 
@@ -121,7 +121,7 @@ namespace Z80Sharp.Tests.FUSE
                 {
                     int addr = activity.address;
                     byte expectedValue = (byte)activity.value.Value;
-                    byte actualValue = actualMemory[addr];
+                    byte actualValue = memory.Read(addr);
 
                     if (actualValue != expectedValue)
                         _mismatchedBytes.Add($"Mismatch at 0x{addr:X4} ? 0x{actualValue:X2} : 0x{expectedValue:X2}");
@@ -172,7 +172,7 @@ namespace Z80Sharp.Tests.FUSE
             Compare("IFF1", z80.Registers.IFF1, expectedState.state.iff1);
             Compare("IFF2", z80.Registers.IFF2, expectedState.state.iff2);
 
-            var memResults = CompareMemory(memory._memory, expectedState.busActivity);
+            var memResults = CompareMemory(expectedState.busActivity);
             _badRegisters.AddRange(memResults.mismatches);
 
             return (_badRegisters.Count == 0 && memResults.memPass, _badRegisters.ToArray());

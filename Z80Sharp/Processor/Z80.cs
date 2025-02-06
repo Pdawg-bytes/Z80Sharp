@@ -9,7 +9,7 @@ namespace Z80Sharp.Processor
 {
     public partial class Z80
     {
-        private readonly MainMemory _memory;
+        private readonly Memory _memory;
         private readonly Clock _clock;
         private readonly IZ80Logger _logger;
         private readonly DataBus _dataBus;
@@ -35,7 +35,7 @@ namespace Z80Sharp.Processor
 
         public ulong CyclesExecuted => _clock.TotalTStates;
 
-        public Z80(MainMemory memory, DataBus dataBus, IZ80Logger logger, double clockSpeed)
+        public Z80(Memory memory, DataBus dataBus, IZ80Logger logger, double clockSpeed)
         {
             _memory = memory ?? throw new ArgumentNullException(nameof(memory));
             _dataBus = dataBus ?? throw new ArgumentNullException(nameof(dataBus));

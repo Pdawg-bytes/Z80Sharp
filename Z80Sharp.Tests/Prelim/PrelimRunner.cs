@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Z80Sharp.Interfaces;
 using Z80Sharp.Logging;
 using Z80Sharp.Data;
@@ -15,7 +10,7 @@ namespace Z80Sharp.Tests.Prelim
     {
         readonly Z80 z80;
         readonly IZ80Logger logger = new Logger(useColors: false);
-        readonly MainMemory memory = new MainMemory(65536);
+        readonly Memory memory = new Memory(65536);
 
         internal PrelimRunner()
         {
@@ -32,10 +27,10 @@ namespace Z80Sharp.Tests.Prelim
         internal void RunPrelim()
         {
             memory.Write(0x0000, 0x76); // halt, prelim jumps to 0x0000 after test completion.
-            Array.Copy(CPM_IORoutine, 0, memory._memory, 0x5, CPM_IORoutine.Length);
+            memory.WriteBytes(0x0005, CPM_IORoutine);
 
             byte[] program = File.ReadAllBytes(@"../../../Prelim/ROMs/prelim.com");
-            Array.Copy(program, 0, memory._memory, 0x100, program.Length);
+            memory.WriteBytes(0x0100, program);
 
             z80.Registers.PC = 0x100;
 
