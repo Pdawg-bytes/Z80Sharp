@@ -62,8 +62,7 @@ namespace Z80Sharp.Processor
             Registers.F = (byte)(0xA8 & regB);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(p));
-            Registers.SetFlagBits(hcf);
-            Registers.SetFlagBits(nf);
+            Registers.SetFlagBits((byte)(hcf | nf));
 
             _clock.LastOperationStatus = false;
         }
@@ -123,8 +122,7 @@ namespace Z80Sharp.Processor
             Registers.F = (byte)(0xA8 & regB);
             Registers.SetFlagConditionally(FlagType.Z, regB == 0);
             Registers.SetFlagConditionally(FlagType.PV, CheckParity(p));
-            Registers.SetFlagBits(hcf);
-            Registers.SetFlagBits(nf);
+            Registers.SetFlagBits((byte)(hcf | nf));
 
             _clock.LastOperationStatus = false;
         }
