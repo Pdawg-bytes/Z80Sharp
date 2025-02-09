@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using Z80Sharp.Enums;
-using static Z80Sharp.Registers.ProcessorRegisters;
+﻿using Z80Sharp.Enums;
 
 namespace Z80Sharp.Processor
 {

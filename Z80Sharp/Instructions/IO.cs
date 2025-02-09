@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Z80Sharp.Enums;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Z80Sharp.Processor
 {
@@ -37,28 +36,35 @@ namespace Z80Sharp.Processor
             Registers.ClearFlag(FlagType.N);
         }
 
+        // Reimplementation of redcode's INXR.
         private void INBlock(bool increment, bool repeat)
         {
             byte io = _dataBus.ReadPort(Registers.BC);
-            Registers.MEMPTR = (ushort)(Registers.BC + (ushort)(increment ? 1 : -1));
-            _memory.Write(increment ? Registers.HL++ : Registers.HL--, io);
-            byte temp = (byte)(Registers.C + io + (increment ? 1 : -1));
+            uint temp = (uint)(io + (byte)(Registers.C + (increment ? 1 : -1)));
 
+            _memory.Write(increment ? Registers.HL++ : Registers.HL--, io);
+            Registers.MEMPTR = (ushort)(Registers.BC + (ushort)(increment ? 1 : -1));
             byte regB = --Registers.B;
 
-            Registers.F = 0;
-            Registers.F |= (byte)(0xA8 & regB);
-            Registers.SetFlagConditionally(FlagType.Z, regB == 0);
-            Registers.F |= temp < io ? (byte)(FlagType.H | FlagType.C) : (byte)0;
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)((temp & 0x07) ^ regB)));
-            Registers.SetFlagConditionally(FlagType.N, (io & 0x80) != 0);
+            byte hcf = (temp > 255) ? (byte)(FlagType.H | FlagType.C) : (byte)0;
+            byte p = (byte)((temp & 0x07) ^ regB);
+            byte nf = (byte)((io >> 6) & (byte)FlagType.N);
 
             if (repeat && Registers.B != 0)
             {
+                UpdateCommonInxrOtxrFlags(regB, hcf, p, nf);
                 Registers.PC -= 2;
+                Registers.MEMPTR = (ushort)(Registers.PC + 1);
                 _clock.LastOperationStatus = true;
                 return;
             }
+
+            Registers.F = (byte)(0xA8 & regB);
+            Registers.SetFlagConditionally(FlagType.Z, regB == 0);
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(p));
+            Registers.SetFlagBits(hcf);
+            Registers.SetFlagBits(nf);
+
             _clock.LastOperationStatus = false;
         }
 
@@ -91,29 +97,35 @@ namespace Z80Sharp.Processor
             _dataBus.WritePort(Registers.BC, 0x00); // Should be 255 on a CMOS Z80, 0 on NMOS
         }
 
+        // Reimplementation of redcode's OTXR.
         private void OUTBlock(bool increment, bool repeat)
         {
             byte io = _memory.Read(increment ? Registers.HL++ : Registers.HL--);
-            _dataBus.WritePort(Registers.BC, io);
-            byte temp = (byte)(Registers.L + io);
+            uint temp = (uint)(io + Registers.L);
 
+            _dataBus.WritePort(Registers.BC, io);
+            Registers.MEMPTR = (ushort)(Registers.BC + (ushort)(increment ? 1 : -1));
             byte regB = --Registers.B;
 
-            Registers.MEMPTR = (ushort)(Registers.BC + (ushort)(increment ? 1 : -1));
-
-            Registers.F = 0;
-            Registers.F |= (byte)(0xA8 & regB);
-            Registers.SetFlagConditionally(FlagType.Z, regB == 0);
-            Registers.F |= temp < io ? (byte)(FlagType.H | FlagType.C) : (byte)0;
-            Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)((temp & 0x07) ^ regB)));
-            Registers.SetFlagConditionally(FlagType.N, (io & 0x80) != 0);
+            byte hcf = (temp > 255) ? (byte)(FlagType.H | FlagType.C) : (byte)0;
+            byte p = (byte)((temp & 0x07) ^ regB);
+            byte nf = (byte)((io >> 6) & (byte)FlagType.N);
 
             if (repeat && Registers.B != 0)
             {
+                UpdateCommonInxrOtxrFlags(regB, hcf, p, nf);
                 Registers.PC -= 2;
+                Registers.MEMPTR = (ushort)(Registers.PC + 1);
                 _clock.LastOperationStatus = true;
                 return;
             }
+
+            Registers.F = (byte)(0xA8 & regB);
+            Registers.SetFlagConditionally(FlagType.Z, regB == 0);
+            Registers.SetFlagConditionally(FlagType.PV, CheckParity(p));
+            Registers.SetFlagBits(hcf);
+            Registers.SetFlagBits(nf);
+
             _clock.LastOperationStatus = false;
         }
 

@@ -102,26 +102,26 @@ namespace Z80Sharp.Processor
 
                 // These instructions are quite weird, but are expected by FUSE.
                 case 0x4E: IM_M(InterruptMode.IM0); break; // IM 0 | UNDOCUMENTED
-                case 0x4C: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x4C: NEG(); break;                   // NEG  | UNDOCUMENTED
 
-                case 0x54: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x54: NEG(); break;                   // NEG  | UNDOCUMENTED
                 case 0x55: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
-                case 0x5C: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x5C: NEG(); break;                   // NEG  | UNDOCUMENTED
                 case 0x5D: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
 
-                case 0x64: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x64: NEG(); break;                   // NEG  | UNDOCUMENTED
                 case 0x65: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
                 case 0x66: IM_M(InterruptMode.IM0); break; // IM 0 | UNDOCUMENTED
-                case 0x6C: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x6C: NEG(); break;                   // NEG  | UNDOCUMENTED
                 case 0x6D: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
 
-                case 0x74: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x74: NEG(); break;                   // NEG  | UNDOCUMENTED
                 case 0x75: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
                 case 0x76: IM_M(InterruptMode.IM1); break; // IM 1 | UNDOCUMENTED
-                case 0x7C: NEG(); break;                   // NEG | UNDOCUMENTED
+                case 0x7C: NEG(); break;                   // NEG  | UNDOCUMENTED
                 case 0x7D: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
                 case 0x7E: IM_M(InterruptMode.IM2); break; // IM 2 | UNDOCUMENTED
-                case 0x7F: NOP(); break;                   // NOP | UNDOCUMENTED
+                case 0x7F: NOP(); break;                   // NOP  | UNDOCUMENTED
 
                 default:
                     _logger.Log(Enums.LogSeverity.Fatal, $"Unrecognized MISC opcode: 0x{_currentInstruction:X2}");

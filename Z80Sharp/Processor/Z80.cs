@@ -46,14 +46,7 @@ namespace Z80Sharp.Processor
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void UnhaltIfHalted()
-        {
-            if (_halted)
-            {
-                Registers.PC++;
-                Halted = false;
-            }
-        }
+        private void UnhaltIfHalted() { if (_halted) Halted = false; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Step() => ExecuteOnce();
