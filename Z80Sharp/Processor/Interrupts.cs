@@ -32,7 +32,7 @@ namespace Z80Sharp.Processor
             UnhaltIfHalted();
             if (!Registers.IFF1) { return; }
             
-            Registers.IFF1 = Registers.IFF2 = false;
+            Registers.IFF1 = false;
             Registers.IncrementRefresh();
 
             switch (Registers.InterruptMode)

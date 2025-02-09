@@ -14,7 +14,7 @@ namespace Z80Sharp.Processor
         private readonly IZ80Logger _logger;
         private readonly DataBus _dataBus;
 
-        private ulong _instrsExecuted;
+        private ulong _instrsExecuted = 0;
         private ulong _instrsExecutedLastSecond;
         private System.Timers.Timer _cycleTimer = new(1000);
 

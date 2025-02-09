@@ -82,18 +82,11 @@ namespace Z80Sharp.Processor
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void RETN()
+        private void RETX()
         {
             POP_PC();
             Registers.MEMPTR = Registers.PC;
             Registers.IFF1 = Registers.IFF2;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void RETI()
-        {
-            POP_PC();
-            Registers.MEMPTR = Registers.PC;
         }
 
 

@@ -19,8 +19,8 @@ namespace Z80Sharp.Processor
 
                 case 0x44: NEG(); break; // NEG
 
-                case 0x45: RETN(); _clock.Add(6); break; // RETN
-                case 0x4D: RETI(); _clock.Add(6); break; // RETI
+                case 0x45: RETX(); _clock.Add(6); break; // RETN
+                case 0x4D: RETX(); _clock.Add(6); break; // RETI
 
                 case 0x67: RRD(); _clock.Add(10); break; // RRD
                 case 0x6F: RLD(); _clock.Add(10); break; // RLD
@@ -105,21 +105,21 @@ namespace Z80Sharp.Processor
                 case 0x4C: NEG(); break;                   // NEG  | UNDOCUMENTED
 
                 case 0x54: NEG(); break;                   // NEG  | UNDOCUMENTED
-                case 0x55: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+                case 0x55: RETX(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
                 case 0x5C: NEG(); break;                   // NEG  | UNDOCUMENTED
-                case 0x5D: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+                case 0x5D: RETX(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
 
                 case 0x64: NEG(); break;                   // NEG  | UNDOCUMENTED
-                case 0x65: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+                case 0x65: RETX(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
                 case 0x66: IM_M(InterruptMode.IM0); break; // IM 0 | UNDOCUMENTED
                 case 0x6C: NEG(); break;                   // NEG  | UNDOCUMENTED
-                case 0x6D: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+                case 0x6D: RETX(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
 
                 case 0x74: NEG(); break;                   // NEG  | UNDOCUMENTED
-                case 0x75: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+                case 0x75: RETX(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
                 case 0x76: IM_M(InterruptMode.IM1); break; // IM 1 | UNDOCUMENTED
                 case 0x7C: NEG(); break;                   // NEG  | UNDOCUMENTED
-                case 0x7D: RETN(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
+                case 0x7D: RETX(); _clock.Add(6); break;   // RETN | UNDOCUMENTED
                 case 0x7E: IM_M(InterruptMode.IM2); break; // IM 2 | UNDOCUMENTED
                 case 0x7F: NOP(); break;                   // NOP  | UNDOCUMENTED
 
