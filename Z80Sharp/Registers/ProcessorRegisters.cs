@@ -15,7 +15,7 @@ namespace Z80Sharp.Registers
         /// </summary>
         /// <remarks>Only the lower 7 bits (bits 0-6) are incremented, while the MSB (bit 7) is preserved.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void IncrementRefresh() => R = (byte)((R & 0x80) | ((R & 0x7F) + 1));
+        internal void IncrementRefresh() => R = (byte)((R & 0x80) | ((R + 1) & 0x7F));
 
         /// <summary>
         /// Gets the name of the current interrupt mode.
@@ -124,9 +124,9 @@ namespace Z80Sharp.Registers
         public void SetFlagConditionally(FlagType flag, bool condition)
         {
             if (condition)
-                SetFlag(flag);
+                F |= (byte)flag;
             else
-                ClearFlag(flag);
+                F &= (byte)~flag;
         }
         #endregion
     }

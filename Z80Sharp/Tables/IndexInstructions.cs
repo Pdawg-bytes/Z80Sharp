@@ -6,10 +6,10 @@ namespace Z80Sharp.Processor
     {
         private void ExecuteIndexRInstruction(ref ushort indexAddressingMode, ref byte irH, ref byte irL)
         {
+            Registers.IncrementRefresh();
+
             byte instruction = Fetch();
             _currentInstruction = instruction;
-
-            Registers.IncrementRefresh();
 
             if (instruction == 0xCB) { ExecuteIndexRBitInstruction(ref indexAddressingMode); return; }
 
