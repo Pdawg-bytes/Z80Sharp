@@ -56,7 +56,6 @@ namespace Z80Sharp.Processor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CQ() => Registers.Q = false;
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void UnhaltIfHalted() { if (_halted) Halted = false; }
 

@@ -10,7 +10,7 @@ namespace Z80Sharp.Processor
         private void NOP() { }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void HALT() { if (!Halted) Halted = true; }
+        private void HALT() { if (!Halted) Halted = true; Registers.PC--; }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

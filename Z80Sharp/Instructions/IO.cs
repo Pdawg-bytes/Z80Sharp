@@ -103,8 +103,8 @@ namespace Z80Sharp.Processor
             uint temp = (uint)(io + Registers.L);
 
             _dataBus.WritePort(Registers.BC, io);
-            Registers.MEMPTR = (ushort)(Registers.BC + (ushort)(increment ? 1 : -1));
             byte regB = --Registers.B;
+            Registers.MEMPTR = (ushort)(Registers.BC + (ushort)(increment ? 1 : -1));
 
             byte hcf = (temp > 255) ? (byte)(FlagType.H | FlagType.C) : (byte)0;
             byte p = (byte)((temp & 0x07) ^ regB);
