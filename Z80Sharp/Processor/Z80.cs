@@ -44,6 +44,18 @@ namespace Z80Sharp.Processor
         }
 
 
+        /// <summary>
+        /// Sets the Q flip-flop.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void SQ() => Registers.Q = true;
+
+        /// <summary>
+        /// Clears the Q flip-flop
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CQ() => Registers.Q = false;
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void UnhaltIfHalted() { if (_halted) Halted = false; }
@@ -130,6 +142,7 @@ namespace Z80Sharp.Processor
             Registers.IFF2 = false;
 
             Registers.MEMPTR = 0x0000;
+            Registers.Q = false;
 
             _clock.Reset();
         }
@@ -158,6 +171,7 @@ namespace Z80Sharp.Processor
             Registers.R = state.R;
 
             Registers.MEMPTR = state.MEMPTR;
+            Registers.Q = state.Q;
 
             _clock.Reset();
         }

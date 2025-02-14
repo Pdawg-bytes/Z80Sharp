@@ -20,7 +20,6 @@ namespace Z80Sharp.Registers
 
         // Internal registers
         private ushort _memptr;
-        private byte _q;
 
 
         [UnscopedRef] public ref byte I => ref _i;
@@ -62,6 +61,6 @@ namespace Z80Sharp.Registers
         [UnscopedRef] public ref ushort PC => ref _pc;
 
         [UnscopedRef] public ref ushort MEMPTR => ref _memptr;
-        [UnscopedRef] public ref byte Q => ref _q;
+        public bool Q;
     }
 }
