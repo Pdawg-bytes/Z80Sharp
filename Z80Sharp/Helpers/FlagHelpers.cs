@@ -80,17 +80,12 @@ namespace Z80Sharp.Processor
                 else return IXRBQTable[_memory.Read(_lastPC + 3)];
             }
 
-            if (prevOp == 0xED || prevOp == 0xCB)
+            return prevOp switch
             {
-                return prevOp switch
-                {
-                    0xED => MiscQTable[prevNext],
-                    0xCB => BTOPQTable[prevNext],
-                    _ => false
-                };
-            }
-
-            return MainQTable[prevOp];
+                0xED => MiscQTable[prevNext],
+                0xCB => BTOPQTable[prevNext],
+                _ => MainQTable[prevOp]
+            };
         }
     }
 }

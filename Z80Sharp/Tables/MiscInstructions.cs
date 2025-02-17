@@ -15,35 +15,33 @@ namespace Z80Sharp.Processor
             _currentInstruction = instruction;
             switch (instruction)
             {
-                case 0x00: NOP(); break; // NOP | UNDOCUMENTED
-
                 case 0x44: NEG(); break; // NEG
 
                 case 0x45: RETX(); _clock.Add(6); break; // RETN
                 case 0x4D: RETX(); _clock.Add(6); break; // RETI
 
-                case 0x67: RRD();  _clock.Add(10); break; // RRD
-                case 0x6F: RLD();  _clock.Add(10); break; // RLD
+                case 0x67: RRD(); _clock.Add(10); break; // RRD
+                case 0x6F: RLD(); _clock.Add(10); break; // RLD
 
-                case 0xA0: LDI();  _clock.Add(8); break;      // LDI
-                case 0xB0: LDIR();  _clock.Add(13, 8); break; // LDIR
-                case 0xA8: LDD();  _clock.Add(8); break;      // LDD
-                case 0xB8: LDDR();  _clock.Add(13, 8); break; // LDDR
+                case 0xA0: LDI(); _clock.Add(8); break;      // LDI
+                case 0xB0: LDIR(); _clock.Add(13, 8); break; // LDIR
+                case 0xA8: LDD(); _clock.Add(8); break;      // LDD
+                case 0xB8: LDDR(); _clock.Add(13, 8); break; // LDDR
 
-                case 0xA1: CPI();  _clock.Add(8); break;      // CPI
-                case 0xB1: CPIR();  _clock.Add(13, 8); break; // CPIR
-                case 0xA9: CPD();  _clock.Add(8); break;      // CPD
-                case 0xB9: CPDR();  _clock.Add(13, 8); break; // CPDR
+                case 0xA1: CPI(); _clock.Add(8); break;      // CPI
+                case 0xB1: CPIR(); _clock.Add(13, 8); break; // CPIR
+                case 0xA9: CPD(); _clock.Add(8); break;      // CPD
+                case 0xB9: CPDR(); _clock.Add(13, 8); break; // CPDR
 
                 case 0xA2: INI();  _clock.Add(8); break;      // INI
                 case 0xB2: INIR();  _clock.Add(13, 8); break; // INIR
                 case 0xAA: IND();  _clock.Add(8); break;      // IND
                 case 0xBA: INDR();  _clock.Add(13, 8); break; // INDR
 
-                case 0xA3: OUTI();  _clock.Add(8); break;     // OUTI
-                case 0xB3: OTIR();  _clock.Add(13, 8); break; // OTIR
-                case 0xAB: OUTD();  _clock.Add(8); break;     // OUTD
-                case 0xBB: OTDR();  _clock.Add(13, 8); break; // OTDR
+                case 0xA3: OUTI(); _clock.Add(8); break;     // OUTI
+                case 0xB3: OTIR(); _clock.Add(13, 8); break; // OTIR
+                case 0xAB: OUTD(); _clock.Add(8); break;     // OUTD
+                case 0xBB: OTDR(); _clock.Add(13, 8); break; // OTDR
 
 
                 case 0x42: SBC_HL_RR(ref Registers.BC);  _clock.Add(7); break; // SBC HL, BC

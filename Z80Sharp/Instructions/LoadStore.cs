@@ -18,12 +18,6 @@ namespace Z80Sharp.Processor
             Registers.MEMPTR = (ushort)(source + 1);
             dest = _memory.ReadWord(source);
         }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LD_RR_NNMEM(ref ushort dest)
-        {
-            Registers.MEMPTR = (ushort)(dest + 1);
-            dest = _memory.ReadWord(FetchImmediateWord());
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LD_IR_NNMEM(ref ushort dest)
