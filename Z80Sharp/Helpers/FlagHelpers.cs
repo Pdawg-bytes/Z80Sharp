@@ -1,6 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-using Z80Sharp.Enums;
-using static Z80Sharp.Registers.ProcessorRegisters;
+﻿using Z80Sharp.Enums;
+using System.Runtime.CompilerServices;
+
+using static Z80Sharp.Constants.QTables;
 
 namespace Z80Sharp.Processor
 {
@@ -44,6 +45,7 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.Y, (result & 0x20) != 0); // (Y)   (copy of bit 5)
         }
 
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void UpdateCommonInxrOtxrFlags(byte regB, byte hcf, byte p, byte nf)
         {
@@ -64,6 +66,31 @@ namespace Z80Sharp.Processor
             {
                 Registers.SetFlagConditionally(FlagType.PV, CheckParity((byte)(p ^ (regB & 0x7))));
             }
+        }
+
+
+        private bool GetQForLastInstruction()
+        {
+            byte prevOp = _memory.Read(_lastPC);
+            byte prevNext = _memory.Read(_lastPC + 1);
+
+            if (prevOp == 0xDD || prevOp == 0xFD)
+            {
+                if (prevNext != 0xCB) return IDXRQTable[prevNext];
+                else return IXRBQTable[_memory.Read(_lastPC + 3)];
+            }
+
+            if (prevOp == 0xED || prevOp == 0xCB)
+            {
+                return prevOp switch
+                {
+                    0xED => MiscQTable[prevNext],
+                    0xCB => BTOPQTable[prevNext],
+                    _ => false
+                };
+            }
+
+            return MainQTable[prevOp];
         }
     }
 }

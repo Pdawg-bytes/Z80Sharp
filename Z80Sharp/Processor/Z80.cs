@@ -19,6 +19,7 @@ namespace Z80Sharp.Processor
         private System.Timers.Timer _cycleTimer = new(1000);
 
         private byte _currentInstruction;
+        private ushort _lastPC;
 
         public ProcessorRegisters Registers = new();
 
@@ -29,7 +30,7 @@ namespace Z80Sharp.Processor
             set
             {
                 _halted = value;
-                _logger.Log(value ? LogSeverity.Info : LogSeverity.Info, value ? "Processor halted" : "Processor unhalted");
+                _logger.Log(LogSeverity.Info, value ? "Processor halted" : "Processor unhalted");
             }
         }
 
@@ -43,18 +44,6 @@ namespace Z80Sharp.Processor
             _clock = new Clock(clockSpeed);
         }
 
-
-        /// <summary>
-        /// Sets the Q flip-flop.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void SQ() => Registers.Q = true;
-
-        /// <summary>
-        /// Clears the Q flip-flop
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void CQ() => Registers.Q = false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void UnhaltIfHalted() { if (_halted) Halted = false; }
@@ -84,6 +73,8 @@ namespace Z80Sharp.Processor
                 HandleInterrupts();
 
                 Registers.IncrementRefresh();
+
+                ushort savedPC = Registers.PC;
                 _currentInstruction = Fetch();
 
                 switch (_currentInstruction)
@@ -95,6 +86,7 @@ namespace Z80Sharp.Processor
                     default: ExecuteMainInstruction(); break;
                 }
 
+                _lastPC = savedPC;
                 _clock.Wait();
             }
         }
@@ -106,6 +98,8 @@ namespace Z80Sharp.Processor
             if (_halted) return;
 
             Registers.IncrementRefresh();
+
+            ushort savedPC = Registers.PC;
             _currentInstruction = Fetch();
 
             switch (_currentInstruction)
@@ -117,6 +111,7 @@ namespace Z80Sharp.Processor
                 default: ExecuteMainInstruction(); break;
             }
 
+            _lastPC = savedPC;
             _clock.Wait();
         }
 
@@ -141,7 +136,6 @@ namespace Z80Sharp.Processor
             Registers.IFF2 = false;
 
             Registers.MEMPTR = 0x0000;
-            Registers.Q = false;
 
             _clock.Reset();
         }
@@ -170,7 +164,6 @@ namespace Z80Sharp.Processor
             Registers.R = state.R;
 
             Registers.MEMPTR = state.MEMPTR;
-            Registers.Q = state.Q;
 
             _clock.Reset();
         }
@@ -211,10 +204,15 @@ namespace Z80Sharp.Processor
         private byte FetchLast() => _memory.Read((ushort)(Registers.PC - 1));
 
         /// <summary>
-        /// Fetches a 16-bit word from memory at the current PC address.
+        /// Fetches a 16-bit word from memory at the current PC address and increments PC by 2.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ushort FetchImmediateWord() => (ushort)(Fetch() | (Fetch() << 8));
+        private ushort FetchImmediateWord() 
+        { 
+            ushort ret = _memory.ReadWord(Registers.PC);
+            Registers.PC += 2;
+            return ret;
+        }
 
         #endregion
     }

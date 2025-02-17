@@ -31,23 +31,20 @@ namespace Z80Sharp.Processor
 
         internal void Add([ConstantExpected] uint tStates)
         {
-            TotalTStates += tStates;
-            if (_ticksPerTState == 0) return;
-
             unchecked
             {
+                TotalTStates += tStates;
+                if (_ticksPerTState == 0) return;
                 _nextTickTarget += _precomputedTimes[tStates];
             }
         }
         internal void Add([ConstantExpected] uint tStatesIfConditionMet, [ConstantExpected] uint tStatesIfConditionNotMet)
         {
-            uint tStates = LastOperationStatus ? tStatesIfConditionMet : tStatesIfConditionNotMet;
-            TotalTStates += tStates;
-
-            if (_ticksPerTState == 0) return;
-
             unchecked
             {
+                uint tStates = LastOperationStatus ? tStatesIfConditionMet : tStatesIfConditionNotMet;
+                TotalTStates += tStates;
+                if (_ticksPerTState == 0) return;
                 _nextTickTarget += _precomputedTimes[tStates];
             }
         }

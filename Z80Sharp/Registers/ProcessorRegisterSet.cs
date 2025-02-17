@@ -61,6 +61,5 @@ namespace Z80Sharp.Registers
         [UnscopedRef] public ref ushort PC => ref _pc;
 
         [UnscopedRef] public ref ushort MEMPTR => ref _memptr;
-        public bool Q;
     }
 }

@@ -75,8 +75,9 @@ namespace Z80Sharp.Processor
             Registers.SetFlagConditionally(FlagType.H, Registers.IsFlagSet(FlagType.C));
             Registers.InvertFlag(FlagType.C);
             Registers.ClearFlag(FlagType.N);
-            Registers.SetFlagConditionally(FlagType.X, Registers.Q ? (Registers.A & 0x08) != 0 : Registers.IsFlagSet(FlagType.X) || ((Registers.A & 0x08) != 0));
-            Registers.SetFlagConditionally(FlagType.Y, Registers.Q ? (Registers.A & 0x20) != 0 : Registers.IsFlagSet(FlagType.Y) || ((Registers.A & 0x20) != 0));
+            bool Q = GetQForLastInstruction();
+            Registers.SetFlagConditionally(FlagType.X, Q ? (Registers.A & 0x08) != 0 : Registers.IsFlagSet(FlagType.X) || ((Registers.A & 0x08) != 0));
+            Registers.SetFlagConditionally(FlagType.Y, Q ? (Registers.A & 0x20) != 0 : Registers.IsFlagSet(FlagType.Y) || ((Registers.A & 0x20) != 0));
         }
 
         private void SCF()
@@ -84,8 +85,9 @@ namespace Z80Sharp.Processor
             Registers.SetFlag(FlagType.C);
             Registers.ClearFlag(FlagType.N);
             Registers.ClearFlag(FlagType.H);
-            Registers.SetFlagConditionally(FlagType.X, Registers.Q ? (Registers.A & 0x08) != 0 : Registers.IsFlagSet(FlagType.X) || ((Registers.A & 0x08) != 0));
-            Registers.SetFlagConditionally(FlagType.Y, Registers.Q ? (Registers.A & 0x20) != 0 : Registers.IsFlagSet(FlagType.Y) || ((Registers.A & 0x20) != 0));
+            bool Q = GetQForLastInstruction();
+            Registers.SetFlagConditionally(FlagType.X, Q ? (Registers.A & 0x08) != 0 : Registers.IsFlagSet(FlagType.X) || ((Registers.A & 0x08) != 0));
+            Registers.SetFlagConditionally(FlagType.Y, Q ? (Registers.A & 0x20) != 0 : Registers.IsFlagSet(FlagType.Y) || ((Registers.A & 0x20) != 0));
         }
     }
 }

@@ -24,17 +24,11 @@ namespace Z80Sharp.Data
         public void Write(int address, byte value) => *(_memory + address) = value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ushort ReadWord(int address)
-        {
-            return (ushort)(*(_memory + address) | (*(_memory + address + 1) << 8));
-        }
+        public ushort ReadWord(int address) => *(ushort*)(_memory + address);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteWord(int address, ushort value)
-        {
-            *(_memory + address) = (byte)(value & 0xFF);
-            *(_memory + address + 1) = (byte)(value >> 8);
-        }
+        public void WriteWord(int address, ushort value) => *(ushort*)(_memory + address) = value;
+
 
         public void WriteBytes(int address, byte[] data)
         {
