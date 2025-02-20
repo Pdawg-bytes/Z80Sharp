@@ -10,6 +10,7 @@ namespace Z80Sharp.Processor
 
             byte instruction = Fetch();
             _currentInstruction = instruction;
+            _pendingInstruction.Opcode2 = _currentInstruction;
 
             if (instruction == 0xCB) { ExecuteIndexRBitInstruction(ref indexAddressingMode); return; }
 

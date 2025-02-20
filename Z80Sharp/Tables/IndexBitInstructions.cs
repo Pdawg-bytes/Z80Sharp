@@ -9,6 +9,9 @@
             sbyte displacement = (sbyte)Fetch(); // Displacement comes before opcode in index bit
             byte instruction = Fetch();          // So we fetch actual opcode after displacement
             _currentInstruction = instruction;
+            _pendingInstruction.Opcode3 = displacement;
+            _pendingInstruction.Opcode4 = instruction;
+
             switch (instruction)
             {
                 // RL(C) instructions: Rotate (IR + d) left circular/through carry

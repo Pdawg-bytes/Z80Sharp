@@ -1,17 +1,16 @@
-﻿using System.Runtime.CompilerServices;
-using static Z80Sharp.Registers.ProcessorRegisters;
-
-namespace Z80Sharp.Processor
+﻿namespace Z80Sharp.Processor
 {
     public partial class Z80
     {
         private void ExecuteBitInstruction()
         {
-            _clock.Add(8);
+           _clock.Add(8);
             Registers.IncrementRefresh();
 
             byte instruction = Fetch();
             _currentInstruction = instruction;
+            _pendingInstruction.Opcode2 = _currentInstruction;
+
             switch (instruction)
             {
                 // R(L/R)(C) instructions: Rotate register/memory value through/from carry flag
@@ -21,7 +20,7 @@ namespace Z80Sharp.Processor
                 case 0x03: RLC_R(ref Registers.E); break;                     // RLC E
                 case 0x04: RLC_R(ref Registers.H); break;                     // RLC H
                 case 0x05: RLC_R(ref Registers.L); break;                     // RLC L
-                case 0x06: RLC_RRMEM(ref Registers.HL);  _clock.Add(7); break; // RLC (HL)
+                case 0x06: RLC_RRMEM(ref Registers.HL); _clock.Add(7); break; // RLC (HL)
                 case 0x07: RLC_R(ref Registers.A); break;                     // RLC A
 
                 case 0x10: RL_R(ref Registers.B); break;                     // RL B
@@ -30,7 +29,7 @@ namespace Z80Sharp.Processor
                 case 0x13: RL_R(ref Registers.E); break;                     // RL E
                 case 0x14: RL_R(ref Registers.H); break;                     // RL H
                 case 0x15: RL_R(ref Registers.L); break;                     // RL L
-                case 0x16: RL_RRMEM(ref Registers.HL);  _clock.Add(7); break; // RL (HL)
+                case 0x16: RL_RRMEM(ref Registers.HL); _clock.Add(7); break; // RL (HL)
                 case 0x17: RL_R(ref Registers.A); break;                     // RL A
 
                 case 0x08: RRC_R(ref Registers.B); break;                     // RRC B
@@ -39,7 +38,7 @@ namespace Z80Sharp.Processor
                 case 0x0B: RRC_R(ref Registers.E); break;                     // RRC E
                 case 0x0C: RRC_R(ref Registers.H); break;                     // RRC H
                 case 0x0D: RRC_R(ref Registers.L); break;                     // RRC L
-                case 0x0E: RRC_RRMEM(ref Registers.HL);  _clock.Add(7); break; // RRC (HL)
+                case 0x0E: RRC_RRMEM(ref Registers.HL); _clock.Add(7); break; // RRC (HL)
                 case 0x0F: RRC_R(ref Registers.A); break;                     // RRC A
 
                 case 0x18: RR_R(ref Registers.B); break;                     // RR B
@@ -48,7 +47,7 @@ namespace Z80Sharp.Processor
                 case 0x1B: RR_R(ref Registers.E); break;                     // RR E
                 case 0x1C: RR_R(ref Registers.H); break;                     // RR H
                 case 0x1D: RR_R(ref Registers.L); break;                     // RR L
-                case 0x1E: RR_RRMEM(ref Registers.HL);  _clock.Add(7); break; // RR (HL)
+                case 0x1E: RR_RRMEM(ref Registers.HL); _clock.Add(7); break; // RR (HL)
                 case 0x1F: RR_R(ref Registers.A); break;                     // RR A
 
 
@@ -59,7 +58,7 @@ namespace Z80Sharp.Processor
                 case 0x23: SLA_R(ref Registers.E); break;                     // SLA E
                 case 0x24: SLA_R(ref Registers.H); break;                     // SLA H
                 case 0x25: SLA_R(ref Registers.L); break;                     // SLA L
-                case 0x26: SLA_RRMEM(ref Registers.HL);  _clock.Add(7); break; // SLA (HL)
+                case 0x26: SLA_RRMEM(ref Registers.HL); _clock.Add(7); break; // SLA (HL)
                 case 0x27: SLA_R(ref Registers.A); break;                     // SLA A
 
                 case 0x30: SLL_R(ref Registers.B); break;                     // SLL B | UNDOCUMENTED
@@ -68,7 +67,7 @@ namespace Z80Sharp.Processor
                 case 0x33: SLL_R(ref Registers.E); break;                     // SLL E | UNDOCUMENTED
                 case 0x34: SLL_R(ref Registers.H); break;                     // SLL H | UNDOCUMENTED
                 case 0x35: SLL_R(ref Registers.L); break;                     // SLL L | UNDOCUMENTED
-                case 0x36: SLL_RRMEM(ref Registers.HL);  _clock.Add(7); break; // SLL (HL) | UNDOCUMENTED
+                case 0x36: SLL_RRMEM(ref Registers.HL); _clock.Add(7); break; // SLL (HL) | UNDOCUMENTED
                 case 0x37: SLL_R(ref Registers.A); break;                     // SLL A | UNDOCUMENTED
 
                 case 0x28: SRA_R(ref Registers.B); break;                     // SRA B
@@ -77,7 +76,7 @@ namespace Z80Sharp.Processor
                 case 0x2B: SRA_R(ref Registers.E); break;                     // SRA E
                 case 0x2C: SRA_R(ref Registers.H); break;                     // SRA H
                 case 0x2D: SRA_R(ref Registers.L); break;                     // SRA L
-                case 0x2E: SRA_RRMEM(ref Registers.HL);  _clock.Add(7); break; // SRA (HL)
+                case 0x2E: SRA_RRMEM(ref Registers.HL); _clock.Add(7); break; // SRA (HL)
                 case 0x2F: SRA_R(ref Registers.A); break;                     // SRA A
 
                 case 0x38: SRL_R(ref Registers.B); break;                     // SRL B
@@ -86,7 +85,7 @@ namespace Z80Sharp.Processor
                 case 0x3B: SRL_R(ref Registers.E); break;                     // SRL E
                 case 0x3C: SRL_R(ref Registers.H); break;                     // SRL H
                 case 0x3D: SRL_R(ref Registers.L); break;                     // SRL L
-                case 0x3E: SRL_RRMEM(ref Registers.HL);  _clock.Add(7); break; // SRL (HL)
+                case 0x3E: SRL_RRMEM(ref Registers.HL); _clock.Add(7); break; // SRL (HL)
                 case 0x3F: SRL_R(ref Registers.A); break;                     // SRL A
 
                 // BIT instructions: Tests bit B of register R, sets Z if tested bit is zero
@@ -96,7 +95,7 @@ namespace Z80Sharp.Processor
                 case 0x43: BIT_B_R(0, ref Registers.E); break;                     // BIT 0, E
                 case 0x44: BIT_B_R(0, ref Registers.H); break;                     // BIT 0, H
                 case 0x45: BIT_B_R(0, ref Registers.L); break;                     // BIT 0, L
-                case 0x46: BIT_B_RRMEM(0, ref Registers.HL);  _clock.Add(4); break; // BIT 0, (HL)
+                case 0x46: BIT_B_RRMEM(0, ref Registers.HL); _clock.Add(4); break; // BIT 0, (HL)
                 case 0x47: BIT_B_R(0, ref Registers.A); break;                     // BIT 0, A
 
                 case 0x48: BIT_B_R(1, ref Registers.B); break;                     // BIT 1, B
@@ -105,7 +104,7 @@ namespace Z80Sharp.Processor
                 case 0x4B: BIT_B_R(1, ref Registers.E); break;                     // BIT 1, E
                 case 0x4C: BIT_B_R(1, ref Registers.H); break;                     // BIT 1, H
                 case 0x4D: BIT_B_R(1, ref Registers.L); break;                     // BIT 1, L
-                case 0x4E: BIT_B_RRMEM(1, ref Registers.HL);  _clock.Add(4); break; // BIT 1, (HL)
+                case 0x4E: BIT_B_RRMEM(1, ref Registers.HL); _clock.Add(4); break; // BIT 1, (HL)
                 case 0x4F: BIT_B_R(1, ref Registers.A); break;                     // BIT 1, A
 
                 case 0x50: BIT_B_R(2, ref Registers.B); break;                     // BIT 2, B
@@ -114,7 +113,7 @@ namespace Z80Sharp.Processor
                 case 0x53: BIT_B_R(2, ref Registers.E); break;                     // BIT 2, E
                 case 0x54: BIT_B_R(2, ref Registers.H);  break;                     // BIT 2, H
                 case 0x55: BIT_B_R(2, ref Registers.L); break;                     // BIT 2, L
-                case 0x56: BIT_B_RRMEM(2, ref Registers.HL);  _clock.Add(4); break; // BIT 2, (HL)
+                case 0x56: BIT_B_RRMEM(2, ref Registers.HL); _clock.Add(4); break; // BIT 2, (HL)
                 case 0x57: BIT_B_R(2, ref Registers.A); break;                     // BIT 2, A
 
                 case 0x58: BIT_B_R(3, ref Registers.B); break;                     // BIT 3, B
@@ -123,7 +122,7 @@ namespace Z80Sharp.Processor
                 case 0x5B: BIT_B_R(3, ref Registers.E); break;                     // BIT 3, E
                 case 0x5C: BIT_B_R(3, ref Registers.H); break;                     // BIT 3, H
                 case 0x5D: BIT_B_R(3, ref Registers.L); break;                     // BIT 3, L
-                case 0x5E: BIT_B_RRMEM(3, ref Registers.HL);  _clock.Add(4); break; // BIT 3, (HL)
+                case 0x5E: BIT_B_RRMEM(3, ref Registers.HL); _clock.Add(4); break; // BIT 3, (HL)
                 case 0x5F: BIT_B_R(3, ref Registers.A); break;                     // BIT 3, A
 
                 case 0x60: BIT_B_R(4, ref Registers.B); break;                     // BIT 4, B
@@ -132,7 +131,7 @@ namespace Z80Sharp.Processor
                 case 0x63: BIT_B_R(4, ref Registers.E); break;                     // BIT 4, E
                 case 0x64: BIT_B_R(4, ref Registers.H); break;                     // BIT 4, H
                 case 0x65: BIT_B_R(4, ref Registers.L); break;                     // BIT 4, L
-                case 0x66: BIT_B_RRMEM(4, ref Registers.HL);  _clock.Add(4); break; // BIT 4, (HL)
+                case 0x66: BIT_B_RRMEM(4, ref Registers.HL); _clock.Add(4); break; // BIT 4, (HL)
                 case 0x67: BIT_B_R(4, ref Registers.A); break;                     // BIT 4, A
 
                 case 0x68: BIT_B_R(5, ref Registers.B); break;                     // BIT 5, B
@@ -141,7 +140,7 @@ namespace Z80Sharp.Processor
                 case 0x6B: BIT_B_R(5, ref Registers.E); break;                     // BIT 5, E
                 case 0x6C: BIT_B_R(5, ref Registers.H); break;                     // BIT 5, H
                 case 0x6D: BIT_B_R(5, ref Registers.L); break;                     // BIT 5, L
-                case 0x6E: BIT_B_RRMEM(5, ref Registers.HL);  _clock.Add(4); break; // BIT 5, (HL)
+                case 0x6E: BIT_B_RRMEM(5, ref Registers.HL); _clock.Add(4); break; // BIT 5, (HL)
                 case 0x6F: BIT_B_R(5, ref Registers.A); break;                     // BIT 5, A
 
                 case 0x70: BIT_B_R(6, ref Registers.B); break;                     // BIT 6, B
@@ -150,7 +149,7 @@ namespace Z80Sharp.Processor
                 case 0x73: BIT_B_R(6, ref Registers.E); break;                     // BIT 6, E
                 case 0x74: BIT_B_R(6, ref Registers.H); break;                     // BIT 6, H
                 case 0x75: BIT_B_R(6, ref Registers.L); break;                     // BIT 6, L
-                case 0x76: BIT_B_RRMEM(6, ref Registers.HL);  _clock.Add(4); break; // BIT 6, (HL)
+                case 0x76: BIT_B_RRMEM(6, ref Registers.HL); _clock.Add(4); break; // BIT 6, (HL)
                 case 0x77: BIT_B_R(6, ref Registers.A); break;                     // BIT 6, A
 
                 case 0x78: BIT_B_R(7, ref Registers.B); break;                     // BIT 7, B
@@ -159,7 +158,7 @@ namespace Z80Sharp.Processor
                 case 0x7B: BIT_B_R(7, ref Registers.E); break;                     // BIT 7, E
                 case 0x7C: BIT_B_R(7, ref Registers.H); break;                     // BIT 7, H
                 case 0x7D: BIT_B_R(7, ref Registers.L); break;                     // BIT 7, L
-                case 0x7E: BIT_B_RRMEM(7, ref Registers.HL);  _clock.Add(4); break; // BIT 7, (HL)
+                case 0x7E: BIT_B_RRMEM(7, ref Registers.HL); _clock.Add(4); break; // BIT 7, (HL)
                 case 0x7F: BIT_B_R(7, ref Registers.A); break;                     // BIT 7, A
 
 

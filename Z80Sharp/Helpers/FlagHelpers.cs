@@ -71,13 +71,13 @@ namespace Z80Sharp.Processor
 
         private bool GetQForLastInstruction()
         {
-            byte prevOp = _memory.Read(_lastPC);
-            byte prevNext = _memory.Read(_lastPC + 1);
+            byte prevOp = _lastInstruction.Opcode1;
+            byte prevNext = _lastInstruction.Opcode2;
 
             if (prevOp == 0xDD || prevOp == 0xFD)
             {
                 if (prevNext != 0xCB) return IDXRQTable[prevNext];
-                else return IXRBQTable[_memory.Read(_lastPC + 3)];
+                else return IXRBQTable[_lastInstruction.Opcode4];
             }
 
             return prevOp switch

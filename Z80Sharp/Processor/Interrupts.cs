@@ -39,7 +39,9 @@ namespace Z80Sharp.Processor
             {
                 case InterruptMode.IM0:
                     _clock.Add(11);
+                    _lastInstruction = _pendingInstruction;
                     _currentInstruction = _dataBus.Data;
+                    _pendingInstruction.Opcode1 = _currentInstruction;
                     switch (_currentInstruction)
                     {
                         case 0xDD: ExecuteIndexRInstruction(ref Registers.IX, ref Registers.IXhi, ref Registers.IXlo); break;

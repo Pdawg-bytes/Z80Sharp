@@ -1,5 +1,4 @@
-﻿using System.Timers;
-using Z80Sharp.Data;
+﻿using Z80Sharp.Data;
 using Z80Sharp.Enums;
 using Z80Sharp.Registers;
 using Z80Sharp.Interfaces;
@@ -14,12 +13,9 @@ namespace Z80Sharp.Processor
         private readonly IZ80Logger _logger;
         private readonly DataBus _dataBus;
 
-        private ulong _instrsExecuted = 0;
-        private ulong _instrsExecutedLastSecond;
-        private System.Timers.Timer _cycleTimer = new(1000);
-
         private byte _currentInstruction;
-        private ushort _lastPC;
+        private Instruction _pendingInstruction;
+        private Instruction _lastInstruction;
 
         public ProcessorRegisters Registers = new();
 
@@ -74,8 +70,9 @@ namespace Z80Sharp.Processor
 
                 Registers.IncrementRefresh();
 
-                ushort savedPC = Registers.PC;
+                _lastInstruction = _pendingInstruction;
                 _currentInstruction = Fetch();
+                _pendingInstruction.Opcode1 = _currentInstruction;
 
                 switch (_currentInstruction)
                 {
@@ -86,7 +83,6 @@ namespace Z80Sharp.Processor
                     default: ExecuteMainInstruction(); break;
                 }
 
-                _lastPC = savedPC;
                 _clock.Wait();
             }
         }
@@ -99,8 +95,9 @@ namespace Z80Sharp.Processor
 
             Registers.IncrementRefresh();
 
-            ushort savedPC = Registers.PC;
+            _lastInstruction = _pendingInstruction;
             _currentInstruction = Fetch();
+            _pendingInstruction.Opcode1 = _currentInstruction;
 
             switch (_currentInstruction)
             {
@@ -111,7 +108,6 @@ namespace Z80Sharp.Processor
                 default: ExecuteMainInstruction(); break;
             }
 
-            _lastPC = savedPC;
             _clock.Wait();
         }
 
@@ -168,10 +164,6 @@ namespace Z80Sharp.Processor
             _clock.Reset();
         }
 
-        private void ReportCyclesPerSecond(object sender, ElapsedEventArgs e)
-        {
-            _instrsExecutedLastSecond = _instrsExecuted;
-        }
 
         #region Logging
 

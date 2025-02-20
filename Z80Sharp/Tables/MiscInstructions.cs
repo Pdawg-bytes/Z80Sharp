@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Z80Sharp.Enums;
-using static Z80Sharp.Registers.ProcessorRegisters;
+﻿using Z80Sharp.Enums;
 
 namespace Z80Sharp.Processor
 {
@@ -13,6 +11,8 @@ namespace Z80Sharp.Processor
 
             byte instruction = Fetch();
             _currentInstruction = instruction;
+            _pendingInstruction.Opcode2 = instruction;
+
             switch (instruction)
             {
                 case 0x44: NEG(); break; // NEG
