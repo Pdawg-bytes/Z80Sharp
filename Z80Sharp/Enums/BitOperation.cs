@@ -5,19 +5,13 @@
     /// </summary>
     internal enum BitOperation
     {
-        /// <summary>
-        /// A bitwise XOR (^)
-        /// </summary>
+        /// <summary>A bitwise XOR (^)</summary>
         Xor,
 
-        /// <summary>
-        /// A bitwise OR (|)
-        /// </summary>
+        /// <summary>A bitwise OR (|)</summary>
         Or,
 
-        /// <summary>
-        /// A bitwise AND (&)
-        /// </summary>
+        /// <summary>A bitwise AND (&)</summary>
         And
     }
 }

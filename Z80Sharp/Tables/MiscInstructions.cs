@@ -60,10 +60,10 @@ namespace Z80Sharp.Processor
                 case 0x63: LD_NNMEM_RR(ref Registers.HL); _clock.Add(12); break; // LD (NN), HL | UNDOCUMENTED
                 case 0x73: LD_NNMEM_RR(ref Registers.SP); _clock.Add(12); break; // LD (NN), SP
 
-                case 0x4B: LD_RR_NNMEM_F(ref Registers.BC); _clock.Add(12); break; // LD BC, (NN)
-                case 0x5B: LD_RR_NNMEM_F(ref Registers.DE); _clock.Add(12); break; // LD DE, (NN)
-                case 0x6B: LD_RR_NNMEM_F(ref Registers.HL); _clock.Add(12); break; // LD HL, (NN) | UNDOCUMENTED
-                case 0x7B: LD_RR_NNMEM_F(ref Registers.SP); _clock.Add(12); break; // LD SP, (NN)
+                case 0x4B: LD_RR_NNMEM(ref Registers.BC); _clock.Add(12); break; // LD BC, (NN)
+                case 0x5B: LD_RR_NNMEM(ref Registers.DE); _clock.Add(12); break; // LD DE, (NN)
+                case 0x6B: LD_RR_NNMEM(ref Registers.HL); _clock.Add(12); break; // LD HL, (NN) | UNDOCUMENTED
+                case 0x7B: LD_RR_NNMEM(ref Registers.SP); _clock.Add(12); break; // LD SP, (NN)
 
                 case 0x47: LD_R_R(ref Registers.I, ref Registers.A); _clock.Add(1); break; // LD I, A
                 case 0x4F: LD_R_R(ref Registers.R, ref Registers.A); _clock.Add(1); break; // LD R, A

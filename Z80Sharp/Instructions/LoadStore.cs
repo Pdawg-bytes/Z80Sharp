@@ -12,7 +12,7 @@ namespace Z80Sharp.Processor
         private void LD_RR_NN(ref ushort dest) => dest = FetchImmediateWord();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void LD_RR_NNMEM_F(ref ushort dest)
+        private void LD_RR_NNMEM(ref ushort dest)
         {
             ushort source = FetchImmediateWord();
             Registers.MEMPTR = (ushort)(source + 1);

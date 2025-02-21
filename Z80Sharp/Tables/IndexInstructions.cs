@@ -22,10 +22,10 @@ namespace Z80Sharp.Processor
                 case 0xDD: NOP(); break; // NOP | UNDOCUMENTED
                 case 0xFD: NOP(); break; // NOP | UNDOCUMENTED
 
-                case 0x09: ADD_IR_RR(ref indexAddressingMode, ref Registers.BC);  _clock.Add(7); break;        // ADD IR, BC
-                case 0x19: ADD_IR_RR(ref indexAddressingMode, ref Registers.DE);  _clock.Add(7); break;        // ADD IR, DE
-                case 0x29: ADD_IR_RR(ref indexAddressingMode, ref indexAddressingMode);  _clock.Add(7); break; // ADD IR, IR
-                case 0x39: ADD_IR_RR(ref indexAddressingMode, ref Registers.SP);  _clock.Add(7); break;        // ADD IR, SP
+                case 0x09: ADD_IR_RR(ref indexAddressingMode, ref Registers.BC); _clock.Add(7); break;        // ADD IR, BC
+                case 0x19: ADD_IR_RR(ref indexAddressingMode, ref Registers.DE); _clock.Add(7); break;        // ADD IR, DE
+                case 0x29: ADD_IR_RR(ref indexAddressingMode, ref indexAddressingMode); _clock.Add(7); break; // ADD IR, IR
+                case 0x39: ADD_IR_RR(ref indexAddressingMode, ref Registers.SP); _clock.Add(7); break;        // ADD IR, SP
 
                 case 0x80: ADD_A_R(ref Registers.B); break;                               // ADD A, B | UNDOCUMENTED
                 case 0x81: ADD_A_R(ref Registers.C); break;                               // ADD A, C | UNDOCUMENTED
@@ -33,7 +33,7 @@ namespace Z80Sharp.Processor
                 case 0x83: ADD_A_R(ref Registers.E); break;                               // ADD A, E | UNDOCUMENTED
                 case 0x84: ADD_A_R(ref irH); break;                                       // ADD A, IRh | UNDOCUMENTED
                 case 0x85: ADD_A_R(ref irL); break;                                       // ADD A, IRl | UNDOCUMENTED
-                case 0x86: ADD_A_IRDMEM(ref indexAddressingMode);  _clock.Add(11); break;  // ADD A, (IR + d)
+                case 0x86: ADD_A_IRDMEM(ref indexAddressingMode); _clock.Add(11); break;  // ADD A, (IR + d)
                 case 0x87: ADD_A_R(ref Registers.A); break;                               // ADD A, A | UNDOCUMENTED
 
                 case 0x88: ADC_A_R(ref Registers.B); break;                               // ADC A, B | UNDOCUMENTED
@@ -42,7 +42,7 @@ namespace Z80Sharp.Processor
                 case 0x8B: ADC_A_R(ref Registers.E); break;                               // ADC A, E | UNDOCUMENTED
                 case 0x8C: ADC_A_R(ref irH); break;                                       // ADC A, H | UNDOCUMENTED
                 case 0x8D: ADC_A_R(ref irL); break;                                       // ADC A, L | UNDOCUMENTED
-                case 0x8E: ADC_A_IRDMEM(ref indexAddressingMode);  _clock.Add(11); break;  // ADC A, (IR + d)
+                case 0x8E: ADC_A_IRDMEM(ref indexAddressingMode); _clock.Add(11); break;  // ADC A, (IR + d)
                 case 0x8F: ADC_A_R(ref Registers.A); break;                               // ADC A, A | UNDOCUMENTED
 
                 case 0x90: SUB_A_R(ref Registers.B); break;                               // SUB B | UNDOCUMENTED
@@ -51,7 +51,7 @@ namespace Z80Sharp.Processor
                 case 0x93: SUB_A_R(ref Registers.E); break;                               // SUB E | UNDOCUMENTED
                 case 0x94: SUB_A_R(ref irH); break;                                       // SUB IRh | UNDOCUMENTED
                 case 0x95: SUB_A_R(ref irL); break;                                       // SUB IRl | UNDOCUMENTED
-                case 0x96: SUB_A_IRDMEM(ref indexAddressingMode);  _clock.Add(11); break;  // SUB (IR + d)
+                case 0x96: SUB_A_IRDMEM(ref indexAddressingMode); _clock.Add(11); break;  // SUB (IR + d)
                 case 0x97: SUB_A_R(ref Registers.A); break;                               // SUB A | UNDOCUMENTED
 
                 case 0x98: SBC_A_R(ref Registers.B); break;                               // SBC A, B | UNDOCUMENTED
@@ -60,7 +60,7 @@ namespace Z80Sharp.Processor
                 case 0x9B: SBC_A_R(ref Registers.E); break;                               // SBC A, E | UNDOCUMENTED
                 case 0x9C: SBC_A_R(ref irH); break;                                       // SBC A, IRh | UNDOCUMENTED
                 case 0x9D: SBC_A_R(ref irL); break;                                       // SBC A, IRl | UNDOCUMENTED
-                case 0x9E: SBC_A_IRDMEM(ref indexAddressingMode);  _clock.Add(11); break;  // SBC A, (IR + d)
+                case 0x9E: SBC_A_IRDMEM(ref indexAddressingMode); _clock.Add(11); break;  // SBC A, (IR + d)
                 case 0x9F: SBC_A_R(ref Registers.A); break;                               // SBC A, A | UNDOCUMENTED
 
                 case 0xB0: OR_R(ref Registers.B); break;                               // OR B | UNDOCUMENTED
@@ -69,7 +69,7 @@ namespace Z80Sharp.Processor
                 case 0xB3: OR_R(ref Registers.E); break;                               // OR E | UNDOCUMENTED
                 case 0xB4: OR_R(ref irH); break;                                       // OR IRh | UNDOCUMENTED
                 case 0xB5: OR_R(ref irL); break;                                       // OR IRh | UNDOCUMENTED
-                case 0xB6: OR_IRDMEM(ref indexAddressingMode);  _clock.Add(11); break;  // OR (IR + d)
+                case 0xB6: OR_IRDMEM(ref indexAddressingMode); _clock.Add(11); break;  // OR (IR + d)
                 case 0xB7: OR_R(ref Registers.A); break;                               // OR A | UNDOCUMENTED
 
                 case 0xA8: XOR_R(ref Registers.B); break;                               // XOR B | UNDOCUMENTED
@@ -78,7 +78,7 @@ namespace Z80Sharp.Processor
                 case 0xAB: XOR_R(ref Registers.E); break;                               // XOR E | UNDOCUMENTED
                 case 0xAC: XOR_R(ref irH); break;                                       // XOR IRh | UNDOCUMENTED
                 case 0xAD: XOR_R(ref irL); break;                                       // XOR IRl | UNDOCUMENTED
-                case 0xAE: XOR_IRDMEM(ref indexAddressingMode);  _clock.Add(11); break;  // XOR (IR + d)
+                case 0xAE: XOR_IRDMEM(ref indexAddressingMode); _clock.Add(11); break;  // XOR (IR + d)
                 case 0xAF: XOR_R(ref Registers.A); break;                               // XOR A | UNDOCUMENTED
 
                 case 0xA0: AND_R(ref Registers.B); break;                               // AND B | UNDOCUMENTED
@@ -87,7 +87,7 @@ namespace Z80Sharp.Processor
                 case 0xA3: AND_R(ref Registers.E); break;                               // AND E | UNDOCUMENTED
                 case 0xA4: AND_R(ref irH); break;                                       // AND IRh | UNDOCUMENTED
                 case 0xA5: AND_R(ref irL); break;                                       // AND IRl | UNDOCUMENTED
-                case 0xA6: AND_IRDMEM(ref indexAddressingMode);  _clock.Add(11); break;  // AND (IR + d)
+                case 0xA6: AND_IRDMEM(ref indexAddressingMode); _clock.Add(11); break;  // AND (IR + d)
                 case 0xA7: AND_R(ref Registers.A); break;                               // AND A | UNDOCUMENTED
 
                 case 0xB8: CMP_R(ref Registers.B); break;                               // CP B | UNDOCUMENTED
@@ -96,7 +96,7 @@ namespace Z80Sharp.Processor
                 case 0xBB: CMP_R(ref Registers.E); break;                               // CP E | UNDOCUMENTED
                 case 0xBC: CMP_R(ref irH); break;                                       // CP IRh | UNDOCUMENTED
                 case 0xBD: CMP_R(ref irL); break;                                       // CP IRl | UNDOCUMENTED
-                case 0xBE: CMP_IRDMEM(ref indexAddressingMode);  _clock.Add(11); break;  // CP (IR + d)
+                case 0xBE: CMP_IRDMEM(ref indexAddressingMode); _clock.Add(11); break;  // CP (IR + d)
                 case 0xBF: CMP_R(ref Registers.A); break;                               // CP A | UNDOCUMENTED
 
 
@@ -190,12 +190,12 @@ namespace Z80Sharp.Processor
                 case 0xE9: JP_RR(ref indexAddressingMode); break; // JP (IR)
 
 
-                case 0xE1: POP_RR(ref indexAddressingMode);  _clock.Add(6); break;  // POP IR
+                case 0xE1: POP_RR(ref indexAddressingMode); _clock.Add(6); break;  // POP IR
                 case 0xE5: PUSH_RR(ref indexAddressingMode); _clock.Add(7); break; // PUSH IR
 
 
                 case 0x23: INC_RR(ref indexAddressingMode); _clock.Add(2); break;      // INC IR
-                case 0x34: INC_IRDMEM(ref indexAddressingMode);  _clock.Add(15); break; // INC (IR + d)
+                case 0x34: INC_IRDMEM(ref indexAddressingMode); _clock.Add(15); break; // INC (IR + d)
                 case 0x04: INC_R(ref Registers.B); break;                              // INC B | UNDOCUMENTED
                 case 0x0C: INC_R(ref Registers.C); break;                              // INC C | UNDOCUMENTED
                 case 0x14: INC_R(ref Registers.D); break;                              // INC D | UNDOCUMENTED
@@ -206,7 +206,7 @@ namespace Z80Sharp.Processor
 
 
                 case 0x2B: DEC_RR(ref indexAddressingMode); _clock.Add(2); break;      // DEC IR
-                case 0x35: DEC_IRDMEM(ref indexAddressingMode);  _clock.Add(15); break; // DEC (IR + d)
+                case 0x35: DEC_IRDMEM(ref indexAddressingMode); _clock.Add(15); break; // DEC (IR + d)
                 case 0x05: DEC_R(ref Registers.B); break;                              // DEC B | UNDOCUMENTED
                 case 0x0D: DEC_R(ref Registers.C); break;                              // DEC C | UNDOCUMENTED
                 case 0x15: DEC_R(ref Registers.D); break;                              // DEC D | UNDOCUMENTED

@@ -1,7 +1,7 @@
 ﻿namespace Z80Sharp.Enums
 {
     /// <summary>
-    /// Represents the interrupt modes available on the Z80 microprocessor.
+    /// Represents the interrupt modes available on the Z80.
     /// </summary>
     public enum InterruptMode : byte
     {

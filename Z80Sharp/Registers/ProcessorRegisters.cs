@@ -18,19 +18,6 @@ namespace Z80Sharp.Registers
         internal void IncrementRefresh() => R = (byte)((R & 0x80) | ((R + 1) & 0x7F));
 
         /// <summary>
-        /// Gets the name of the current interrupt mode.
-        /// </summary>
-        /// <param name="interruptMode">The interrupt mode the processor is currently in.</param>
-        /// <returns>The name, in string form, of the mode.</returns>
-        internal string InterruptModeName(InterruptMode interruptMode) => interruptMode switch
-        {
-            InterruptMode.IM0 => "IM0",
-            InterruptMode.IM1 => "IM1",
-            InterruptMode.IM2 => "IM2",
-            _ => "UNKNOWN INTERRUPT MODE"
-        };
-
-        /// <summary>
         /// Checks if any of a flag is set for use in a jump condition.
         /// </summary>
         /// <param name="condition">The flag condition.</param>
@@ -58,17 +45,10 @@ namespace Z80Sharp.Registers
 
         #region Register exchange operations
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void R8Exchange(ref byte reg1, ref byte reg2)
-        {
-            byte reg1_old = reg1;
-            reg1 = reg2;
-            reg2 = reg1_old;
-        }
+        internal void R8Exchange(ref byte reg1, ref byte reg2) => (reg1, reg2) = (reg2, reg1);
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void R16Exchange(ref ushort regPair1, ref ushort regPair2)
-        {
-            (regPair1, regPair2) = (regPair2, regPair1);
-        }
+        internal void R16Exchange(ref ushort regPair1, ref ushort regPair2) => (regPair1, regPair2) = (regPair2, regPair1);
         #endregion
 
 

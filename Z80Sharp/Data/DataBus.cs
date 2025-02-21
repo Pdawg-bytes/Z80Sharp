@@ -13,9 +13,13 @@
         /// NMI and MI status.
         /// </summary>
         /// <remarks>
-        /// NMI and MI are raised by flipping bits 0 and 1 in this byte.
+        /// NMI and MI are raised by flipping bits 1 and 0, respectively.
         /// </remarks>
         public byte InterruptStatus;
+
+        public const byte MaskMI = 1 << 0;
+        public const byte MaskNMI = 1 << 1;
+
 
         /// <summary>
         /// The data currently traversing the data bus.

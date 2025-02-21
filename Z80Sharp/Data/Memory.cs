@@ -1,6 +1,4 @@
-﻿using Z80Sharp.Helpers;
-using Z80Sharp.Interfaces;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
 namespace Z80Sharp.Data
@@ -13,8 +11,7 @@ namespace Z80Sharp.Data
         public Memory(int size)
         {
             _size = (nuint)size;
-            _memory = (byte*)NativeMemory.Alloc(_size);
-            NativeMemory.Clear(_memory, _size);
+            _memory = (byte*)NativeMemory.AllocZeroed(_size);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

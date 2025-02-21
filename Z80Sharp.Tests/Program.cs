@@ -57,6 +57,7 @@ namespace Z80Sharp.Tests
                     string filename = Console.ReadLine();
                     Data.Memory ram = new(65536);
                     byte[] program = File.ReadAllBytes(filename);
+                    if (program.Length > 65536) { Console.WriteLine("\nFile too big!"); break; }
                     ram.WriteBytes(0, program);
                     Z80 z80 = new(ram, new Data.DataBus(), new Logger(false), 0);
                     z80.RunUntilHalt();

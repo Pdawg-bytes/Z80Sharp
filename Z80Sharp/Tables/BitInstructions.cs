@@ -4,7 +4,7 @@
     {
         private void ExecuteBitInstruction()
         {
-           _clock.Add(8);
+            _clock.Add(8);
             Registers.IncrementRefresh();
 
             byte instruction = Fetch();
@@ -13,7 +13,6 @@
 
             switch (instruction)
             {
-                // R(L/R)(C) instructions: Rotate register/memory value through/from carry flag
                 case 0x00: RLC_R(ref Registers.B); break;                     // RLC B
                 case 0x01: RLC_R(ref Registers.C); break;                     // RLC C
                 case 0x02: RLC_R(ref Registers.D); break;                     // RLC D
@@ -51,7 +50,6 @@
                 case 0x1F: RR_R(ref Registers.A); break;                     // RR A
 
 
-                // S(L/R)(L/A) instructions: Logical shift register/memory value through/from carry flag
                 case 0x20: SLA_R(ref Registers.B); break;                     // SLA B
                 case 0x21: SLA_R(ref Registers.C); break;                     // SLA C
                 case 0x22: SLA_R(ref Registers.D); break;                     // SLA D
@@ -88,7 +86,7 @@
                 case 0x3E: SRL_RRMEM(ref Registers.HL); _clock.Add(7); break; // SRL (HL)
                 case 0x3F: SRL_R(ref Registers.A); break;                     // SRL A
 
-                // BIT instructions: Tests bit B of register R, sets Z if tested bit is zero
+
                 case 0x40: BIT_B_R(0, ref Registers.B); break;                     // BIT 0, B
                 case 0x41: BIT_B_R(0, ref Registers.C); break;                     // BIT 0, C
                 case 0x42: BIT_B_R(0, ref Registers.D); break;                     // BIT 0, D
@@ -162,7 +160,6 @@
                 case 0x7F: BIT_B_R(7, ref Registers.A); break;                     // BIT 7, A
 
 
-                // RES instructions: Reset bit B of R or (RR)
                 case 0x80: RES_B_R(0, ref Registers.B); break;                     // RES 0, B
                 case 0x81: RES_B_R(0, ref Registers.C); break;                     // RES 0, C
                 case 0x82: RES_B_R(0, ref Registers.D); break;                     // RES 0, D
@@ -236,7 +233,6 @@
                 case 0xBF: RES_B_R(7, ref Registers.A); break;                     // RES 7, A
 
 
-                // SET instructions: Set bit B of R or (RR)
                 case 0xC0: SET_B_R(0, ref Registers.B); break;                     // SET 0, B
                 case 0xC1: SET_B_R(0, ref Registers.C); break;                     // SET 0, C
                 case 0xC2: SET_B_R(0, ref Registers.D); break;                     // SET 0, D

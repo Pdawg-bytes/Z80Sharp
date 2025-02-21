@@ -14,87 +14,82 @@
 
             switch (instruction)
             {
-                // RL(C) instructions: Rotate (IR + d) left circular/through carry
-                case 0x00: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B);  _clock.Add(3); break; // RLC (IR + d), B | UNDOCUMENTED
-                case 0x01: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C);  _clock.Add(3); break; // RLC (IR + d), C | UNDOCUMENTED
-                case 0x02: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D);  _clock.Add(3); break; // RLC (IR + d), D | UNDOCUMENTED
-                case 0x03: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E);  _clock.Add(3); break; // RLC (IR + d), E | UNDOCUMENTED
-                case 0x04: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H);  _clock.Add(3); break; // RLC (IR + d), H | UNDOCUMENTED
-                case 0x05: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L);  _clock.Add(3); break; // RLC (IR + d), L | UNDOCUMENTED
-                case 0x07: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A);  _clock.Add(3); break; // RLC (IR + d), A | UNDOCUMENTED
-                case 0x06: RLC_IRDMEM(displacement, ref indexAddressingMode);  _clock.Add(3); break;                    // RLC (IR + d)
+                case 0x00: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // RLC (IR + d), B | UNDOCUMENTED
+                case 0x01: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // RLC (IR + d), C | UNDOCUMENTED
+                case 0x02: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); _clock.Add(3); break; // RLC (IR + d), D | UNDOCUMENTED
+                case 0x03: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E); _clock.Add(3); break; // RLC (IR + d), E | UNDOCUMENTED
+                case 0x04: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); _clock.Add(3); break; // RLC (IR + d), H | UNDOCUMENTED
+                case 0x05: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); _clock.Add(3); break; // RLC (IR + d), L | UNDOCUMENTED
+                case 0x07: RLC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); _clock.Add(3); break; // RLC (IR + d), A | UNDOCUMENTED
+                case 0x06: RLC_IRDMEM(displacement, ref indexAddressingMode); _clock.Add(3); break;                    // RLC (IR + d)
 
-                case 0x10: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B);  _clock.Add(3); break; // RL (IR + d), B | UNDOCUMENTED
-                case 0x11: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C);  _clock.Add(3); break; // RL (IR + d), C | UNDOCUMENTED
-                case 0x12: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D);  _clock.Add(3); break; // RL (IR + d), D | UNDOCUMENTED
-                case 0x13: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E);  _clock.Add(3); break; // RL (IR + d), E | UNDOCUMENTED
-                case 0x14: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H);  _clock.Add(3); break; // RL (IR + d), H | UNDOCUMENTED
-                case 0x15: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L);  _clock.Add(3); break; // RL (IR + d), L | UNDOCUMENTED
-                case 0x17: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A);  _clock.Add(3); break; // RL (IR + d), A | UNDOCUMENTED
-                case 0x16: RL_IRDMEM(displacement, ref indexAddressingMode);  _clock.Add(3); break;                    // RL (IR + d)
-
-
-                // RR(C) instructions: Rotate (IR + d) right circular/through carry
-                case 0x08: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B);  _clock.Add(3); break; // RRC (IR + d), B | UNDOCUMENTED
-                case 0x09: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C);  _clock.Add(3); break; // RRC (IR + d), C | UNDOCUMENTED
-                case 0x0A: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D);  _clock.Add(3); break; // RRC (IR + d), D | UNDOCUMENTED
-                case 0x0B: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E);  _clock.Add(3); break; // RRC (IR + d), E | UNDOCUMENTED
-                case 0x0C: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H);  _clock.Add(3); break; // RRC (IR + d), H | UNDOCUMENTED
-                case 0x0D: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L);  _clock.Add(3); break; // RRC (IR + d), L | UNDOCUMENTED
-                case 0x0F: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A);  _clock.Add(3); break; // RRC (IR + d), A | UNDOCUMENTED
-                case 0x0E: RRC_IRDMEM(displacement, ref indexAddressingMode);  _clock.Add(3); break;                    // RRC (IR + d)
-
-                case 0x18: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B);  _clock.Add(3); break; // RR (IR + d), B | UNDOCUMENTED
-                case 0x19: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C);  _clock.Add(3); break; // RR (IR + d), C | UNDOCUMENTED
-                case 0x1A: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D);  _clock.Add(3); break; // RR (IR + d), D | UNDOCUMENTED
-                case 0x1B: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E);  _clock.Add(3); break; // RR (IR + d), E | UNDOCUMENTED
-                case 0x1C: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H);  _clock.Add(3); break; // RR (IR + d), H | UNDOCUMENTED
-                case 0x1D: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L);  _clock.Add(3); break; // RR (IR + d), L | UNDOCUMENTED
-                case 0x1F: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A);  _clock.Add(3); break; // RR (IR + d), A | UNDOCUMENTED
-                case 0x1E: RR_IRDMEM(displacement, ref indexAddressingMode);  _clock.Add(3); break;                    // RR (IR + d)
+                case 0x10: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // RL (IR + d), B | UNDOCUMENTED
+                case 0x11: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // RL (IR + d), C | UNDOCUMENTED
+                case 0x12: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); _clock.Add(3); break; // RL (IR + d), D | UNDOCUMENTED
+                case 0x13: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E); _clock.Add(3); break; // RL (IR + d), E | UNDOCUMENTED
+                case 0x14: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); _clock.Add(3); break; // RL (IR + d), H | UNDOCUMENTED
+                case 0x15: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); _clock.Add(3); break; // RL (IR + d), L | UNDOCUMENTED
+                case 0x17: RL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); _clock.Add(3); break; // RL (IR + d), A | UNDOCUMENTED
+                case 0x16: RL_IRDMEM(displacement, ref indexAddressingMode); _clock.Add(3); break;                    // RL (IR + d)
 
 
-                // SL(A/L) instructions: Shift (IR + d) left arithmetic/logical
-                case 0x20: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B);  _clock.Add(3); break; // SLA (IR + d), B | UNDOCUMENTED
-                case 0x21: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C);  _clock.Add(3); break; // SLA (IR + d), C | UNDOCUMENTED
-                case 0x22: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D);  _clock.Add(3); break; // SLA (IR + d), D | UNDOCUMENTED
-                case 0x23: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E);  _clock.Add(3); break; // SLA (IR + d), E | UNDOCUMENTED
-                case 0x24: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H);  _clock.Add(3); break; // SLA (IR + d), H | UNDOCUMENTED
-                case 0x25: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L);  _clock.Add(3); break; // SLA (IR + d), L | UNDOCUMENTED
-                case 0x27: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A);  _clock.Add(3); break; // SLA (IR + d), A | UNDOCUMENTED
-                case 0x26: SLA_IRDMEM(displacement, ref indexAddressingMode);  _clock.Add(3); break;                    // SLA (IR + d)
+                case 0x08: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // RRC (IR + d), B | UNDOCUMENTED
+                case 0x09: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // RRC (IR + d), C | UNDOCUMENTED
+                case 0x0A: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); _clock.Add(3); break; // RRC (IR + d), D | UNDOCUMENTED
+                case 0x0B: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E); _clock.Add(3); break; // RRC (IR + d), E | UNDOCUMENTED
+                case 0x0C: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); _clock.Add(3); break; // RRC (IR + d), H | UNDOCUMENTED
+                case 0x0D: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); _clock.Add(3); break; // RRC (IR + d), L | UNDOCUMENTED
+                case 0x0F: RRC_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); _clock.Add(3); break; // RRC (IR + d), A | UNDOCUMENTED
+                case 0x0E: RRC_IRDMEM(displacement, ref indexAddressingMode); _clock.Add(3); break;                    // RRC (IR + d)
 
-                case 0x30: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B);  _clock.Add(3); break; // SLL (IR + d), B | UNDOCUMENTED
-                case 0x31: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C);  _clock.Add(3); break; // SLL (IR + d), C | UNDOCUMENTED
-                case 0x32: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D);  _clock.Add(3); break; // SLL (IR + d), D | UNDOCUMENTED
-                case 0x33: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E);  _clock.Add(3); break; // SLL (IR + d), E | UNDOCUMENTED
-                case 0x34: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H);  _clock.Add(3); break; // SLL (IR + d), H | UNDOCUMENTED
-                case 0x35: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L);  _clock.Add(3); break; // SLL (IR + d), L | UNDOCUMENTED
-                case 0x37: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A);  _clock.Add(3); break; // SLL (IR + d), A | UNDOCUMENTED
-                case 0x36: SLL_IRDMEM(displacement, ref indexAddressingMode);  _clock.Add(3); break;                    // SLL (IR + d)
-
-
-                // SR(A/L) instructions: Shift (IR + d) right arithmetic/logical
-                case 0x28: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B);  _clock.Add(3); break; // SRA (IR + d), B | UNDOCUMENTED
-                case 0x29: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C);  _clock.Add(3); break; // SRA (IR + d), C | UNDOCUMENTED
-                case 0x2A: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D);  _clock.Add(3); break; // SRA (IR + d), D | UNDOCUMENTED
-                case 0x2B: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E);  _clock.Add(3); break; // SRA (IR + d), E | UNDOCUMENTED
-                case 0x2C: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H);  _clock.Add(3); break; // SRA (IR + d), H | UNDOCUMENTED
-                case 0x2D: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L);  _clock.Add(3); break; // SRA (IR + d), L | UNDOCUMENTED
-                case 0x2F: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A);  _clock.Add(3); break; // SRA (IR + d), A | UNDOCUMENTED
-                case 0x2E: SRA_IRDMEM(displacement, ref indexAddressingMode);  _clock.Add(3); break;                    // SRA (IR + d)
-
-                case 0x38: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B);  _clock.Add(3); break; // SRL (IR + d), B | UNDOCUMENTED
-                case 0x39: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C);  _clock.Add(3); break; // SRL (IR + d), C | UNDOCUMENTED
-                case 0x3A: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D);  _clock.Add(3); break; // SRL (IR + d), D | UNDOCUMENTED
-                case 0x3B: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E);  _clock.Add(3); break; // SRL (IR + d), E | UNDOCUMENTED
-                case 0x3C: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H);  _clock.Add(3); break; // SRL (IR + d), H | UNDOCUMENTED
-                case 0x3D: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L);  _clock.Add(3); break; // SRL (IR + d), L | UNDOCUMENTED
-                case 0x3F: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A);  _clock.Add(3); break; // SRL (IR + d), A | UNDOCUMENTED
-                case 0x3E: SRL_IRDMEM(displacement, ref indexAddressingMode);  _clock.Add(3); break;                    // SRL (IR + d)
+                case 0x18: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // RR (IR + d), B | UNDOCUMENTED
+                case 0x19: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // RR (IR + d), C | UNDOCUMENTED
+                case 0x1A: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); _clock.Add(3); break; // RR (IR + d), D | UNDOCUMENTED
+                case 0x1B: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E); _clock.Add(3); break; // RR (IR + d), E | UNDOCUMENTED
+                case 0x1C: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); _clock.Add(3); break; // RR (IR + d), H | UNDOCUMENTED
+                case 0x1D: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); _clock.Add(3); break; // RR (IR + d), L | UNDOCUMENTED
+                case 0x1F: RR_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); _clock.Add(3); break; // RR (IR + d), A | UNDOCUMENTED
+                case 0x1E: RR_IRDMEM(displacement, ref indexAddressingMode); _clock.Add(3); break;                    // RR (IR + d)
 
 
-                // BIT instructions: Tests bit B of register R, sets Z if tested bit is zero
+                case 0x20: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // SLA (IR + d), B | UNDOCUMENTED
+                case 0x21: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // SLA (IR + d), C | UNDOCUMENTED
+                case 0x22: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); _clock.Add(3); break; // SLA (IR + d), D | UNDOCUMENTED
+                case 0x23: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E); _clock.Add(3); break; // SLA (IR + d), E | UNDOCUMENTED
+                case 0x24: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); _clock.Add(3); break; // SLA (IR + d), H | UNDOCUMENTED
+                case 0x25: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); _clock.Add(3); break; // SLA (IR + d), L | UNDOCUMENTED
+                case 0x27: SLA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); _clock.Add(3); break; // SLA (IR + d), A | UNDOCUMENTED
+                case 0x26: SLA_IRDMEM(displacement, ref indexAddressingMode); _clock.Add(3); break;                    // SLA (IR + d)
+
+                case 0x30: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // SLL (IR + d), B | UNDOCUMENTED
+                case 0x31: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // SLL (IR + d), C | UNDOCUMENTED
+                case 0x32: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); _clock.Add(3); break; // SLL (IR + d), D | UNDOCUMENTED
+                case 0x33: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E); _clock.Add(3); break; // SLL (IR + d), E | UNDOCUMENTED
+                case 0x34: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); _clock.Add(3); break; // SLL (IR + d), H | UNDOCUMENTED
+                case 0x35: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); _clock.Add(3); break; // SLL (IR + d), L | UNDOCUMENTED
+                case 0x37: SLL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); _clock.Add(3); break; // SLL (IR + d), A | UNDOCUMENTED
+                case 0x36: SLL_IRDMEM(displacement, ref indexAddressingMode); _clock.Add(3); break;                    // SLL (IR + d)
+
+
+                case 0x28: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // SRA (IR + d), B | UNDOCUMENTED
+                case 0x29: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // SRA (IR + d), C | UNDOCUMENTED
+                case 0x2A: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); _clock.Add(3); break; // SRA (IR + d), D | UNDOCUMENTED
+                case 0x2B: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E); _clock.Add(3); break; // SRA (IR + d), E | UNDOCUMENTED
+                case 0x2C: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); _clock.Add(3); break; // SRA (IR + d), H | UNDOCUMENTED
+                case 0x2D: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); _clock.Add(3); break; // SRA (IR + d), L | UNDOCUMENTED
+                case 0x2F: SRA_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); _clock.Add(3); break; // SRA (IR + d), A | UNDOCUMENTED
+                case 0x2E: SRA_IRDMEM(displacement, ref indexAddressingMode); _clock.Add(3); break;                    // SRA (IR + d)
+
+                case 0x38: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // SRL (IR + d), B | UNDOCUMENTED
+                case 0x39: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // SRL (IR + d), C | UNDOCUMENTED
+                case 0x3A: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.D); _clock.Add(3); break; // SRL (IR + d), D | UNDOCUMENTED
+                case 0x3B: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.E); _clock.Add(3); break; // SRL (IR + d), E | UNDOCUMENTED
+                case 0x3C: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.H); _clock.Add(3); break; // SRL (IR + d), H | UNDOCUMENTED
+                case 0x3D: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.L); _clock.Add(3); break; // SRL (IR + d), L | UNDOCUMENTED
+                case 0x3F: SRL_IRDMEM_R(displacement, ref indexAddressingMode, ref Registers.A); _clock.Add(3); break; // SRL (IR + d), A | UNDOCUMENTED
+                case 0x3E: SRL_IRDMEM(displacement, ref indexAddressingMode); _clock.Add(3); break;                    // SRL (IR + d)
+
+
                 case 0x40:  // BIT 0, (IR + d) | UNDOCUMENTED
                 case 0x41:  // BIT 0, (IR + d) | UNDOCUMENTED
                 case 0x42:  // BIT 0, (IR + d) | UNDOCUMENTED
@@ -176,7 +171,7 @@
                     BIT_B_IRDMEM(7, displacement, ref indexAddressingMode); break;
 
 
-                // RES instructions: Reset bit B of (IR + d)
+
                 case 0x80: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // RES 0, (IR + d), B | UNDOCUMENTED
                 case 0x81: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // RES 0, (IR + d), C | UNDOCUMENTED
                 case 0x82: RES_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.D); _clock.Add(3); break; // RES 0, (IR + d), D | UNDOCUMENTED
@@ -250,7 +245,6 @@
                 case 0xBE: RES_B_IRDMEM(7, displacement, ref indexAddressingMode); _clock.Add(3); break;                    // RES 7, (IR + d)
 
 
-                // SET instructions: Set bit B of (IR + d)
                 case 0xC0: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.B); _clock.Add(3); break; // SET 0, (IR + d), B | UNDOCUMENTED
                 case 0xC1: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.C); _clock.Add(3); break; // SET 0, (IR + d), C | UNDOCUMENTED
                 case 0xC2: SET_B_IRDMEM_R(0, displacement, ref indexAddressingMode, ref Registers.D); _clock.Add(3); break; // SET 0, (IR + d), D | UNDOCUMENTED

@@ -24,7 +24,6 @@ namespace Z80Sharp.Processor
             _clock.Add(11);
             PUSH_PC();
             Registers.PC = 0x0066;
-            //LogInterrupt("NMI");
         }
 
         private void HandleMI()
@@ -50,21 +49,18 @@ namespace Z80Sharp.Processor
                         case 0xCB: ExecuteBitInstruction(); break;
                         default: ExecuteMainInstruction(); break;
                     }
-                    //LogInterrupt("MI Mode 0");
                     break;
                 case InterruptMode.IM1:
                     _clock.Add(13);
                     PUSH_PC();
-                    Registers.PC = 0x0038;
-                    //LogInterrupt("MI Mode 1");
+                    Registers.MEMPTR = Registers.PC = 0x0038;
                     break;
                 case InterruptMode.IM2:
                     PUSH_PC();
                     byte interruptVector = _dataBus.Data;
                     ushort vectorAddress = (ushort)((Registers.I << 8) | interruptVector);
                     _clock.Add(19);
-                    Registers.PC = _memory.ReadWord(vectorAddress);
-                    //LogInterrupt("MI Mode 2");
+                    Registers.MEMPTR = Registers.PC = _memory.ReadWord(vectorAddress);
                     break;
             }
         }

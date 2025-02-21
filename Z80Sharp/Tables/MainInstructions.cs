@@ -30,10 +30,10 @@ namespace Z80Sharp.Processor
                 case 0x1F: RRA(); break;  // RRA
 
 
-                case 0x09: ADD_HL_RR(ref Registers.BC);  _clock.Add(7); break; // ADD HL, BC
-                case 0x19: ADD_HL_RR(ref Registers.DE);  _clock.Add(7); break; // ADD HL, DE
-                case 0x29: ADD_HL_RR(ref Registers.HL);  _clock.Add(7); break; // ADD HL, HL
-                case 0x39: ADD_HL_RR(ref Registers.SP);  _clock.Add(7); break; // ADD HL, SP
+                case 0x09: ADD_HL_RR(ref Registers.BC); _clock.Add(7); break; // ADD HL, BC
+                case 0x19: ADD_HL_RR(ref Registers.DE); _clock.Add(7); break; // ADD HL, DE
+                case 0x29: ADD_HL_RR(ref Registers.HL); _clock.Add(7); break; // ADD HL, HL
+                case 0x39: ADD_HL_RR(ref Registers.SP); _clock.Add(7); break; // ADD HL, SP
 
                 case 0x80: ADD_A_R(ref Registers.B); break;                     // ADD A, B
                 case 0x81: ADD_A_R(ref Registers.C); break;                     // ADD A, C
@@ -41,9 +41,9 @@ namespace Z80Sharp.Processor
                 case 0x83: ADD_A_R(ref Registers.E); break;                     // ADD A, E
                 case 0x84: ADD_A_R(ref Registers.H); break;                     // ADD A, H
                 case 0x85: ADD_A_R(ref Registers.L); break;                     // ADD A, L
-                case 0x86: ADD_A_RRMEM(ref Registers.HL);  _clock.Add(3); break; // ADD A, (HL)
+                case 0x86: ADD_A_RRMEM(ref Registers.HL); _clock.Add(3); break; // ADD A, (HL)
                 case 0x87: ADD_A_R(ref Registers.A); break;                     // ADD A, A
-                case 0xC6: ADD_A_N();  _clock.Add(3); break;                     // ADD A, N
+                case 0xC6: ADD_A_N(); _clock.Add(3); break;                     // ADD A, N
 
                 case 0x88: ADC_A_R(ref Registers.B); break;                     // ADC A, B
                 case 0x89: ADC_A_R(ref Registers.C); break;                     // ADC A, C
@@ -51,9 +51,9 @@ namespace Z80Sharp.Processor
                 case 0x8B: ADC_A_R(ref Registers.E); break;                     // ADC A, E
                 case 0x8C: ADC_A_R(ref Registers.H); break;                     // ADC A, H
                 case 0x8D: ADC_A_R(ref Registers.L); break;                     // ADC A, L
-                case 0x8E: ADC_A_RRMEM(ref Registers.HL);  _clock.Add(3); break; // ADC A, (HL)
+                case 0x8E: ADC_A_RRMEM(ref Registers.HL); _clock.Add(3); break; // ADC A, (HL)
                 case 0x8F: ADC_A_R(ref Registers.A); break;                     // ADC A, A
-                case 0xCE: ADC_A_N();  _clock.Add(3); break;                     // ADC A, N
+                case 0xCE: ADC_A_N(); _clock.Add(3); break;                     // ADC A, N
 
 
                 case 0x90: SUB_A_R(ref Registers.B); break;                     // SUB B
@@ -62,9 +62,9 @@ namespace Z80Sharp.Processor
                 case 0x93: SUB_A_R(ref Registers.E); break;                     // SUB E
                 case 0x94: SUB_A_R(ref Registers.H); break;                     // SUB H
                 case 0x95: SUB_A_R(ref Registers.L); break;                     // SUB L
-                case 0x96: SUB_A_RRMEM(ref Registers.HL);  _clock.Add(3); break; // SUB (HL)
+                case 0x96: SUB_A_RRMEM(ref Registers.HL); _clock.Add(3); break; // SUB (HL)
                 case 0x97: SUB_A_R(ref Registers.A); break;                     // SUB A
-                case 0xD6: SUB_A_N();  _clock.Add(3); break;                     // SUB N
+                case 0xD6: SUB_A_N(); _clock.Add(3); break;                     // SUB N
 
                 case 0x98: SBC_A_R(ref Registers.B); break;                     // SBC A, B
                 case 0x99: SBC_A_R(ref Registers.C); break;                     // SBC A, C
@@ -72,9 +72,9 @@ namespace Z80Sharp.Processor
                 case 0x9B: SBC_A_R(ref Registers.E); break;                     // SBC A, E
                 case 0x9C: SBC_A_R(ref Registers.H); break;                     // SBC A, H
                 case 0x9D: SBC_A_R(ref Registers.L); break;                     // SBC A, L
-                case 0x9E: SBC_A_RRMEM(ref Registers.HL);  _clock.Add(3); break; // SBC A, (HL)
+                case 0x9E: SBC_A_RRMEM(ref Registers.HL); _clock.Add(3); break; // SBC A, (HL)
                 case 0x9F: SBC_A_R(ref Registers.A); break;                     // SBC A, A
-                case 0xDE: SBC_A_N();  _clock.Add(3); break;                     // SBC A, N
+                case 0xDE: SBC_A_N(); _clock.Add(3); break;                     // SBC A, N
 
 
                 case 0xB0: OR_R(ref Registers.B); break;                     // OR B
@@ -83,9 +83,9 @@ namespace Z80Sharp.Processor
                 case 0xB3: OR_R(ref Registers.E); break;                     // OR E
                 case 0xB4: OR_R(ref Registers.H); break;                     // OR H
                 case 0xB5: OR_R(ref Registers.L); break;                     // OR L
-                case 0xB6: OR_RRMEM(ref Registers.HL);  _clock.Add(3); break; // OR (HL)
+                case 0xB6: OR_RRMEM(ref Registers.HL); _clock.Add(3); break; // OR (HL)
                 case 0xB7: OR_R(ref Registers.A); break;                     // OR A
-                case 0xF6: OR_N();  _clock.Add(3); break;                     // OR N
+                case 0xF6: OR_N(); _clock.Add(3); break;                     // OR N
 
 
                 case 0xA8: XOR_R(ref Registers.B); break;                     // XOR B
@@ -94,9 +94,9 @@ namespace Z80Sharp.Processor
                 case 0xAB: XOR_R(ref Registers.E); break;                     // XOR E
                 case 0xAC: XOR_R(ref Registers.H); break;                     // XOR H
                 case 0xAD: XOR_R(ref Registers.L); break;                     // XOR L
-                case 0xAE: XOR_RRMEM(ref Registers.HL);  _clock.Add(3); break; // XOR (HL)
+                case 0xAE: XOR_RRMEM(ref Registers.HL); _clock.Add(3); break; // XOR (HL)
                 case 0xAF: XOR_R(ref Registers.A); break;                     // XOR A
-                case 0xEE: XOR_N();  _clock.Add(3); break;                     // XOR N
+                case 0xEE: XOR_N(); _clock.Add(3); break;                     // XOR N
 
 
                 case 0xA0: AND_R(ref Registers.B); break;                     // AND B
@@ -105,9 +105,9 @@ namespace Z80Sharp.Processor
                 case 0xA3: AND_R(ref Registers.E); break;                     // AND E
                 case 0xA4: AND_R(ref Registers.H); break;                     // AND H
                 case 0xA5: AND_R(ref Registers.L); break;                     // AND L
-                case 0xA6: AND_RRMEM(ref Registers.HL);  _clock.Add(3); break; // AND (HL)
+                case 0xA6: AND_RRMEM(ref Registers.HL); _clock.Add(3); break; // AND (HL)
                 case 0xA7: AND_R(ref Registers.A); break;                     // AND A
-                case 0xE6: AND_N();  _clock.Add(3); break;                     // AND N
+                case 0xE6: AND_N(); _clock.Add(3); break;                     // AND N
 
 
                 case 0xB8: CMP_R(ref Registers.B); break;                     // CP B
@@ -116,9 +116,9 @@ namespace Z80Sharp.Processor
                 case 0xBB: CMP_R(ref Registers.E); break;                     // CP E
                 case 0xBC: CMP_R(ref Registers.H); break;                     // CP H
                 case 0xBD: CMP_R(ref Registers.L); break;                     // CP L
-                case 0xBE: CMP_RRMEM(ref Registers.HL);  _clock.Add(3); break; // CP (HL)
+                case 0xBE: CMP_RRMEM(ref Registers.HL); _clock.Add(3); break; // CP (HL)
                 case 0xBF: CMP_R(ref Registers.A); break;                     // CP A
-                case 0xFE: CMP_N();  _clock.Add(3); break;                     // CP N
+                case 0xFE: CMP_N(); _clock.Add(3); break;                     // CP N
 
 
                 case 0x3F: CCF(); break; // CCF
@@ -146,10 +146,10 @@ namespace Z80Sharp.Processor
                 case 0x0A: LD_A_RRMEM(ref Registers.BC); _clock.Add(3); break;  // LD A, (BC)
                 case 0x1A: LD_A_RRMEM(ref Registers.DE); _clock.Add(3); break;  // LD A, (DE)
 
-                case 0x32: LD_NNMEM_R(ref Registers.A); _clock.Add(9); break;     // LD (NN), A
-                case 0x22: LD_NNMEM_RR(ref Registers.HL); _clock.Add(12); break;   // LD (NN), HL
-                case 0x2A: LD_RR_NNMEM_F(ref Registers.HL); _clock.Add(12); break; // LD HL, (NN)
-                case 0x3A: LD_R_NNMEM(ref Registers.A); _clock.Add(9); break;     // LD A, (NN)
+                case 0x32: LD_NNMEM_R(ref Registers.A); _clock.Add(9); break;    // LD (NN), A
+                case 0x22: LD_NNMEM_RR(ref Registers.HL); _clock.Add(12); break; // LD (NN), HL
+                case 0x2A: LD_RR_NNMEM(ref Registers.HL); _clock.Add(12); break; // LD HL, (NN)
+                case 0x3A: LD_R_NNMEM(ref Registers.A); _clock.Add(9); break;    // LD A, (NN)
 
                 case 0x40: LD_R_R(ref Registers.B, ref Registers.B); break;                     // LD B, B
                 case 0x41: LD_R_R(ref Registers.B, ref Registers.C); break;                     // LD B, C
@@ -227,13 +227,13 @@ namespace Z80Sharp.Processor
                 case 0xC3: JP_NN(); _clock.Add(6); break;       // JP NN
                 case 0xE9: JP_RR(ref Registers.HL); break;      // JP (HL)
                 case 0xC2: JP_NN_C(NZ_C); _clock.Add(6); break; // JP NZ, NN
-                case 0xCA: JP_NN_C(Z_C);  _clock.Add(6); break; // JP Z, NN
+                case 0xCA: JP_NN_C(Z_C); _clock.Add(6); break; // JP Z, NN
                 case 0xD2: JP_NN_C(NC_C); _clock.Add(6); break; // JP NC, NN
-                case 0xDA: JP_NN_C(C_C);  _clock.Add(6); break; // JP C, NN
+                case 0xDA: JP_NN_C(C_C); _clock.Add(6); break; // JP C, NN
                 case 0xE2: JP_NN_C(PO_C); _clock.Add(6); break; // JP PO, NN
                 case 0xEA: JP_NN_C(PE_C); _clock.Add(6); break; // JP PE, NN
-                case 0xF2: JP_NN_C(P_C);  _clock.Add(6); break; // JP P, NN
-                case 0xFA: JP_NN_C(M_C);  _clock.Add(6); break; // JP M, NN
+                case 0xF2: JP_NN_C(P_C); _clock.Add(6); break; // JP P, NN
+                case 0xFA: JP_NN_C(M_C); _clock.Add(6); break; // JP M, NN
 
                 case 0x18: JR_D(); _clock.Add(8); break;           // JR D
                 case 0x20: JR_CC_D(NZ_C); _clock.Add(8, 3); break; // JR NZ, D
@@ -289,7 +289,7 @@ namespace Z80Sharp.Processor
                 case 0x13: INC_RR(ref Registers.DE); _clock.Add(2); break; // INC DE
                 case 0x23: INC_RR(ref Registers.HL); _clock.Add(2); break; // INC HL
                 case 0x33: INC_RR(ref Registers.SP); _clock.Add(2); break; // INC SP
-                case 0x34: INC_HLMEM();  _clock.Add(7); break;              // INC (HL)
+                case 0x34: INC_HLMEM(); _clock.Add(7); break;              // INC (HL)
                 case 0x04: INC_R(ref Registers.B); break;   // INC B
                 case 0x0C: INC_R(ref Registers.C); break;   // INC C
                 case 0x14: INC_R(ref Registers.D); break;   // INC D
@@ -303,7 +303,7 @@ namespace Z80Sharp.Processor
                 case 0x1B: DEC_RR(ref Registers.DE); _clock.Add(2); break; // DEC DE
                 case 0x2B: DEC_RR(ref Registers.HL); _clock.Add(2); break; // DEC HL
                 case 0x3B: DEC_RR(ref Registers.SP); _clock.Add(2); break; // DEC SP
-                case 0x35: DEC_HLMEM();  _clock.Add(7); break;              // DEC (HL)
+                case 0x35: DEC_HLMEM(); _clock.Add(7); break;              // DEC (HL)
                 case 0x05: DEC_R(ref Registers.B); break;   // DEC B
                 case 0x0D: DEC_R(ref Registers.C); break;   // DEC C
                 case 0x15: DEC_R(ref Registers.D); break;   // DEC D

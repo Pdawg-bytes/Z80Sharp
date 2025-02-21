@@ -42,7 +42,7 @@ namespace Z80Sharp.Processor
                 _ => Registers.A
             };
 
-            Registers.F = (byte)(0xA8 & result);
+            Registers.F = (byte)(0xA8 & result); // (S | Y | X) & result
             Registers.F &= (byte)~(FlagType.N | FlagType.C);
             Registers.SetFlagConditionally(FlagType.Z, result == 0);
             Registers.SetFlagConditionally(FlagType.H, operation == BitOperation.And);
@@ -87,7 +87,7 @@ namespace Z80Sharp.Processor
 
             byte result = (byte)opResult;
 
-            Registers.F = (byte)(result & 0xA8);
+            Registers.F = (byte)(0xA8 & result); // (S | Y | X) & result
             Registers.SetFlagConditionally(FlagType.Z, result == 0);
             Registers.SetFlagConditionally(FlagType.N, subtract);
 
